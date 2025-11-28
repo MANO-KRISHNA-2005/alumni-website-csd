@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PSG Tech Alumni Gallery | REBOOT 40</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #ffcc00;
+      --primary-dark: #e6b800;
+      --primary-light: #ffdb4d;
+      --secondary: #1a1a1a;
+      --accent: #ff9900;
+      --dark: #0a0a0a;
+      --light: #f0f0f0;
+      --neon-glow: 0 0 8px rgba(255, 204, 0, 0.4), 0 0 15px rgba(255, 204, 0, 0.3);
+      --neon-glow-light: 0 0 5px rgba(255, 204, 0, 0.3), 0 0 8px rgba(255, 204, 0, 0.2);
+      --neon-text-glow: 0 0 5px rgba(255, 204, 0, 0.5), 0 0 10px rgba(255, 204, 0, 0.3);
+      --item-glow: 0 0 15px rgba(255, 204, 0, 0.6), 0 0 25px rgba(255, 204, 0, 0.4);
+      --neon-yellow: #ffcc00;
+      --neon-yellow-glow: rgba(255, 204, 0, 0.7);
+      --ivory-white: #f0f0f0;
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      background-color: var(--dark);
+      color: var(--light);
+      overflow-x: hidden;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* ===== NAVIGATION BAR ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 12px 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(15px);
+      border-bottom: 2px solid var(--neon-yellow);
+      z-index: 1000;
+      transition: var(--transition);
+      box-shadow: 0 0 10px var(--neon-yellow-glow);
+    }
+
+    .navbar.scrolled {
+      padding: 8px 0;
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+      filter: drop-shadow(0 0 4px var(--neon-yellow-glow));
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-item {
+      position: relative;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--ivory-white);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      position: relative;
+      font-family: 'Oxanium', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 8px 0;
+    }
+
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--neon-yellow);
+      transition: var(--transition);
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--neon-yellow);
+      text-shadow: 0 0 4px var(--neon-yellow-glow);
+    }
+
+    .nav-link:hover:after,
+    .nav-link.active:after {
+      width: 100%;
+      box-shadow: 0 0 4px var(--neon-yellow-glow);
+    }
+
+    .nav-link.btn {
+      background: rgba(255, 204, 0, 0.2);
+      padding: 8px 20px;
+      border-radius: 30px;
+      border: 1px solid var(--neon-yellow);
+      transition: var(--transition);
+    }
+
+    .nav-link.btn:hover {
+      background: rgba(255, 204, 0, 0.3);
+      box-shadow: 0 0 10px var(--neon-yellow-glow);
+    }
+
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      color: var(--neon-yellow);
+      font-size: 1.2rem;
+      z-index: 1001;
+      text-shadow: 0 0 4px var(--neon-yellow-glow);
+    }
+
+    /* Parallax Background */
+    .wrapper-images {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) perspective(800px) rotateY(10deg) rotateX(-10deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 200vh;
+      opacity: 0.7;
+      z-index: -1;
+      pointer-events: none;
+      filter: blur(0.1px);
+    }
+
+    .images-line {
+      display: flex;
+      animation: scroll 30s linear infinite;
+    }
+
+    .images-line:nth-child(even) {
+      animation-duration: 45s;
+    }
+
+    .line {
+      width: 80px;
+      height: 120px;
+      margin: 6px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 1rem;
+      flex: none;
+      filter: sepia(0.5) hue-rotate(-10deg) saturate(1.5);
+      box-shadow: 0 0 3px rgba(255, 204, 0, 0.2);
+    }
+
+    @keyframes scroll {
+      to {
+        transform: translateX(-20%);
+      }
+    }
+    
+    /* Content Container */
+    .content-container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      background: rgba(10, 10, 0, 0.5);
+      backdrop-filter: blur(2px);
+      padding-top: 70px;
+    }
+    
+    /* Gallery Hero Section */
+    .gallery-hero {
+      padding: 120px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .gallery-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(255, 204, 0, 0.1) 0%, transparent 70%);
+      z-index: -1;
+    }
+    
+    .gallery-hero h1 {
+      font-size: 4.5rem;
+      margin-bottom: 20px;
+      color: var(--light);
+      text-shadow: var(--neon-text-glow);
+      letter-spacing: 3px;
+      font-weight: 800;
+      text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .gallery-hero h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--neon-yellow);
+      box-shadow: 0 0 10px var(--neon-yellow-glow);
+    }
+    
+    .gallery-hero p {
+      font-size: 1.5rem;
+      max-width: 700px;
+      margin: 40px auto 30px;
+      color: rgba(240, 240, 240, 0.9);
+      text-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
+      line-height: 1.6;
+    }
+    
+    /* Section Tabs */
+    .section-tabs {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .tab {
+      padding: 18px 35px;
+      background: rgba(255, 204, 0, 0.1);
+      border: 1px solid rgba(255, 204, 0, 0.2);
+      border-radius: 50px;
+      color: var(--light);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      flex: 1;
+      min-width: 160px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.6s;
+    }
+    
+    .tab:hover::before {
+      left: 100%;
+    }
+    
+    .tab:hover {
+      background: rgba(255, 204, 0, 0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(255, 204, 0, 0.2), var(--neon-glow-light);
+    }
+    
+    .tab.active {
+      background: var(--primary);
+      color: var(--dark);
+      box-shadow: var(--neon-glow-light);
+      transform: translateY(-3px);
+    }
+    
+    /* Gallery Grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      margin: 40px 0;
+    }
+    
+    .gallery-item {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      aspect-ratio: 4/3;
+      background-color: #111;
+      border: 3px solid rgba(255, 204, 0, 0.5);
+      cursor: pointer;
+    }
+    
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), var(--item-glow);
+      border-color: rgba(255, 204, 0, 0.8);
+    }
+    
+    .gallery-item img,
+    .gallery-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: all 0.4s ease;
+    }
+    
+    .gallery-item:hover img,
+    .gallery-item:hover video {
+      transform: scale(1.05);
+    }
+    
+    .video-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 204, 0, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.4s ease;
+      box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
+    }
+    
+    .video-icon::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 18px solid var(--dark);
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      margin-left: 6px;
+    }
+    
+    .gallery-item.video:hover .video-icon {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    
+    /* Image Description Overlay */
+    .image-description {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+      color: var(--light);
+      padding: 20px 15px 15px;
+      transform: translateY(100%);
+      transition: var(--transition);
+      opacity: 0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    .gallery-item:hover .image-description {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    /* NEW: Image Preview Container */
+    .image-preview-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      width: 90%;
+      max-width: 900px;
+      max-height: 85vh;
+      background: rgba(20, 20, 20, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 0 40px rgba(255, 204, 0, 0.5);
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px solid var(--neon-yellow);
+    }
+    
+    .image-preview-container.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-bottom: 1px solid rgba(255, 204, 0, 0.3);
+    }
+    
+    .preview-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--neon-yellow);
+      text-shadow: 0 0 5px var(--neon-yellow-glow);
+    }
+    
+    .close-preview {
+      background: rgba(255, 204, 0, 0.9);
+      color: var(--dark);
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+      border: none;
+    }
+    
+    .close-preview:hover {
+      background: var(--neon-yellow);
+      transform: scale(1.1);
+    }
+    
+    .preview-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .preview-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-preview {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 204, 0, 0.8);
+      color: var(--dark);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+      z-index: 10;
+      border: none;
+    }
+    
+    .nav-preview:hover {
+      background: var(--neon-yellow);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .nav-preview.prev {
+      left: 20px;
+    }
+    
+    .nav-preview.next {
+      right: 20px;
+    }
+    
+    .preview-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-top: 1px solid rgba(255, 204, 0, 0.3);
+    }
+    
+    .image-counter {
+      color: var(--light);
+      font-size: 1rem;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+    }
+    
+    .zoom-controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .zoom-btn {
+      background: rgba(255, 204, 0, 0.8);
+      color: var(--dark);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+      border: none;
+      outline: none;
+    }
+    
+    .zoom-btn:hover {
+      background: var(--neon-yellow);
+      transform: scale(1.1);
+    }
+    
+    .reset-zoom {
+      background: rgba(255, 100, 0, 0.8);
+    }
+    
+    .reset-zoom:hover {
+      background: #ff6600;
+    }
+    
+    /* Image Preview Overlay Background */
+    .image-preview-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    
+    .image-preview-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 50px 20px;
+      margin-top: 80px;
+      border-top: 1px solid rgba(255, 204, 0, 0.2);
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .footer p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 204, 0, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--neon-yellow);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      
+      .image-preview-container {
+        max-width: 85%;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 10px 0;
+      }
+      
+      .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding-top: 80px;
+        padding-left: 30px;
+        transition: var(--transition);
+        border-left: 2px solid var(--neon-yellow);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+      }
+      
+      .nav-menu.active {
+        right: 0;
+      }
+      
+      .nav-item {
+        margin: 15px 0;
+        width: 100%;
+      }
+      
+      .nav-link {
+        font-size: 1.1rem;
+        padding: 10px 0;
+        display: block;
+        width: 100%;
+      }
+      
+      .hamburger {
+        display: block;
+      }
+      
+      .gallery-hero {
+        padding: 80px 0 40px;
+      }
+      
+      .gallery-hero h1 {
+        font-size: 3rem;
+      }
+      
+      .gallery-hero p {
+        font-size: 1.2rem;
+        padding: 0 20px;
+      }
+      
+      .section-tabs {
+        gap: 10px;
+      }
+      
+      .tab {
+        padding: 15px 25px;
+        min-width: 120px;
+        font-size: 0.9rem;
+      }
+      
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+      }
+      
+      .image-preview-container {
+        width: 95%;
+        max-height: 80vh;
+      }
+      
+      .nav-preview {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      
+      .nav-preview.prev {
+        left: 10px;
+      }
+      
+      .nav-preview.next {
+        right: 10px;
+      }
+      
+      .zoom-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+      }
+      
+      .preview-header,
+      .preview-footer {
+        padding: 12px 15px;
+      }
+      
+      .image-description {
+        font-size: 0.8rem;
+        padding: 15px 12px 10px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .gallery-hero {
+        padding: 60px 0 30px;
+      }
+      
+      .gallery-hero h1 {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+      }
+      
+      .gallery-hero p {
+        font-size: 1rem;
+      }
+      
+      .container {
+        padding: 0 15px;
+      }
+      
+      .section-tabs {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .tab {
+        min-width: auto;
+        width: 100%;
+        border-radius: 15px;
+      }
+      
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+      }
+      
+      .gallery-item {
+        border-radius: 12px;
+        border-width: 2px;
+      }
+      
+      .image-preview-container {
+        width: 98%;
+        max-height: 75vh;
+      }
+      
+      .nav-preview {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+      
+      .close-preview {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+      }
+      
+      .zoom-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+      
+      .preview-title {
+        font-size: 1rem;
+      }
+      
+      .image-counter {
+        font-size: 0.9rem;
+      }
+      
+      .preview-content {
+        padding: 15px;
+      }
+      
+      .image-description {
+        font-size: 0.75rem;
+        padding: 12px 10px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
+      </div>
+        <ul class="nav-menu">
+            <!-- UPDATED LINKS -->
+            <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+            <li class="nav-item"><a href="index.html#reboot-explanation" class="nav-link">REBOOT 40</a></li>
+            <li class="nav-item"><a href="memories.php" class="nav-link ">Memories</a></li>
+            <li class="nav-item"><a href="galleryhtml" class="nav-link active">Gallery</a></li>
+            <li class="nav-item"><a href="index.html#schedule" class="nav-link">Schedule</a></li>
+            <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
+            <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
+        </ul>
+      <div class="hamburger">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Parallax Background -->
+  <div class="wrapper-images">
+    <!-- Background images - using your 13 images duplicated -->
+    <div class="images-line">
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+    </div>
+
+    <div class="images-line">
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+    </div>
+    
+    <div class="images-line">
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+    </div>
+	
+
+  </div>
+    
+  <!-- Content Container -->
+  <div class="content-container">
+    <!-- Gallery Hero Section -->
+    <section class="gallery-hero">
+      <div class="container">
+        <h1>PSG Tech Alumni Gallery</h1>
+        <p>Journey through events, celebrations, and talks of PSG Tech's legacy captured in time.</p>
+      </div>
+    </section>
+
+    <!-- Section Tabs -->
+    <div class="container">
+      <div class="section-tabs">
+        <div class="tab active" data-section="events">Events</div>
+        <div class="tab" data-section="celebrations">Celebrations</div>
+        <div class="tab" data-section="talks">Talks</div>
+      </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="container">
+      <!-- Events Section -->
+      <div class="gallery-section" id="events">
+        <div class="gallery-grid">
+          <!-- Images with descriptions -->
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E5.jpg" alt="Event Image 5">
+            <div class="image-description">Inauguration ceremony of REBOOT 40 with distinguished guests and alumni</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E6.jpg" alt="Event Image 4">
+            <div class="image-description">Cultural performance showcasing traditional dance during the alumni meet</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E1.jpg" alt="Event Image 1">
+            <div class="image-description">Keynote address by prominent alumni in the main auditorium</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E2.jpg" alt="Event Image 2">
+            <div class="image-description">Networking session where alumni reconnect after decades</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E7.jpg" alt="Event Image 5">
+            <div class="image-description">Award ceremony honoring outstanding alumni achievements</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E8.jpg" alt="Event Image 6">
+            <div class="image-description">Interactive workshop on emerging technologies</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E3.jpg" alt="Event Image 3">
+            <div class="image-description">Campus tour showcasing new infrastructure developments</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E4.jpg" alt="Event Image 4">
+            <div class="image-description">Panel discussion on industry-academia collaboration</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E9.jpg" alt="Event Image 6">
+            <div class="image-description">Student-alumni interaction session sharing career guidance</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/EVENTS/E10.jpg" alt="Event Image 6">
+            <div class="image-description">Grand finale with cultural performances and dinner</div>
+          </div>
+		  
+        </div>
+      </div>
+
+      <!-- Celebrations Section -->
+      <div class="gallery-section" id="celebrations" style="display: none;">
+        <div class="gallery-grid">
+          <!-- Images with descriptions -->
+          <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C1.jpeg" alt="Celebration Image 1">
+            <div class="image-description">Cutting the anniversary cake with college dignitaries</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C2.jpeg" alt="Celebration Image 1">
+            <div class="image-description">Traditional lamp lighting ceremony to mark the occasion</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C3.jpeg" alt="Celebration Image 1">
+            <div class="image-description">Alumni sharing nostalgic memories from their college days</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C4.jpeg" alt="Celebration Image 1">
+            <div class="image-description">Cultural fest performances by current students</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C5.jpeg" alt="Celebration Image 1">
+            <div class="image-description">Felicitation of senior alumni with lifetime achievement awards</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/16-19.jpg" alt="Celebration Image 1">
+            <div class="image-description">Heartfelt reunion of old classmates cherishing golden memories</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C7.jpg" alt="Celebration Image 1">
+            <div class="image-description">Sharing cherished stories from the early days of the institution</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C8.jpg" alt="Celebration Image 1">
+            <div class="image-description">Honoring beloved retired professors for their timeless guidances</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C9.jpg" alt="Celebration Image 1">
+            <div class="image-description">A walk down memory lane through a vintage photo exhibition</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C10.jpg" alt="Celebration Image 1">
+            <div class="image-description">Screening of archival college videos capturing unforgettable moments</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C11.jpg" alt="Celebration Image 1">
+            <div class="image-description">Alumni sharing emotional testimonies of their journey since graduation</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C12.jpg" alt="Celebration Image 1">
+            <div class="image-description">Reunion dinner filled with laughter, stories, and timeless friendships</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C13.jpg" alt="Celebration Image 1">
+            <div class="image-description">Group photo recreation of iconic old college pictures</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C15.jpg" alt="Celebration Image 1">
+            <div class="image-description">Campus tour reminding alumni of the places that shaped their dreams</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C14.jpg" alt="Celebration Image 1">
+            <div class="image-description">Infinity performances reviving classic college anthems and melodies</div>
+          </div>
+		  
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/CELEBRATION/C17.jpg" alt="Celebration Image 1">
+            <div class="image-description">Emotional farewell ceremony celebrating the bond that time could never fade</div>
+          </div>
+		  
+        </div>
+      </div>
+
+      <!-- Talks Section -->
+      <div class="gallery-section" id="talks" style="display: none;">
+        <div class="gallery-grid">
+          <!-- Images with descriptions -->
+          <div class="gallery-item">
+            <img src="assets/images/gallery/TALK/t1.jpg" alt="TALK Image 1">
+            <div class="image-description">Industry expert discussing future of artificial intelligence</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/TALK/t2.jpg" alt="Talk Image 2">
+            <div class="image-description">Alumni entrepreneur sharing startup journey and insights</div>
+          </div>
+          <div class="gallery-item">
+            <img src="assets/images/gallery/TALK/T3.jpg" alt="Talk Image 3">
+            <div class="image-description">Technical symposium on sustainable engineering solutions</div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="assets/images/gallery/TALK/T5.jpg" alt="Talk Image 5">
+            <div class="image-description">Research presentation by faculty and student collaborations</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/TALK/t6.jpg" alt="Talk Image 5">
+            <div class="image-description">Research presentation by faculty and student collaborations</div>
+          </div>
+		  <div class="gallery-item">
+            <img src="assets/images/gallery/TALK/t7.jpg" alt="Talk Image 5">
+            <div class="image-description">Research presentation by faculty and student collaborations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 PSG College of Technology. All Rights Reserved. | REBOOT 40 Alumni Meet 40</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- NEW: Image Preview Container (Hidden by default) -->
+  <div class="image-preview-overlay"></div>
+  <div class="image-preview-container">
+    <div class="preview-header">
+      <div class="preview-title"></div>
+      <button class="close-preview">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="preview-content">
+      <img class="preview-image" src="" alt="Preview Image">
+      <button class="nav-preview prev">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="nav-preview next">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+    <div class="preview-footer">
+      <div class="image-counter">1 / 5</div>
+      <div class="zoom-controls">
+        <button class="zoom-btn zoom-out">
+          <i class="fas fa-search-minus"></i>
+        </button>
+        <button class="zoom-btn reset-zoom">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="zoom-btn zoom-in">
+          <i class="fas fa-search-plus"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.tab');
+      const sections = document.querySelectorAll('.gallery-section');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          // Update active tab
+          tabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Show selected section
+          const sectionId = this.getAttribute('data-section');
+          sections.forEach(section => {
+            section.style.display = section.id === sectionId ? 'block' : 'none';
+          });
+        });
+      });
+      
+      // Mobile menu toggle
+      const hamburger = document.querySelector('.hamburger');
+      const navMenu = document.querySelector('.nav-menu');
+      
+      hamburger.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        hamburger.innerHTML = navMenu.classList.contains('active') 
+          ? '<i class="fas fa-times"></i>' 
+          : '<i class="fas fa-bars"></i>';
+      });
+      
+      // Close mobile menu when clicking on a link
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          navMenu.classList.remove('active');
+          hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        });
+      });
+      
+      // Navbar scroll effect
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+      
+      // Image Preview Functionality
+      const galleryItems = document.querySelectorAll('.gallery-item');
+      const previewOverlay = document.querySelector('.image-preview-overlay');
+      const previewContainer = document.querySelector('.image-preview-container');
+      const previewImage = previewContainer.querySelector('.preview-image');
+      const closePreview = previewContainer.querySelector('.close-preview');
+      const prevButton = previewContainer.querySelector('.prev');
+      const nextButton = previewContainer.querySelector('.next');
+      const imageCounter = previewContainer.querySelector('.image-counter');
+      const zoomInBtn = previewContainer.querySelector('.zoom-in');
+      const zoomOutBtn = previewContainer.querySelector('.zoom-out');
+      const resetZoomBtn = previewContainer.querySelector('.reset-zoom');
+      
+      let currentImages = [];
+      let currentIndex = 0;
+      let currentScale = 1;
+      const minScale = 0.5;
+      const maxScale = 3;
+      const scaleStep = 0.25;
+      
+      // Add click event to all gallery items
+      galleryItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const section = this.closest('.gallery-section');
+          const sectionImages = section.querySelectorAll('.gallery-item img');
+          
+          // Get all images in current section
+          currentImages = Array.from(sectionImages).map(img => ({
+            src: img.src,
+            alt: img.alt
+          }));
+          
+          // Find clicked image index
+          const clickedImage = this.querySelector('img');
+          currentIndex = Array.from(sectionImages).indexOf(clickedImage);
+          
+          // Reset zoom when opening new image
+          currentScale = 1;
+          
+          // Show preview
+          showPreview();
+        });
+      });
+      
+      // Show preview with current image
+      function showPreview() {
+        if (currentImages.length > 0) {
+          // Create a temporary image to get dimensions
+          const tempImg = new Image();
+          tempImg.src = currentImages[currentIndex].src;
+          
+          tempImg.onload = function() {
+            // Set the image source
+            previewImage.src = currentImages[currentIndex].src;
+            previewImage.alt = currentImages[currentIndex].alt;
+            
+            // Apply initial scale
+            previewImage.style.transform = `scale(${currentScale})`;
+            imageCounter.textContent = `${currentIndex + 1} / ${currentImages.length}`;
+            
+            // Show preview container and overlay
+            previewContainer.classList.add('active');
+            previewOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+          };
+        }
+      }
+      
+      // Close preview
+      closePreview.addEventListener('click', function() {
+        previewContainer.classList.remove('active');
+        previewOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Re-enable scrolling
+      });
+      
+      // Navigate to previous image
+      prevButton.addEventListener('click', function() {
+        if (currentImages.length > 0) {
+          currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+          currentScale = 1; // Reset zoom when changing image
+          showPreview();
+        }
+      });
+      
+      // Navigate to next image
+      nextButton.addEventListener('click', function() {
+        if (currentImages.length > 0) {
+          currentIndex = (currentIndex + 1) % currentImages.length;
+          currentScale = 1; // Reset zoom when changing image
+          showPreview();
+        }
+      });
+      
+      // Zoom in functionality
+      zoomInBtn.addEventListener('click', function() {
+        if (currentScale < maxScale) {
+          currentScale += scaleStep;
+          previewImage.style.transform = `scale(${currentScale})`;
+        }
+      });
+      
+      // Zoom out functionality
+      zoomOutBtn.addEventListener('click', function() {
+        if (currentScale > minScale) {
+          currentScale -= scaleStep;
+          previewImage.style.transform = `scale(${currentScale})`;
+        }
+      });
+      
+      // Reset zoom functionality
+      resetZoomBtn.addEventListener('click', function() {
+        currentScale = 1;
+        previewImage.style.transform = `scale(${currentScale})`;
+      });
+      
+      // Close preview on overlay click (outside image)
+      previewOverlay.addEventListener('click', function() {
+        previewContainer.classList.remove('active');
+        previewOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Re-enable scrolling
+      });
+      
+      // Keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (previewContainer.classList.contains('active')) {
+          if (e.key === 'Escape') {
+            previewContainer.classList.remove('active');
+            previewOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+          } else if (e.key === 'ArrowLeft') {
+            prevButton.click();
+          } else if (e.key === 'ArrowRight') {
+            nextButton.click();
+          } else if (e.key === '+' || e.key === '=') {
+            zoomInBtn.click();
+          } else if (e.key === '-' || e.key === '_') {
+            zoomOutBtn.click();
+          } else if (e.key === '0') {
+            resetZoomBtn.click();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

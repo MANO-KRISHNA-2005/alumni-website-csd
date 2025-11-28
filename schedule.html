@@ -1,0 +1,2630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REBOOT 40 - Interactive Schedule Journey</title>
+<style>
+@charset "utf-8";
+/* CSS Document */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background: linear-gradient(#0a0514 0%, #0f1123 30%, #1a1a2e 60%, #16213e 100%);
+  padding:0;
+  margin:0;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Night sky with stars */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* Moon */
+.moon {
+  position: absolute;
+  top: 8%;
+  right: 8%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0 40%, #b0b0b0 100%);
+  filter: blur(1px);
+  opacity: 0.9;
+  box-shadow: 0 0 60px rgba(255,255,255,0.7), 0 0 120px rgba(255,255,255,0.4);
+  z-index: -1;
+}
+
+/* Title */
+.title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 2.5em;
+  font-weight: bold;
+  text-align: center;
+  z-index: 10;
+  background: linear-gradient(45deg, #ffcc00, #e63946);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+}
+
+/* Instructions */
+.instructions {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  text-align: center;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 10;
+  font-size: 0.9em;
+}
+
+/* Progress indicator */
+.progress {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  text-align: center;
+  background: rgba(0,0,0,0.5);
+  padding: 8px 20px;
+  border-radius: 20px;
+  z-index: 10;
+  font-size: 0.9em;
+}
+
+/* Mini-map */
+.mini-map {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 200px;
+  height: 40px;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid #e63946;
+  border-radius: 20px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.mini-map-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 12.5%;
+  background: linear-gradient(90deg, #e63946, #ffcc00);
+  transition: width 0.3s ease;
+}
+
+.mini-map-marker {
+  position: absolute;
+  top: 50%;
+  left: 12.5%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px white;
+  transition: left 0.3s ease;
+}
+
+/* Settings button */
+.settings-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,0.5);
+  border: 2px solid #ffcc00;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.settings-btn:hover {
+  background: rgba(255,204,0,0.2);
+  transform: rotate(90deg);
+}
+
+.settings-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.settings-icon::before,
+.settings-icon::after {
+  content: '';
+  position: absolute;
+  background: #ffcc00;
+}
+
+.settings-icon::before {
+  width: 20px;
+  height: 2px;
+  top: 9px;
+}
+
+.settings-icon::after {
+  width: 2px;
+  height: 20px;
+  left: 9px;
+}
+
+/* Settings panel */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  background: rgba(26, 26, 26, 0.95);
+  z-index: 50;
+  transition: left 0.3s ease;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.settings-panel.active {
+  left: 0;
+}
+
+.settings-title {
+  color: #ffcc00;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.settings-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  background: #e63946;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+}
+
+.setting-item {
+  margin-bottom: 20px;
+}
+
+.setting-label {
+  color: white;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.setting-control {
+  width: 100%;
+  padding: 8px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid #e63946;
+  border-radius: 4px;
+  color: white;
+}
+
+.setting-checkbox {
+  margin-right: 10px;
+}
+
+/* Schedule detail modal */
+.schedule-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.schedule-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.schedule-modal-content {
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow: auto;
+  position: relative;
+  box-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
+  border: 2px solid #e63946;
+}
+
+.schedule-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background-color: #e63946;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.schedule-modal-title {
+  color: #e63946;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.schedule-modal-time {
+  color: #ffcc00;
+  font-size: 18px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.schedule-modal-location {
+  color: #4ecdc4;
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.schedule-modal-description {
+  color: white;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.schedule-modal-speakers {
+  margin-top: 15px;
+}
+
+.schedule-modal-speakers-title {
+  color: #ffcc00;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.schedule-modal-speaker {
+  color: white;
+  margin-bottom: 5px;
+}
+
+/* Continue button */
+.continue-btn {
+  background-color: #ffcc00;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.continue-btn:hover {
+  background-color: #e6b800;
+  transform: scale(1.05);
+}
+
+/* End screen */
+.end-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.end-screen.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.end-screen-title {
+  color: #e63946;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.end-screen-description {
+  color: white;
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  text-align: center;
+  max-width: 80%;
+}
+
+.nostalgic-quote {
+  color: #ffcc00;
+  font-style: italic;
+  font-size: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  max-width: 80%;
+  line-height: 1.6;
+  padding: 20px;
+  border-left: 3px solid #ffcc00;
+  border-right: 3px solid #ffcc00;
+}
+
+.end-screen-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.restart-btn, .share-btn {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.share-btn {
+  background-color: #ffcc00;
+  color: #1a1a1a;
+}
+
+.restart-btn:hover {
+  background-color: #d62828;
+  transform: scale(1.05);
+}
+
+.share-btn:hover {
+  background-color: #e6b800;
+  transform: scale(1.05);
+}
+
+.country-wrap {
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+/* Extended road container */
+.road-container {
+  position: absolute;
+  bottom: 0;
+  width: 10000px;
+  height: 100%;
+  transform: translateX(0);
+  transition: transform 0.1s linear;
+}
+
+/* Road elements */
+.street {
+  background:#7a7a7a;
+  height:80px;
+  width:100%;
+  position:absolute;
+  bottom:0;
+  box-shadow:0 1px 16px rgba(111, 35, 51, 0.4) inset;
+}
+
+.street:after {
+  content:'';
+  display:block;
+  position:absolute;
+  width:100%;
+  height:10px;
+  background:#cdbcb4;
+  bottom:0;
+  border-bottom:3px solid #72625a;
+  z-index:1;
+}
+
+.street:before {
+  content:'';
+  display:block;
+  position:absolute;
+  width:100%;
+  height:7px;
+  background:#c2a99d;
+  bottom:-7px;
+  z-index:1;
+}
+
+.street-stripe {
+  background:#d4d4d4;
+  height:8px;
+  width:100px;
+  position:absolute;
+  bottom:44px;
+  border-radius:2px;
+  box-shadow:200px 0 0 #d4d4d4, 400px 0 0 #d4d4d4 , 600px 0 0 #d4d4d4 , 800px 0 0 #d4d4d4 , 1000px 0 0 #d4d4d4 , 1200px 0 0 #d4d4d4 , 1400px 0 0 #d4d4d4 , 1600px 0 0 #d4d4d4 , 1800px 0 0 #d4d4d4 , 2000px 0 0 #d4d4d4, 2200px 0 0 #d4d4d4, 2400px 0 0 #d4d4d4, 2600px 0 0 #d4d4d4, 2800px 0 0 #d4d4d4, 3000px 0 0 #d4d4d4, 3200px 0 0 #d4d4d4, 3400px 0 0 #d4d4d4, 3600px 0 0 #d4d4d4, 3800px 0 0 #d4d4d4, 4000px 0 0 #d4d4d4, 4200px 0 0 #d4d4d4, 4400px 0 0 #d4d4d4, 4600px 0 0 #d4d4d4, 4800px 0 0 #d4d4d4, 5000px 0 0 #d4d4d4, 5200px 0 0 #d4d4d4, 5400px 0 0 #d4d4d4, 5600px 0 0 #d4d4d4, 5800px 0 0 #d4d4d4, 6000px 0 0 #d4d4d4, 6200px 0 0 #d4d4d4, 6400px 0 0 #d4d4d4, 6600px 0 0 #d4d4d4, 6800px 0 0 #d4d4d4, 7000px 0 0 #d4d4d4, 7200px 0 0 #d4d4d4, 7400px 0 0 #d4d4d4, 7600px 0 0 #d4d4d4, 7800px 0 0 #d4d4d4, 8000px 0 0 #d4d4d4, 8200px 0 0 #d4d4d4, 8400px 0 0 #d4d4d4, 8600px 0 0 #d4d4d4, 8800px 0 0 #d4d4d4, 9000px 0 0 #d4d4d4, 9200px 0 0 #d4d4d4, 9400px 0 0 #d4d4d4, 9600px 0 0 #d4d4d4, 9800px 0 0 #d4d4d4;
+}
+
+.grass {
+  height: 40px;
+  width: 100%;
+  background-color: #2a3f2e;
+  position:absolute;
+  bottom:60px;
+}
+
+.grass:before {
+  position: absolute;
+  content: '';
+  top: 14px;
+  left: 0;
+  height: 8px;
+  width: 100%;
+  background-color: #1a2f1e;
+}
+
+.grass:after {
+  position: absolute;
+  content: '';
+  top: -4px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background-color: #0aa;
+  background: linear-gradient(135deg, transparent 25%, #0aa 25%);
+  background-size:10px 10px;
+}
+
+/* Schedule Banners */
+.schedule-banner {
+  position: absolute;
+  width: 180px;
+  height: 90px;
+  background: #e63946;
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(230, 57, 70, 0.8);
+  bottom: 85px;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.schedule-banner:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(230, 57, 70, 0.9);
+}
+
+.schedule-banner.visited {
+  background: #2a3f2e;
+  box-shadow: 0 0 30px rgba(42, 63, 46, 0.8);
+}
+
+.schedule-banner.visited:hover {
+  box-shadow: 0 0 40px rgba(42, 63, 46, 0.9);
+}
+
+.schedule-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.3) 0%, rgba(139, 0, 0, 0.7) 100%);
+}
+
+.schedule-banner.visited::before {
+  background: radial-gradient(circle, rgba(0, 255, 0, 0.3) 0%, rgba(0, 139, 0, 0.7) 100%);
+}
+
+.schedule-banner-inner {
+  position: relative;
+  width: 150px;
+  height: 60px;
+  background: #1a1a1a;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.schedule-banner-time {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 40px;
+  height: 30px;
+  background: #ffcc00;
+  color: #1a1a1a;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.schedule-banner-title {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}
+
+.schedule-bulb {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff5b4;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #fff5b4;
+}
+
+/* Light bulbs for each banner */
+.schedule-banner .schedule-bulb:nth-child(1) { top: -5px; left: 15px; }
+.schedule-banner .schedule-bulb:nth-child(2) { top: -5px; left: 60px; }
+.schedule-banner .schedule-bulb:nth-child(3) { top: -5px; left: 105px; }
+.schedule-banner .schedule-bulb:nth-child(4) { top: -5px; left: 150px; }
+.schedule-banner .schedule-bulb:nth-child(5) { bottom: -5px; left: 15px; }
+.schedule-banner .schedule-bulb:nth-child(6) { bottom: -5px; left: 60px; }
+.schedule-banner .schedule-bulb:nth-child(7) { bottom: -5px; left: 105px; }
+.schedule-banner .schedule-bulb:nth-child(8) { bottom: -5px; left: 150px; }
+.schedule-banner .schedule-bulb:nth-child(9) { top: 15px; left: -5px; }
+.schedule-banner .schedule-bulb:nth-child(10) { top: 45px; left: -5px; }
+.schedule-banner .schedule-bulb:nth-child(11) { top: 15px; right: -5px; }
+.schedule-banner .schedule-bulb:nth-child(12) { top: 45px; right: -5px; }
+
+/* Position the schedule banners */
+.schedule1 { left: 500px; }
+.schedule2 { left: 1700px; }
+.schedule3 { left: 2900px; }
+.schedule4 { left: 4100px; }
+.schedule5 { left: 5300px; }
+.schedule6 { left: 6500px; }
+.schedule7 { left: 7700px; }
+.schedule8 { left: 8900px; }
+
+/* Background elements for parallax effect */
+.background-elements {
+  position: absolute;
+  bottom: 100px;
+  width: 100%;
+  height: 300px;
+}
+
+.hill {
+  position: absolute;
+  bottom: 0;
+  width: 800px;
+  height: 250px;
+  border-top-right-radius: 160%;
+  border-top-left-radius: 100%;
+  background-color: #1a3a1a;
+  z-index:-1;
+}
+
+.hill:after {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  right: -400px; 
+  width: 120%;
+  height: 110%;
+  border-top-right-radius: 100%;
+  border-top-left-radius: 0%;
+  background-color: #0f2a0f;
+  -moz-transform:rotate(-12deg);
+  -webkit-transform:rotate(-12deg);
+  box-shadow:0 0 25px #0a1f0a inset;
+}
+
+.hill:before {
+  background-color: #0d250d;
+  border-top-left-radius: 0;
+  border-top-right-radius: 100%;
+  bottom: -70px;
+  content: "";
+  height: 110%;
+  left: -54px;
+  position: absolute;
+  transform: rotate(4deg);
+  width: 120%;
+}
+
+/* Position hills along the road */
+.hill1 { left: 0px; }
+.hill2 { left: 1200px; }
+.hill3 { left: 2400px; }
+.hill4 { left: 3600px; }
+.hill5 { left: 4800px; }
+.hill6 { left: 6000px; }
+.hill7 { left: 7200px; }
+.hill8 { left: 8400px; }
+
+/* Car - fixed position on screen */
+.car-container {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.car {
+  position: relative;
+  top: -35%;
+  transition: transform 0.3s ease;
+}
+
+.car.moving {
+  animation: car-bounce 0.5s infinite alternate;
+}
+
+@keyframes car-bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-3px); }
+}
+
+.tyre {
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#3f3f40;
+  position:absolute;
+  z-index:2;
+  left:9px;
+  top:20px;
+}
+
+.tyre.front {
+  left:94px;
+}
+
+.tyre:before {
+  content:'';
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:#bdc2bd;
+  position:absolute;
+  top:5px;
+  left:5px;
+}
+
+.gap {
+  background:#3f3f40;
+  width:2px;
+  height:4px;
+  position:absolute;
+  left:14px;
+  top:8px;
+  box-shadow:0 9px 0 #3f3f40;
+}
+
+.gap:before {
+  content:'';
+  display:block;
+  width:2px;
+  height:4px;
+  position:absolute;
+  background:#3f3f40;
+  box-shadow:0 12px 0 #3f3f40;
+  -webkit-transform:rotate(-90deg);
+  -webkit-transform-origin:0 7px;
+  -moz-transform:rotate(-90deg);
+  -moz-transform-origin:0 7px;
+  z-index:3;
+}
+
+.car-base {
+  position:absolute;
+  display:block;
+  width: 125px;
+  height: 30px;
+  background:#000000;
+  border-radius:  10% 10% 50% 50% / 60% 100% 20% 10%;
+  -webkit-transform:rotate(-2deg);
+  -moz-transform:rotate(-2deg);
+  border:solid;
+  border-color:#000000;
+}
+
+.back-bonet {
+  background:  #4c4b4b;
+  border-radius: 54% 25% 0 0;
+  height: 22px;
+  left: 11px;
+  position: absolute;
+  top: 8px;
+  width: 40px;
+}
+
+.car-body {
+  border-bottom: 24px solid #d1352b;
+  height: 0;
+  top:10px;
+  width: 120px;
+  position:relative;
+}
+
+.car-body:before {
+  content:'';
+  display:inline-block;
+  width:30px;
+  height:24px;
+  position:absolute;
+  right:-5px;
+  background:#d1352b;
+  border-top-right-radius:4px;
+  z-index:1;
+}
+
+.car-body:after {
+  content:'';
+  display:inline-block;
+  width:121px;
+  border-bottom: 1px solid #942b25;
+  border-right: 2px solid transparent;
+  height: 0;
+  z-index:2;
+  position:absolute;
+}
+
+.car-gate {
+  width:32px;
+  height:20px;
+  background:#d1352b;
+  border-radius:0 0 2px 8px / 0 0 2px 8px;
+  box-shadow:0 0 0 1px #892924;
+  position:absolute;
+  left:48px;
+}
+
+.car-gate:before {
+  content:'';
+  width:8px;
+  height:2px;
+  background:#4c4b4b;
+  position:absolute;
+  top:2px;
+  left:4px;
+  box-shadow:1px 1px 1px rgba(0,0,0,0.1);
+}
+
+.car-top-back {
+  background: none repeat scroll 0 0 #4C4B4B;
+  border-radius: 5px 0 0 0;
+  height: 20px;
+  left: 4px;
+  position: absolute;
+  top: -20px;
+  width: 58px;
+}
+
+.car-top-back:before {
+  width:30px;
+  height:15px;
+  background:#736f6f;
+  content:'';
+  position:absolute;
+  top:3px;
+  left:8px;
+  border-radius:2px;
+}
+
+.car-top-back:after {
+  content:'';
+  background:#4c4b4b;
+  border-radius:  30%;
+  height: 5px;
+  left: 3px;
+  position: absolute;
+  top: -1px;
+  width: 62px;
+}
+
+.car-top-front {
+  top:-19px;
+  position:absolute;
+  left:47px;
+  width:20px;
+  height:20px;
+  background:#dc4630;
+  border-left: 1px solid #892924;
+  border-radius: 2px 0 0 0;
+}
+
+.car-top-front:after {
+  width:26px;
+  height:20px;
+  -webkit-transform:skew(37deg);
+  -moz-transform:skew(37deg);
+  background:#dc4630;
+  content:'';
+  position:absolute;
+  top:0;
+  left:6px;
+  border-radius:4px 0 4px 4px;
+}
+
+.car-top-front:before {
+  width:12px;
+  height:5px;
+  background:#dc4630;
+  content:'';
+  position:absolute;
+  top:14px;
+  left:28px;
+  z-index:1;
+  border:solid #a82e27;
+  border-width:0 1px 1px 0;
+}
+
+.wind-sheild {
+  top:3px;
+  left:3px;
+  position:absolute;
+  z-index:3;
+  width:18px;
+  height:12px;
+  background:#f5e7e7;
+  border-radius:0 3px 0 0;
+}
+
+.wind-sheild:after {
+  width:12px;
+  height:12px;
+  -webkit-transform:skew(25deg);
+  -moz-transform:skew(25deg);
+  background:#f5e7e7;
+  content:'';
+  position:absolute;
+  top:0;
+  left:10px;
+  border-radius:3px;
+}
+
+.boundary-tyre-cover {
+  position:absolute;
+  top:14px; left:10px;
+  border-bottom: 20px solid #4c4b4b;
+  border-right: 10px solid transparent;
+  height:0;
+  width:20px;
+}
+
+.boundary-tyre-cover:before {
+  content:'';
+  position:absolute;
+  display:inline-block;
+  background:#4c4b4b;
+  height:20px;
+  width:15px;
+  -webkit-transform:skewX(-20deg);
+  -moz-transform:skewX(-20deg);
+  border-radius:3px;
+  left:-6px;
+  top:0;
+}
+
+.boundary-tyre-cover:after {
+  content:'';
+  position:absolute;
+  display:inline-block;
+  background:#4c4b4b;
+  height:20px;
+  width:20px;
+  -webkit-transform:skewx(40deg);
+  -moz-transform:skewX(40deg);
+  border-radius:3px;
+  right:-14px;
+  top:0;
+}
+
+.boundary-tyre-cover-inner {
+  position:absolute;
+  top:4px; left:4px;
+  border-bottom: 16px solid black;
+  border-right: 10px solid transparent;
+  height:0;
+  width:15px;
+  z-index:2;
+}
+
+.boundary-tyre-cover-inner:before {
+  content:'';
+  position:absolute;
+  display:inline-block;
+  background:black;
+  height:16px;
+  width:15px;
+  -webkit-transform:skewX(-20deg);
+  -moz-transform:skewX(-20deg);
+  border-radius:3px 3px 0 0;
+  left:-6px;
+  top:0;
+}
+
+.boundary-tyre-cover-inner:after {
+  content:'';
+  position:absolute;
+  display:inline-block;
+  background:black;
+  height:16px;
+  width:20px;
+  -webkit-transform:skewx(40deg);
+  -moz-transform:skewX(40deg);
+  border-radius:3px 3px 0 0;
+  right:-11px;
+  top:0;
+}
+
+.boundary-tyre-cover-back-bottom {
+  position: absolute;
+  width: 14px;
+  height: 8px;
+  background: #4c4b4b;
+  top: 12px;
+  left: -19px;
+}
+
+.bonet-front {
+  background: #d1352b;
+  border-radius: 5px 258px 0 38px / 36px 50px 0 0;
+  height: 4px;
+  position: absolute;
+  right: 0;
+  top: -4px;
+  width: 40px;
+  z-index: 0;
+}
+
+.back-curve {
+  background: none repeat scroll 0 0 #4C4B4B;
+  border-radius: 960% 100% 0 0;
+  height: 20px;
+  left: -3px;
+  position: absolute;
+  top: 1px;
+  transform: rotate(6deg);
+  width: 5px;
+}
+
+.stepney {
+  height: 6px;
+  left: -4px;
+  position: absolute;
+  top: 6px;
+  width: 8px;
+  z-index: -1;
+  background:#3f3f40;
+}
+
+.stepney:before {
+  width:8px;
+  height:12px;
+  background:#3f3f40;
+  content:'';
+  position:absolute;
+  top:-10px;
+  left:-7px;
+  border-radius:3px 3px 0 0;
+}
+
+.stepney:after {
+  width:8px;
+  height:12px;
+  background:#0d0c0d;
+  content:'';
+  position:absolute;
+  top:0px;
+  left:-7px;
+  border-radius:0 0 3px 3px;
+}
+
+.tyre-cover-front {
+  background:#4c4b4b;
+  height: 4px;
+  left: 97px;
+  position: absolute;
+  top: 13px;
+  width: 22px;
+  z-index: 1;
+}
+
+.tyre-cover-front:before {
+  background: none repeat scroll 0 0 #4c4b4b;
+  content: "";
+  display: inline-block;
+  height: 21px;
+  left: -10px;
+  position: absolute;
+  top: 0;
+  transform: skewX(-30deg);
+  width: 10px;
+  z-index: 6;
+  border-radius:4px 0 0 0;
+}
+
+.tyre-cover-front:after {
+  background: none repeat scroll 0 0 #4c4b4b;
+  content: "";
+  display: inline-block;
+  height: 6px;
+  left: 14px;
+  position: absolute;
+  top: 0;
+  transform: skewX(30deg);
+  width: 17px;
+  z-index: 6;
+  border-radius:0 4px 2px 0;
+}
+
+.boundary-tyre-cover-inner-front {
+  position:absolute;
+  top:4px; left:4px;
+  border-bottom: 16px solid black;
+  border-right: 10px solid transparent;
+  height:0;
+  width:15px;
+  z-index:7;
+}
+
+.boundary-tyre-cover-inner-front:before {
+  background: none repeat scroll 0 0 #000000;
+  border-radius: 3px 3px 0 0;
+  content: "";
+  display: inline-block;
+  height: 17px;
+  left: -10px;
+  position: absolute;
+  top: 0;
+  transform: skewX(-30deg);
+  width: 15px;
+}
+
+.boundary-tyre-cover-inner-front:after {
+  content:'';
+  position:absolute;
+  display:inline-block;
+  background:black;
+  height:16px;
+  width:20px;
+  -webkit-transform:skewx(25deg);
+  -moz-transform:skewX(25deg);
+  border-radius:3px 3px 0 0;
+  right:-12px;
+  top:0;
+}
+
+.base-axcel {
+  background: none repeat scroll 0 0 black;
+  bottom: -15px;
+  height: 10px;
+  left: 30px;
+  position: absolute;
+  transform: rotate(-2deg);
+  width: 70px;
+  z-index:-1;
+}
+
+.base-axcel:before {
+  background: none repeat scroll 0 0 black;
+  border-radius: 0 0 0 10px / 0 0 0 5px;
+  content: "";
+  height: 10px;
+  left: -35px;
+  position: absolute;
+  top: -2px;
+  transform: rotate(6deg);
+  width: 30px;	
+}
+
+.base-axcel:after {
+  background: none repeat scroll 0 0 black;
+  border-radius: 0 0 0 10px / 0 0 0 5px;
+  content: "";
+  height: 10px;
+  right: -33px;
+  position: absolute;
+  top: -1px;
+  transform: rotate(-4deg);
+  width: 40px;
+  border-radius:0 10px 5px 0;	
+}
+
+.front-bumper {
+  background: none repeat scroll 0 0 #4c4b4b;
+  border-radius: 0 2px 2px 0;
+  height: 8px;
+  position: absolute;
+  right: -15px;
+  width: 11px;
+  z-index: 1;
+  -moz-transform:rotate(-5deg);
+  -webkit-transform:rotate(-5deg);
+}
+
+.front-bumper:before {
+  background: none repeat scroll 0 0 #000000;
+  content: "";
+  height: 10px;
+  left: -7px;
+  position: absolute;
+  transform: rotate(-22deg);
+  width: 9px;
+  z-index: 1;
+}
+
+.car-shadow {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+  bottom: -15px;
+  box-shadow: -5px 10px 15px 3px #000000;
+  left: -7px;
+  position: absolute;
+  width: 136px;
+}
+
+/* Control buttons */
+.controls {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+}
+
+.arrow-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  border: 2px solid #ffcc00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  touch-action: manipulation;
+}
+
+.arrow-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255,204,0,0.2);
+  box-shadow: 0 0 15px rgba(255,204,0,0.5);
+}
+
+.arrow-btn:active {
+  transform: scale(0.95);
+}
+
+.arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.arrow-up {
+  border-width: 0 12px 20px 12px;
+  border-color: transparent transparent #ffcc00 transparent;
+}
+
+.arrow-down {
+  border-width: 20px 12px 0 12px;
+  border-color: #ffcc00 transparent transparent transparent;
+}
+
+.stop-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  border: 2px solid #e63946;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  touch-action: manipulation;
+}
+
+.stop-btn:hover {
+  transform: scale(1.1);
+  background: rgba(230,57,70,0.2);
+  box-shadow: 0 0 15px rgba(230,57,70,0.5);
+}
+
+.stop-btn:active {
+  transform: scale(0.95);
+}
+
+.stop-icon {
+  width: 18px;
+  height: 18px;
+  background: #e63946;
+}
+
+/* Tyre rotation animation */
+@keyframes tyre-rotate {
+  from { transform: rotate(-360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.tyre.rotating {
+  animation: tyre-rotate 1s infinite linear;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.8em;
+  }
+  .instructions {
+    font-size: 0.7em;
+    padding: 8px 15px;
+  }
+  .progress {
+    font-size: 0.7em;
+    bottom: 80px;
+  }
+  .mini-map {
+    width: 150px;
+    height: 30px;
+  }
+  .controls {
+    bottom: 20px;
+    gap: 10px;
+  }
+  .arrow-btn, .stop-btn {
+    width: 45px;
+    height: 45px;
+  }
+  .schedule-modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    padding: 15px;
+  }
+  .schedule-modal-title {
+    font-size: 20px;
+  }
+  .schedule-modal-description {
+    font-size: 14px;
+  }
+  .end-screen-title {
+    font-size: 28px;
+  }
+  .end-screen-description {
+    font-size: 16px;
+  }
+  .schedule-banner {
+    width: 140px;
+    height: 70px;
+  }
+  .schedule-banner-inner {
+    width: 120px;
+    height: 50px;
+  }
+  .schedule-banner-title {
+    font-size: 14px;
+  }
+  .schedule-banner-time {
+    width: 35px;
+    height: 25px;
+    font-size: 10px;
+  }
+  .schedule-bulb {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Touch-friendly controls for mobile */
+@media (max-width: 480px) {
+  .controls {
+    bottom: 15px;
+    gap: 8px;
+  }
+  .arrow-btn, .stop-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .arrow-up {
+    border-width: 0 10px 18px 10px;
+  }
+  .arrow-down {
+    border-width: 18px 10px 0 10px;
+  }
+  .stop-icon {
+    width: 14px;
+    height: 14px;
+  }
+  .schedule-banner {
+    width: 120px;
+    height: 60px;
+  }
+  .schedule-banner-inner {
+    width: 100px;
+    height: 40px;
+  }
+  .schedule-banner-title {
+    font-size: 12px;
+  }
+  .schedule-banner-time {
+    width: 30px;
+    height: 20px;
+    font-size: 9px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="moon"></div>
+
+<div class="country-wrap">
+  <div class="title">REBOOT 40 - Schedule Journey</div>
+  <div class="instructions">Drive along the road to explore the event schedule</div>
+  <div class="progress" id="progress">Day 1 of 8</div>
+  
+  <!-- Mini-map -->
+  <div class="mini-map">
+    <div class="mini-map-progress" id="miniMapProgress"></div>
+    <div class="mini-map-marker" id="miniMapMarker"></div>
+  </div>
+  
+  <!-- Settings button -->
+  <div class="settings-btn" id="settingsBtn">
+    <div class="settings-icon"></div>
+  </div>
+  
+  <!-- Settings panel -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-close" id="settingsClose">×</div>
+    <div class="settings-title">Journey Settings</div>
+    
+    <div class="setting-item">
+      <label class="setting-label">Speed</label>
+      <input type="range" class="setting-control" id="speedControl" min="1" max="10" value="5">
+    </div>
+    
+    <div class="setting-item">
+      <label class="setting-label">Sound Effects</label>
+      <label>
+        <input type="checkbox" class="setting-checkbox" id="soundToggle" checked>
+        Enable sound effects
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <label class="setting-label">Auto-save Progress</label>
+      <label>
+        <input type="checkbox" class="setting-checkbox" id="autoSaveToggle" checked>
+        Save progress automatically
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <label class="setting-label">Show Hints</label>
+      <label>
+        <input type="checkbox" class="setting-checkbox" id="hintsToggle" checked>
+        Display helpful hints
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <button class="restart-btn" id="resetProgressBtn">Reset Journey</button>
+    </div>
+  </div>
+  
+  <!-- Extended road container -->
+  <div class="road-container" id="roadContainer">
+    <div class="street"></div>
+    <div class="street-stripe"></div>
+    <div class="grass"></div>
+    
+    <!-- Background elements for parallax effect -->
+    <div class="background-elements">
+      <div class="hill hill1"></div>
+      <div class="hill hill2"></div>
+      <div class="hill hill3"></div>
+      <div class="hill hill4"></div>
+      <div class="hill hill5"></div>
+      <div class="hill hill6"></div>
+      <div class="hill hill7"></div>
+      <div class="hill hill8"></div>
+    </div>
+    
+    <!-- Schedule Banners -->
+    <div class="schedule-banner schedule1" data-schedule-id="1">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">9:00</div>
+        <div class="schedule-banner-title">Inauguration</div>
+      </div>
+    </div>
+    
+    <div class="schedule-banner schedule2" data-schedule-id="2">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">10:30</div>
+        <div class="schedule-banner-title">Tech Talks</div>
+      </div>
+    </div>
+    
+    <div class="schedule-banner schedule3" data-schedule-id="3">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">12:00</div>
+        <div class="schedule-banner-title">Lunch Break</div>
+      </div>
+    </div>
+    
+    <div class="schedule-banner schedule4" data-schedule-id="4">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">13:30</div>
+        <div class="schedule-banner-title">Workshops</div>
+      </div>
+    </div>
+    
+    <div class="schedule-banner schedule5" data-schedule-id="5">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">15:00</div>
+        <div class="schedule-banner-title">Hackathon</div>
+      </div>
+    </div>
+    
+    <div class="schedule-banner schedule6" data-schedule-id="6">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">17:00</div>
+        <div class="schedule-banner-title">AI Expo</div>
+      </div>
+    </div>
+    
+    <div class="schedule-banner schedule7" data-schedule-id="7">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">18:30</div>
+        <div class="schedule-banner-title">Cultural Night</div>
+      </div>
+    </div>
+    
+    <div class="schedule-banner schedule8" data-schedule-id="8">
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-bulb"></div>
+      <div class="schedule-banner-inner">
+        <div class="schedule-banner-time">20:00</div>
+        <div class="schedule-banner-title">Awards Ceremony</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fixed position car -->
+  <div class="car-container">
+    <div class="car" id="car">
+      <div class="car-body">
+        <div class="car-top-back">
+          <div class="back-curve"></div>
+        </div>
+        <div class="car-gate"></div>
+        <div class="car-top-front">
+          <div class="wind-sheild"></div>
+        </div>
+        <div class="bonet-front"></div>
+        <div class="stepney"></div>
+      </div>
+      <div class="boundary-tyre-cover">
+        <div class="boundary-tyre-cover-back-bottom"></div>
+        <div class="boundary-tyre-cover-inner"></div>	
+      </div>
+      <div class="tyre-cover-front">
+        <div class="boundary-tyre-cover-inner-front"></div>
+      </div>
+      <div class="base-axcel"></div>
+      <div class="front-bumper"></div>
+      <div class="tyre rotating">		
+        <div class="gap"></div>	
+      </div>
+      <div class="tyre front rotating">
+        <div class="gap"></div>	
+      </div>
+      <div class="car-shadow"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Schedule detail modal -->
+<div class="schedule-modal" id="scheduleModal">
+  <div class="schedule-modal-content">
+    <div class="schedule-modal-close" id="scheduleModalClose">×</div>
+    <div class="schedule-modal-title" id="scheduleModalTitle">Event Title</div>
+    <div class="schedule-modal-time" id="scheduleModalTime">Time</div>
+    <div class="schedule-modal-location" id="scheduleModalLocation">Location</div>
+    <div class="schedule-modal-description" id="scheduleModalDescription">Description</div>
+    <div class="schedule-modal-speakers" id="scheduleModalSpeakers">
+      <div class="schedule-modal-speakers-title">Featured Speakers</div>
+      <div id="speakersList"></div>
+    </div>
+    <button class="continue-btn" id="continueBtn">Continue Journey</button>
+  </div>
+</div>
+
+<!-- End screen -->
+<div class="end-screen" id="endScreen">
+  <div class="end-screen-title">Journey Complete!</div>
+  <div class="end-screen-description">You've explored the complete REBOOT 40 schedule. The event journey ends here, but your tech adventure continues!</div>
+  <div class="nostalgic-quote" id="nostalgicQuote">"The road of innovation is endless, but every event is a milestone. As you complete this journey through REBOOT 40, remember that technology connects us all, and the future is built by those who dare to dream and create."</div>
+  <div class="end-screen-buttons">
+    <button class="restart-btn" id="restartBtn">Restart Journey</button>
+    <button class="share-btn" id="shareBtn">Share Schedule</button>
+  </div>
+</div>
+
+<!-- Control Buttons -->
+<div class="controls">
+  <div id="btnForward" class="arrow-btn">
+    <div class="arrow arrow-up"></div>
+  </div>
+  <div id="btnStop" class="stop-btn">
+    <div class="stop-icon"></div>
+  </div>
+  <div id="btnBackward" class="arrow-btn">
+    <div class="arrow arrow-down"></div>
+  </div>
+</div>
+
+<script>
+// Schedule details for each event
+const scheduleDetails = {
+  1: {
+    title: "Inauguration Ceremony",
+    time: "9:00 AM - 10:00 AM",
+    location: "Main Auditorium",
+    description: "Join us for the grand opening of REBOOT 40, featuring welcome addresses from the Principal, Alumni Association President, and distinguished guests. Witness the unveiling of special initiatives and the official kick-off of this milestone celebration.",
+    speakers: ["Dr. R. Rudramoorthy - Principal", "Mr. K. S. Ganesan - Alumni President", "Chief Guest - Industry Leader"]
+  },
+  2: {
+    title: "Tech Talks Series",
+    time: "10:30 AM - 12:00 PM",
+    location: "Conference Hall A",
+    description: "Engaging talks on emerging technologies including AI, blockchain, quantum computing, and sustainable tech. Learn from industry experts about the latest trends and future directions in technology.",
+    speakers: ["Dr. Anand Kumar - AI Researcher", "Ms. Priya Sharma - Blockchain Expert", "Mr. Rajesh Patel - Quantum Computing Specialist"]
+  },
+  3: {
+    title: "Networking Lunch",
+    time: "12:00 PM - 1:30 PM",
+    location: "Food Court & Garden Area",
+    description: "Connect with fellow alumni, faculty, and industry professionals over a delicious lunch. Special arrangements for dietary preferences. A perfect opportunity to expand your professional network.",
+    speakers: ["Open Networking Session"]
+  },
+  4: {
+    title: "Interactive Workshops",
+    time: "1:30 PM - 3:00 PM",
+    location: "Multiple Labs",
+    description: "Hands-on workshops on various technologies including IoT, machine learning, cloud computing, and cybersecurity. Choose from 8 different tracks based on your interests. Prerequisites and materials will be provided.",
+    speakers: ["Workshop Instructors - Industry Professionals", "Lab Coordinators - Faculty Members"]
+  },
+  5: {
+    title: "24-Hour Hackathon Kickoff",
+    time: "3:00 PM - 5:00 PM",
+    location: "Innovation Center",
+    description: "Begin your 24-hour coding journey! Form teams, select challenges, and start building innovative solutions. Mentors from top tech companies will guide you. Food, drinks, and rest areas available throughout.",
+    speakers: ["Hackathon Mentors - Tech Industry Leaders", "Judging Panel - CTOs and VPs"]
+  },
+  6: {
+    title: "AI & Robotics Expo",
+    time: "5:00 PM - 6:30 PM",
+    location: "Exhibition Hall",
+    description: "Explore cutting-edge AI applications and robotics demonstrations. Interactive exhibits showcasing student projects, research outcomes, and industry innovations. Try hands-on demos and experience the future of technology.",
+    speakers: ["Research Teams - PSG Tech", "Industry Partners - Tech Companies", "Student Innovators"]
+  },
+  7: {
+    title: "Cultural Night & Alumni Meet",
+    time: "6:30 PM - 8:00 PM",
+    location: "Open Air Theatre",
+    description: "An evening of cultural performances, music, and nostalgia. Reconnect with batchmates, share memories, and enjoy entertainment by current students and alumni. Special recognition for milestone batches.",
+    speakers: ["Cultural Teams - Students & Alumni", "Batch Coordinators", "Entertainment Committee"]
+  },
+  8: {
+    title: "Awards Ceremony & Closing",
+    time: "8:00 PM - 9:30 PM",
+    location: "Main Auditorium",
+    description: "Celebrate excellence with the REBOOT 40 awards ceremony. Recognition for outstanding alumni, hackathon winners, and contributors. Closing remarks and vision for the next decade of PSG Tech excellence.",
+    speakers: ["Awards Committee", "Valedictorians", "Closing Keynote - Distinguished Alumnus"]
+  }
+};
+
+// Generate random stars
+const starsContainer = document.getElementById('stars');
+for (let i = 0; i < 400; i++) {
+  const star = document.createElement('div');
+  star.className = 'star';
+  const size = Math.random() * 3 + 1;
+  star.style.width = size + 'px';
+  star.style.height = size + 'px';
+  star.style.left = Math.random() * 100 + '%';
+  star.style.top = Math.random() * 100 + '%';
+  star.style.animationDelay = Math.random() * 3 + 's';
+  star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+  starsContainer.appendChild(star);
+}
+
+// Road and car control
+const roadContainer = document.getElementById('roadContainer');
+const upBtn = document.getElementById('btnForward');
+const downBtn = document.getElementById('btnBackward');
+const pauseBtn = document.getElementById('btnStop');
+const tyres = document.querySelectorAll('.tyre');
+const progressElement = document.getElementById('progress');
+const scheduleModal = document.getElementById('scheduleModal');
+const scheduleModalTitle = document.getElementById('scheduleModalTitle');
+const scheduleModalTime = document.getElementById('scheduleModalTime');
+const scheduleModalLocation = document.getElementById('scheduleModalLocation');
+const scheduleModalDescription = document.getElementById('scheduleModalDescription');
+const speakersList = document.getElementById('speakersList');
+const scheduleModalClose = document.getElementById('scheduleModalClose');
+const continueBtn = document.getElementById('continueBtn');
+const endScreen = document.getElementById('endScreen');
+const nostalgicQuote = document.getElementById('nostalgicQuote');
+const restartBtn = document.getElementById('restartBtn');
+const shareBtn = document.getElementById('shareBtn');
+const car = document.getElementById('car');
+const miniMapProgress = document.getElementById('miniMapProgress');
+const miniMapMarker = document.getElementById('miniMapMarker');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const settingsClose = document.getElementById('settingsClose');
+const speedControl = document.getElementById('speedControl');
+const soundToggle = document.getElementById('soundToggle');
+const autoSaveToggle = document.getElementById('autoSaveToggle');
+const hintsToggle = document.getElementById('hintsToggle');
+const resetProgressBtn = document.getElementById('resetProgressBtn');
+
+let roadPosition = 0;
+let isMoving = false;
+let moveDirection = 0;
+let animationFrame;
+let journeyComplete = false;
+let visitedSchedules = [];
+let currentEvent = null;
+let isPaused = false;
+let gameSettings = {
+  speed: 5,
+  soundEnabled: true,
+  autoSave: true,
+  showHints: true
+};
+const maxPosition = 8900;
+const schedulePositions = [500, 1700, 2900, 4100, 5300, 6500, 7700, 8900];
+
+// Load saved progress
+function loadProgress() {
+  const savedProgress = localStorage.getItem('reboot40ScheduleProgress');
+  if (savedProgress) {
+    const progress = JSON.parse(savedProgress);
+    roadPosition = progress.roadPosition || 0;
+    visitedSchedules = progress.visitedSchedules || [];
+    gameSettings = {...gameSettings, ...progress.settings};
+    
+    // Update UI with loaded settings
+    speedControl.value = gameSettings.speed;
+    soundToggle.checked = gameSettings.soundEnabled;
+    autoSaveToggle.checked = gameSettings.autoSave;
+    hintsToggle.checked = gameSettings.showHints;
+    
+    // Update road position
+    roadContainer.style.transform = `translateX(${-roadPosition}px)`;
+    
+    // Mark visited schedules
+    visitedSchedules.forEach(scheduleId => {
+      const banner = document.querySelector(`.schedule${scheduleId}`);
+      if (banner) {
+        banner.classList.add('visited');
+      }
+    });
+    
+    // Update progress
+    updateProgress();
+    updateMiniMap();
+  }
+}
+
+// Save progress
+function saveProgress() {
+  if (gameSettings.autoSave) {
+    const progress = {
+      roadPosition,
+      visitedSchedules,
+      settings: gameSettings
+    };
+    localStorage.setItem('reboot40ScheduleProgress', JSON.stringify(progress));
+  }
+}
+
+// Set initial road position
+roadContainer.style.transform = `translateX(${-roadPosition}px)`;
+
+// Move road function
+function moveRoad() {
+  if (moveDirection === 0 || isPaused) {
+    cancelAnimationFrame(animationFrame);
+    return;
+  }
+  
+  roadPosition += moveDirection * gameSettings.speed;
+  
+  // Boundary check
+  if (roadPosition < 0) {
+    roadPosition = 0;
+    stopMoving();
+    return;
+  } else if (roadPosition >= maxPosition && !journeyComplete) {
+    roadPosition = maxPosition;
+    stopMoving();
+    journeyComplete = true;
+    progressElement.textContent = "Journey Complete!";
+    
+    // Show end screen after a short delay
+    setTimeout(() => {
+      endScreen.classList.add('active');
+      animateNostalgicQuote();
+    }, 1000);
+    return;
+  }
+  
+  roadContainer.style.transform = `translateX(${-roadPosition}px)`;
+  
+  // Check if car has reached a schedule event
+  checkForScheduleEvent();
+  
+  // Update progress
+  updateProgress();
+  updateMiniMap();
+  
+  // Auto-save progress
+  saveProgress();
+  
+  // Continue animation
+  animationFrame = requestAnimationFrame(moveRoad);
+}
+
+// Check if car has reached a schedule event
+function checkForScheduleEvent() {
+  for (let i = 0; i < schedulePositions.length; i++) {
+    const schedulePos = schedulePositions[i];
+    const distance = Math.abs(roadPosition - schedulePos);
+    
+    // If car is close to a schedule event and hasn't visited it yet
+    if (distance < 50 && !visitedSchedules.includes(i + 1)) {
+      // Stop the car
+      stopMoving();
+      isPaused = true;
+      
+      // Mark as visited
+      visitedSchedules.push(i + 1);
+      const banner = document.querySelector(`.schedule${i + 1}`);
+      if (banner) {
+        banner.classList.add('visited');
+      }
+      
+      // Show the schedule modal
+      showScheduleModal(i + 1);
+      break;
+    }
+  }
+}
+
+// Show schedule modal
+function showScheduleModal(scheduleId) {
+  currentEvent = scheduleId;
+  const schedule = scheduleDetails[scheduleId];
+  if (schedule) {
+    scheduleModalTitle.textContent = schedule.title;
+    scheduleModalTime.textContent = schedule.time;
+    scheduleModalLocation.textContent = `📍 ${schedule.location}`;
+    scheduleModalDescription.textContent = schedule.description;
+    
+    // Update speakers list
+    speakersList.innerHTML = '';
+    schedule.speakers.forEach(speaker => {
+      const speakerDiv = document.createElement('div');
+      speakerDiv.className = 'schedule-modal-speaker';
+      speakerDiv.textContent = `• ${speaker}`;
+      speakersList.appendChild(speakerDiv);
+    });
+    
+    scheduleModal.classList.add('active');
+  }
+}
+
+function updateProgress() {
+  // Calculate which schedule is currently visible
+  let currentSchedule = 1;
+  for (let i = 0; i < schedulePositions.length; i++) {
+    if (roadPosition >= schedulePositions[i] - 400) {
+      currentSchedule = i + 1;
+    }
+  }
+  progressElement.textContent = `Day ${currentSchedule} of 8`;
+}
+
+function updateMiniMap() {
+  // Calculate progress percentage
+  const progressPercent = (roadPosition / maxPosition) * 100;
+  
+  // Update mini-map progress bar
+  miniMapProgress.style.width = `${progressPercent}%`;
+  
+  // Update mini-map marker position
+  miniMapMarker.style.left = `${progressPercent}%`;
+}
+
+function stopMoving() {
+  isMoving = false;
+  moveDirection = 0;
+  tyres.forEach(tyre => tyre.classList.remove('rotating'));
+  car.classList.remove('moving');
+  cancelAnimationFrame(animationFrame);
+}
+
+function restartJourney() {
+  // Reset all variables
+  roadPosition = 0;
+  journeyComplete = false;
+  isMoving = false;
+  moveDirection = 0;
+  visitedSchedules = [];
+  currentEvent = null;
+  isPaused = false;
+  
+  // Update road position
+  roadContainer.style.transform = `translateX(${-roadPosition}px)`;
+  
+  // Update progress
+  updateProgress();
+  updateMiniMap();
+  
+  // Hide end screen
+  endScreen.classList.remove('active');
+  
+  // Stop wheels
+  tyres.forEach(tyre => tyre.classList.remove('rotating'));
+  car.classList.remove('moving');
+  
+  // Reset all visited banners
+  document.querySelectorAll('.schedule-banner.visited').forEach(banner => {
+    banner.classList.remove('visited');
+  });
+  
+  // Save reset progress
+  saveProgress();
+}
+
+// Show hint message
+function showHint(message) {
+  // Create hint element
+  const hint = document.createElement('div');
+  hint.style.position = 'absolute';
+  hint.style.top = '120px';
+  hint.style.left = '50%';
+  hint.style.transform = 'translateX(-50%)';
+  hint.style.background = 'rgba(255, 204, 0, 0.8)';
+  hint.style.color = '#1a1a1a';
+  hint.style.padding = '10px 20px';
+  hint.style.borderRadius = '20px';
+  hint.style.zIndex = '20';
+  hint.style.fontWeight = 'bold';
+  hint.style.transition = 'opacity 0.5s ease';
+  hint.textContent = message;
+  
+  document.body.appendChild(hint);
+  
+  // Remove hint after 3 seconds
+  setTimeout(() => {
+    hint.style.opacity = '0';
+    setTimeout(() => {
+      document.body.removeChild(hint);
+    }, 500);
+  }, 3000);
+}
+
+// Animate nostalgic quote
+function animateNostalgicQuote() {
+  nostalgicQuote.style.opacity = '0';
+  nostalgicQuote.style.transform = 'translateY(20px)';
+  
+  setTimeout(() => {
+    nostalgicQuote.style.transition = 'opacity 1.5s ease, transform 1.5s ease';
+    nostalgicQuote.style.opacity = '1';
+    nostalgicQuote.style.transform = 'translateY(0)';
+  }, 500);
+}
+
+// Share schedule
+function shareSchedule() {
+  const shareText = `I've explored the complete REBOOT 40 schedule at PSG Tech! From inauguration to awards ceremony, it's an amazing journey through innovation and technology. #REBOOT40 #PSGTech #TechJourney`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'REBOOT 40 Schedule Journey',
+      text: shareText,
+      url: window.location.href
+    }).catch(err => console.log('Error sharing:', err));
+  } else {
+    // Fallback: Copy to clipboard
+    const textArea = document.createElement('textarea');
+    textArea.value = shareText;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+    showHint('Schedule details copied to clipboard!');
+  }
+}
+
+// Close schedule modal
+scheduleModalClose.addEventListener('click', () => {
+  scheduleModal.classList.remove('active');
+});
+
+continueBtn.addEventListener('click', () => {
+  scheduleModal.classList.remove('active');
+  isPaused = false;
+  
+  // Auto-continue moving in the same direction
+  if (moveDirection !== 0) {
+    isMoving = true;
+    tyres.forEach(tyre => tyre.classList.add('rotating'));
+    car.classList.add('moving');
+    moveRoad();
+  }
+});
+
+scheduleModal.addEventListener('click', (e) => {
+  if (e.target === scheduleModal) {
+    scheduleModal.classList.remove('active');
+  }
+});
+
+// Restart button click
+restartBtn.addEventListener('click', restartJourney);
+
+// Share button click
+shareBtn.addEventListener('click', shareSchedule);
+
+// Settings panel controls
+settingsBtn.addEventListener('click', () => {
+  settingsPanel.classList.add('active');
+});
+
+settingsClose.addEventListener('click', () => {
+  settingsPanel.classList.remove('active');
+});
+
+speedControl.addEventListener('input', (e) => {  gameSettings.speed = parseInt(e.target.value);
+  saveProgress();
+});
+
+soundToggle.addEventListener('change', (e) => {
+  gameSettings.soundEnabled = e.target.checked;
+  saveProgress();
+});
+
+autoSaveToggle.addEventListener('change', (e) => {
+  gameSettings.autoSave = e.target.checked;
+  saveProgress();
+});
+
+hintsToggle.addEventListener('change', (e) => {
+  gameSettings.showHints = e.target.checked;
+  saveProgress();
+});
+
+resetProgressBtn.addEventListener('click', () => {
+  if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+    localStorage.removeItem('reboot40ScheduleProgress');
+    restartJourney();
+    settingsPanel.classList.remove('active');
+    showHint('Journey reset successfully!');
+  }
+});
+
+// Control button event listeners
+upBtn.addEventListener('click', () => {
+  if (roadPosition < maxPosition && !isPaused) {
+    moveDirection = 1;
+    isMoving = true;
+    tyres.forEach(tyre => tyre.classList.add('rotating'));
+    car.classList.add('moving');
+    moveRoad();
+  }
+});
+
+downBtn.addEventListener('click', () => {
+  if (roadPosition > 0 && !isPaused) {
+    moveDirection = -1;
+    isMoving = true;
+    tyres.forEach(tyre => tyre.classList.add('rotating'));
+    car.classList.add('moving');
+    moveRoad();
+  }
+});
+
+pauseBtn.addEventListener('click', () => {
+  stopMoving();
+  isPaused = false;
+});
+
+// Keyboard controls
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowUp' && roadPosition < maxPosition && !isPaused) {
+    moveDirection = 1;
+    isMoving = true;
+    tyres.forEach(tyre => tyre.classList.add('rotating'));
+    car.classList.add('moving');
+    moveRoad();
+  } else if (e.key === 'ArrowDown' && roadPosition > 0 && !isPaused) {
+    moveDirection = -1;
+    isMoving = true;
+    tyres.forEach(tyre => tyre.classList.add('rotating'));
+    car.classList.add('moving');
+    moveRoad();
+  } else if (e.key === ' ') {
+    stopMoving();
+    isPaused = false;
+    e.preventDefault();
+  }
+});
+
+// Touch event handling for mobile controls
+function handleTouchStart(e) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  
+  if ((target.id === 'btnForward' || target.closest('#btnForward')) && !isPaused) {
+    if (roadPosition < maxPosition) {
+      moveDirection = 1;
+      isMoving = true;
+      tyres.forEach(tyre => tyre.classList.add('rotating'));
+      car.classList.add('moving');
+      moveRoad();
+    }
+  } else if ((target.id === 'btnBackward' || target.closest('#btnBackward')) && !isPaused) {
+    if (roadPosition > 0) {
+      moveDirection = -1;
+      isMoving = true;
+      tyres.forEach(tyre => tyre.classList.add('rotating'));
+      car.classList.add('moving');
+      moveRoad();
+    }
+  } else if (target.id === 'btnStop' || target.closest('#btnStop')) {
+    stopMoving();
+    isPaused = false;
+  }
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
+  // Optional: Stop moving when touch ends
+  // stopMoving();
+}
+
+// Add touch event listeners for mobile controls
+document.getElementById('btnForward').addEventListener('touchstart', handleTouchStart);
+document.getElementById('btnForward').addEventListener('touchend', handleTouchEnd);
+document.getElementById('btnBackward').addEventListener('touchstart', handleTouchStart);
+document.getElementById('btnBackward').addEventListener('touchend', handleTouchEnd);
+document.getElementById('btnStop').addEventListener('touchstart', handleTouchStart);
+document.getElementById('btnStop').addEventListener('touchend', handleTouchEnd);
+
+// Make schedule bulbs glow
+const scheduleBulbs = document.querySelectorAll('.schedule-bulb');
+scheduleBulbs.forEach(bulb => {
+  setInterval(() => {
+    const opacity = 0.5 + Math.random() * 0.5;
+    bulb.style.opacity = opacity;
+  }, 1000 + Math.random() * 2000);
+});
+
+// Add visual feedback when hovering over schedule banners
+document.querySelectorAll('.schedule-banner').forEach(banner => {
+  banner.addEventListener('mouseenter', () => {
+    if (!banner.classList.contains('visited')) {
+      banner.style.transform = 'scale(1.1)';
+      banner.style.boxShadow = '0 0 50px rgba(230, 57, 70, 1)';
+    }
+  });
+  
+  banner.addEventListener('mouseleave', () => {
+    if (!banner.classList.contains('visited')) {
+      banner.style.transform = 'scale(1)';
+      banner.style.boxShadow = '0 0 30px rgba(230, 57, 70, 0.8)';
+    }
+  });
+});
+
+// Add keyboard navigation for modal
+document.addEventListener('keydown', (e) => {
+  if (scheduleModal.classList.contains('active')) {
+    if (e.key === 'Escape') {
+      scheduleModal.classList.remove('active');
+      isPaused = false;
+      
+      // Auto-continue moving in the same direction
+      if (moveDirection !== 0) {
+        isMoving = true;
+        tyres.forEach(tyre => tyre.classList.add('rotating'));
+        car.classList.add('moving');
+        moveRoad();
+      }
+    } else if (e.key === 'Enter') {
+      scheduleModal.classList.remove('active');
+      isPaused = false;
+      
+      // Auto-continue moving in the same direction
+      if (moveDirection !== 0) {
+        isMoving = true;
+        tyres.forEach(tyre => tyre.classList.add('rotating'));
+        car.classList.add('moving');
+        moveRoad();
+      }
+    }
+  }
+});
+
+// Add smooth transitions for road movement
+roadContainer.style.transition = 'transform 0.1s linear';
+
+// Add loading animation
+window.addEventListener('load', () => {
+  document.body.style.opacity = '0';
+  setTimeout(() => {
+    document.body.style.transition = 'opacity 1s ease';
+    document.body.style.opacity = '1';
+  }, 100);
+});
+
+// Add parallax effect for hills
+function updateParallax() {
+  const hills = document.querySelectorAll('.hill');
+  const parallaxSpeed = 0.5;
+  
+  hills.forEach((hill, index) => {
+    const hillPosition = parseInt(hill.style.left || window.getComputedStyle(hill).left);
+    const newPosition = hillPosition - (roadPosition * parallaxSpeed * 0.1);
+    hill.style.transform = `translateX(${newPosition}px)`;
+  });
+}
+
+// Update parallax during movement
+function moveRoadWithParallax() {
+  if (moveDirection === 0 || isPaused) {
+    cancelAnimationFrame(animationFrame);
+    return;
+  }
+  
+  roadPosition += moveDirection * gameSettings.speed;
+  
+  // Boundary check
+  if (roadPosition < 0) {
+    roadPosition = 0;
+    stopMoving();
+    return;
+  } else if (roadPosition >= maxPosition && !journeyComplete) {
+    roadPosition = maxPosition;
+    stopMoving();
+    journeyComplete = true;
+    progressElement.textContent = "Journey Complete!";
+    
+    // Show end screen after a short delay
+    setTimeout(() => {
+      endScreen.classList.add('active');
+      animateNostalgicQuote();
+    }, 1000);
+    return;
+  }
+  
+  roadContainer.style.transform = `translateX(${-roadPosition}px)`;
+  
+  // Update parallax
+  updateParallax();
+  
+  // Check if car has reached a schedule event
+  checkForScheduleEvent();
+  
+  // Update progress
+  updateProgress();
+  updateMiniMap();
+  
+  // Auto-save progress
+  saveProgress();
+  
+  // Continue animation
+  animationFrame = requestAnimationFrame(moveRoadWithParallax);
+}
+
+// Replace moveRoad with moveRoadWithParallax for better visual effect
+function moveRoad() {
+  moveRoadWithParallax();
+}
+
+// Add celebration animation when reaching events
+function celebrateEvent() {
+  const celebration = document.createElement('div');
+  celebration.style.position = 'fixed';
+  celebration.style.top = '50%';
+  celebration.style.left = '50%';
+  celebration.style.transform = 'translate(-50%, -50%)';
+  celebration.style.fontSize = '3em';
+  celebration.style.color = '#ffcc00';
+  celebration.style.fontWeight = 'bold';
+  celebration.style.zIndex = '1000';
+  celebration.style.animation = 'celebrate 1s ease-out';
+  celebration.textContent = '🎉';
+  
+  document.body.appendChild(celebration);
+  
+  setTimeout(() => {
+    document.body.removeChild(celebration);
+  }, 1000);
+}
+
+// Add celebration animation keyframes
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes celebrate {
+    0% {
+      transform: translate(-50%, -50%) scale(0) rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(0) rotate(360deg);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(style);
+
+// Update checkForScheduleEvent to include celebration
+function checkForScheduleEvent() {
+  for (let i = 0; i < schedulePositions.length; i++) {
+    const schedulePos = schedulePositions[i];
+    const distance = Math.abs(roadPosition - schedulePos);
+    
+    // If car is close to a schedule event and hasn't visited it yet
+    if (distance < 50 && !visitedSchedules.includes(i + 1)) {
+      // Stop the car
+      stopMoving();
+      isPaused = true;
+      
+      // Show celebration
+      celebrateEvent();
+      
+      // Mark as visited
+      visitedSchedules.push(i + 1);
+      const banner = document.querySelector(`.schedule${i + 1}`);
+      if (banner) {
+        banner.classList.add('visited');
+      }
+      
+      // Show hint if enabled
+      if (gameSettings.showHints) {
+        showHint(`Event ${i + 1} reached! Details displayed.`);
+      }
+      
+      // Show the schedule modal after a short delay
+      setTimeout(() => {
+        showScheduleModal(i + 1);
+      }, 1000);
+      
+      break;
+    }
+  }
+}
+
+// Initialize
+loadProgress();
+updateProgress();
+updateMiniMap();
+
+// Add welcome message for first-time users
+if (!localStorage.getItem('reboot40ScheduleProgress')) {
+  setTimeout(() => {
+    showHint('Welcome to REBOOT 40 Schedule Journey! Use arrow keys or buttons to drive.');
+  }, 2000);
+}
+
+// Add Easter egg: Konami code
+let konamiCode = [];
+const konamiPattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+document.addEventListener('keydown', (e) => {
+  konamiCode.push(e.key);
+  konamiCode = konamiCode.slice(-10);
+  
+  if (konamiCode.join(',') === konamiPattern.join(',')) {
+    // Easter egg activated!
+    document.body.style.animation = 'rainbow 5s linear infinite';
+    showHint('🌈 Easter Egg Activated! Rainbow Mode ON!');
+    
+    // Add rainbow animation
+    const rainbowStyle = document.createElement('style');
+    rainbowStyle.textContent = `
+      @keyframes rainbow {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(rainbowStyle);
+    
+    // Remove after 10 seconds
+    setTimeout(() => {
+      document.body.style.animation = '';
+      showHint('Rainbow Mode OFF!');
+    }, 10000);
+  }
+});
+
+// Add performance optimization
+let ticking = false;
+function requestTick() {
+  if (!ticking) {
+    requestAnimationFrame(updateAnimation);
+    ticking = true;
+  }
+}
+
+function updateAnimation() {
+  // Update animations here
+  ticking = false;
+}
+
+// Add visibility change handler to pause when tab is not visible
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopMoving();
+  } else if (moveDirection !== 0 && !isPaused) {
+    isMoving = true;
+    tyres.forEach(tyre => tyre.classList.add('rotating'));
+    car.classList.add('moving');
+    moveRoad();
+  }
+});
+
+// Add error handling
+window.addEventListener('error', (e) => {
+  console.error('An error occurred:', e.error);
+  showHint('Something went wrong. Please refresh the page.');
+});
+
+// Add completion celebration
+function celebrateCompletion() {
+  const fireworks = [];
+  const colors = ['#ffcc00', '#e63946', '#4ecdc4', '#ffffff'];
+  
+  for (let i = 0; i < 20; i++) {
+    const firework = document.createElement('div');
+    firework.style.position = 'fixed';
+    firework.style.width = '4px';
+    firework.style.height = '4px';
+    firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    firework.style.borderRadius = '50%';
+    firework.style.left = Math.random() * 100 + '%';
+    firework.style.top = Math.random() * 100 + '%';
+    firework.style.zIndex = '1000';
+    firework.style.animation = `firework ${1 + Math.random()}s ease-out`;
+    
+    document.body.appendChild(firework);
+    fireworks.push(firework);
+  }
+  
+  // Add firework animation
+  const fireworkStyle = document.createElement('style');
+  fireworkStyle.textContent = `
+    @keyframes firework {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) scale(0);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(fireworkStyle);
+  
+  // Clean up after animation
+  setTimeout(() => {
+    fireworks.forEach(fw => {
+      if (fw.parentNode) {
+        fw.parentNode.removeChild(fw);
+      }
+    });
+  }, 2000);
+}
+
+// Update end screen to include celebration
+endScreen.addEventListener('transitionend', (e) => {
+  if (e.target === endScreen && endScreen.classList.contains('active')) {
+    celebrateCompletion();
+  }
+});
+</script>
+</body>
+</html>

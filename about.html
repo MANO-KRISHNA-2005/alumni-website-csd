@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About Reboot 40 - Alumni Event</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Russo+One&family=Bebas+Neue&family=Righteous&family=Monoton&family=Iceberg&family=Changa+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  /* ===== NAVIGATION BAR STYLES ===== */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(15px);
+    border-bottom: 2px solid #FFD700;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    animation: slideDown 0.5s ease-out;
+  }
+
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-img {
+    height: 32px;
+    width: auto;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+  }
+
+  .nav-menu {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-link {
+    text-decoration: none;
+    color: #FFFFF0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+    font-family: 'Oxanium', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 8px 0;
+  }
+
+  .nav-link:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #FFD700;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: #FFD700;
+    text-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+  }
+
+  .nav-link:hover:after,
+  .nav-link.active:after {
+    width: 100%;
+    box-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+  }
+
+  .nav-link.btn {
+    background: #FFD700;
+    color: #000000;
+    padding: 6px 12px;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+  }
+
+  .nav-link.btn:hover {
+    background: #ffdd33;
+  }
+
+  .hamburger {
+    display: none;
+    cursor: pointer;
+    color: #FFD700;
+    font-size: 1.2rem;
+    z-index: 1001;
+    text-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+  }
+
+  /* Background Image */
+  .background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+  }
+
+  .background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+  }
+
+  .background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Mobile menu styles */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+    }
+    
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 280px;
+      height: 100vh;
+      background: rgba(5, 5, 16, 0.98);
+      backdrop-filter: blur(12px);
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding-top: 70px;
+      transition: all 0.3s ease;
+      z-index: 999;
+      border-left: 2px solid rgba(255, 215, 0, 0.4);
+      gap: 0;
+    }
+
+    .nav-menu.active {
+      right: 0;
+    }
+
+    .nav-item {
+      margin: 0;
+      width: 100%;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 10px 18px;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9rem;
+    }
+  }
+
+  /* ===== MAIN LAYOUT STYLES ===== */
+  /* Reset */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html {
+    height: 100%;
+  }
+  
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #000000;
+    color: #FFFFFF;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  /* Main content wrapper */
+  .main-wrapper {
+    flex: 1;
+    padding: 100px 20px 40px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .about-section {
+    max-width: 1200px;
+    width: 100%;
+  }
+  
+  /* Subtitle */
+  .subtitle {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #FFD700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    font-family: 'Oxanium', sans-serif;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  /* Main Title */
+  h1 {
+    font-family: 'Audiowide', cursive;
+    font-weight: 700;
+    font-size: 48px;
+    margin-bottom: 24px;
+    color: #FFD700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 0.2s forwards;
+  }
+  
+  /* Paragraph text */
+  .about-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #FFFFFF;
+    max-width: 100%;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 0.4s forwards;
+  }
+  
+  /* Cards container */
+  .cards-container {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.6s forwards;
+  }
+  
+  /* Single card */
+  .card {
+    background: rgba(30, 30, 30, 0.8);
+    flex: 1 1 180px;
+    max-width: 250px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 5px solid transparent;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+  }
+  
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+    border-color: #FFD700;
+  }
+  
+  /* Icons */
+  .icon {
+    margin-bottom: 25px;
+    width: 44px;
+    height: 44px;
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover .icon {
+    transform: scale(1.1);
+  }
+  
+  /* Card text */
+  .card h3 {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 14px;
+    color: #FFFFFF;
+    font-family: 'Righteous', cursive;
+  }
+  
+  .card p {
+    font-size: 14px;
+    color: #CCCCCC;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+  
+  .more-link {
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #FFD700;
+    user-select: none;
+    margin-top: auto;
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover .more-link {
+    color: #FFD700;
+    letter-spacing: 2px;
+  }
+  
+  /* Border colors */
+  .card.faculty { border-bottom-color: #FFD700; }
+  .card.vision { border-bottom-color: #FFC107; }
+  .card.programs { border-bottom-color: #FFB300; }
+  
+  /* Faculty section */
+  .faculty-section {
+    margin: 60px 0;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 0.8s forwards;
+  }
+  
+  .faculty-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .faculty-card {
+    background: rgba(40, 40, 40, 0.8);
+    border-radius: 10px;
+    padding: 25px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .faculty-card:nth-child(1) {
+    animation: fadeInUp 0.8s ease-out 1s forwards;
+  }
+  
+  .faculty-card:nth-child(2) {
+    animation: fadeInUp 0.8s ease-out 1.2s forwards;
+  }
+  
+  .faculty-card:nth-child(3) {
+    animation: fadeInUp 0.8s ease-out 1.4s forwards;
+  }
+  
+  .faculty-card:hover {
+    transform: translateY(-5px);
+    border-color: #FFD700;
+    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+  }
+  
+  .faculty-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid #FFD700;
+    transition: all 0.3s ease;
+  }
+  
+  .faculty-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .faculty-card:hover .faculty-image {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  }
+  
+  .faculty-name {
+    font-family: 'Righteous', cursive;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: #FFD700;
+  }
+  
+  .faculty-position {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    color: #CCCCCC;
+  }
+  
+  .faculty-description {
+    font-size: 0.9rem;
+    color: #AAAAAA;
+    line-height: 1.5;
+  }
+
+  /* Department Info Section */
+  .department-section {
+    margin: 60px 0;
+    padding: 40px;
+    background: rgba(30, 30, 30, 0.7);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 1.6s forwards;
+  }
+
+  .vision-mission-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  .vision-box, .mission-box {
+    flex: 1;
+    min-width: 300px;
+    padding: 30px;
+    background: rgba(40, 40, 40, 0.8);
+    border-radius: 10px;
+    border-left: 4px solid #FFD700;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  
+  .vision-box {
+    animation: fadeInRight 0.8s ease-out 1.8s forwards;
+  }
+  
+  .mission-box {
+    animation: fadeInRight 0.8s ease-out 2s forwards;
+  }
+
+  .vision-box h3, .mission-box h3 {
+    font-family: 'Righteous', cursive;
+    font-size: 1.5rem;
+    color: #FFD700;
+    margin-bottom: 15px;
+  }
+
+  .vision-box p, .mission-box p {
+    color: #CCCCCC;
+    line-height: 1.6;
+  }
+  
+  /* Yellow banner */
+  .yellow-banner {
+    background-color: #FFD700;
+    color: #000000;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 32px 20px;
+    text-align: center;
+    font-family: 'Audiowide', cursive;
+    border-radius: 8px;
+    margin-top: 40px;
+	margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 2.2s forwards;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+    color: #CCCCCC;
+    font-size: 14px;
+    background: rgba(20, 20, 20, 0.8);
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer p {
+    margin-bottom: 10px;
+  }
+
+  .footer-main {
+    font-size: 16px;
+    font-weight: 600;
+    color: #FFD700;
+    margin-bottom: 15px;
+  }
+  
+  /* Program Details Box */
+  .program-details {
+    background: rgba(40, 40, 40, 0.8);
+    border-radius: 10px;
+    padding: 25px;
+    margin-top: 30px;
+    border-left: 4px solid #FFD700;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 2.4s forwards;
+  }
+  
+  .program-details h3 {
+    font-family: 'Righteous', cursive;
+    font-size: 1.5rem;
+    color: #FFD700;
+    margin-bottom: 15px;
+  }
+  
+  .program-details p {
+    color: #CCCCCC;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  
+  .timeline {
+    position: relative;
+    margin: 25px 0;
+    padding-left: 30px;
+  }
+  
+  .timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 2px;
+    background: rgba(255, 215, 0, 0.3);
+  }
+  
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  
+  .timeline-item:nth-child(1) {
+    animation: fadeInRight 0.8s ease-out 2.6s forwards;
+  }
+  
+  .timeline-item:nth-child(2) {
+    animation: fadeInRight 0.8s ease-out 2.8s forwards;
+  }
+  
+  .timeline-item:nth-child(3) {
+    animation: fadeInRight 0.8s ease-out 3s forwards;
+  }
+  
+  .timeline-item:nth-child(4) {
+    animation: fadeInRight 0.8s ease-out 3.2s forwards;
+  }
+  
+  .timeline-item:nth-child(5) {
+    animation: fadeInRight 0.8s ease-out 3.4s forwards;
+  }
+  
+  .timeline-item:before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: -34px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #FFD700;
+  }
+  
+  .timeline-year {
+    font-weight: 600;
+    color: #FFD700;
+    margin-right: 10px;
+  }
+  
+  /* Animation keyframes */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  
+  /* New Emotional Sections */
+  .emotional-section {
+    margin: 60px 0;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 2.6s forwards;
+  }
+  
+  .emotional-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+  }
+  
+  .emotional-card {
+    background: rgba(30, 30, 30, 0.7);
+    border-radius: 10px;
+    padding: 25px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .emotional-card:nth-child(1) {
+    animation: fadeInUp 0.8s ease-out 2.8s forwards;
+  }
+  
+  .emotional-card:nth-child(2) {
+    animation: fadeInUp 0.8s ease-out 3s forwards;
+  }
+  
+  .emotional-card:nth-child(3) {
+    animation: fadeInUp 0.8s ease-out 3.2s forwards;
+  }
+  
+  .emotional-card:nth-child(4) {
+    animation: fadeInUp 0.8s ease-out 3.4s forwards;
+  }
+  
+  .emotional-card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: #FFD700;
+  }
+  
+  .emotional-card h3 {
+    font-family: 'Righteous', cursive;
+    font-size: 1.3rem;
+    color: #FFD700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .emotional-card h3 i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .emotional-card:hover h3 i {
+    transform: rotate(360deg) scale(1.2);
+  }
+  
+  .emotional-card p {
+    color: #CCCCCC;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+  
+  .emotional-card .program-list {
+    color: #CCCCCC;
+    margin-top: 12px;
+    line-height: 1.8;
+  }
+  
+  .emotional-card .program-item {
+    margin-bottom: 30px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+  
+  .emotional-card:hover .program-item {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .emotional-card .program-item:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  
+  .emotional-card .program-item:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+  
+  .emotional-card .program-item:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+  
+  .emotional-card .program-item:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+  
+  .emotional-card .program-item:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+  
+  .emotional-card .program-item:nth-child(6) {
+    transition-delay: 0.6s;
+  }
+  
+  .emotional-card .program-item h4 {
+    font-family: 'Righteous', cursive;
+    font-size: 1.1rem;
+    color: #FFD700;
+    margin-bottom: 8px;
+  }
+  
+  .emotional-card .program-item p {
+    margin-bottom: 0;
+    color: #CCCCCC;
+    line-height: 1.6;
+  }
+  
+  .cta-section {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin-top: 60px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 3.8s forwards;
+  }
+  
+  .cta-section h2 {
+    font-family: 'Audiowide', cursive;
+    font-size: 2rem;
+    color: #FFD700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .cta-section p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 30px;
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .cta-button {
+    display: inline-block;
+    padding: 12px 30px;
+    font-family: 'Righteous', cursive;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-button:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  
+  .cta-button:hover:before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .cta-primary {
+    background: #FFD700;
+    color: #000000;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+  }
+  
+  .cta-primary:hover {
+    background: #FFC107;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+  }
+  
+  .cta-secondary {
+    background: transparent;
+    color: #FFD700;
+    border: 2px solid #FFD700;
+  }
+  
+  .cta-secondary:hover {
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateY(-3px);
+  }
+  
+  /* Floating particles animation */
+  .particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #FFD700;
+    border-radius: 50%;
+    opacity: 0;
+    animation: float 4s infinite;
+  }
+  
+  .particle:nth-child(1) {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+  
+  .particle:nth-child(2) {
+    top: 60%;
+    left: 80%;
+    animation-delay: 1s;
+  }
+  
+  .particle:nth-child(3) {
+    top: 80%;
+    left: 20%;
+    animation-delay: 2s;
+  }
+  
+  .particle:nth-child(4) {
+    top: 40%;
+    left: 60%;
+    animation-delay: 3s;
+  }
+  
+  .particle:nth-child(5) {
+    top: 10%;
+    left: 90%;
+    animation-delay: 1.5s;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-20px) translateX(10px);
+    }
+  }
+  
+  /* Gallery Section */
+  .gallery {
+    --z: 32px;  /* control the zig-zag */
+    --s: 360px;  /* control the size */
+    --g: 8px;   /* control the gap */
+    display: grid;
+    gap: var(--g);
+    width: calc(2*var(--s) + var(--g));
+    grid-auto-flow: column;
+  }
+  
+  .gallery > img {
+    width: 0;
+    min-width: calc(100% + var(--z)/2);
+    height: var(--s);
+    object-fit: cover;
+    -webkit-mask: var(--mask);
+    mask: var(--mask);
+    cursor: pointer;
+    transition: .5s;
+  }
+  
+  .gallery > img:hover {
+    width: calc(var(--s)/2);
+  }
+  
+  .gallery > img:first-child {
+    place-self: start;
+    clip-path: polygon(calc(2*var(--z)) 0,100% 0,100% 100%,0 100%);
+    --mask: 
+      conic-gradient(from -135deg at right,#0000,#000 1deg 89deg,#0000 90deg) 
+      50%/100% calc(2*var(--z)) repeat-y;
+  }
+  
+  .gallery > img:last-child {
+    place-self: end;
+    clip-path: polygon(0 0,100% 0,calc(100% - 2*var(--z)) 100%,0 100%);
+    --mask: 
+      conic-gradient(from   45deg at left ,#0000,#000 1deg 89deg,#0000 90deg) 
+      50% calc(50% - var(--z))/100% calc(2*var(--z)) repeat-y;
+  }
+  
+  /* Gallery Title */
+  .gallery-title {
+    text-align: center;
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 3.8s forwards;
+  }
+  
+  .gallery-title h2 {
+    font-family: 'Audiowide', cursive;
+    font-size: 2.5rem;
+    color: #FFD700;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .gallery-title p {
+    font-size: 1.1rem;
+    color: #CCCCCC;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .emotional-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 740px) {
+    .cards-container {
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+    
+    .card {
+      max-width: 100%;
+      flex-basis: auto;
+    }
+    
+    .faculty-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    h1 {
+      font-size: 36px;
+    }
+
+    .vision-mission-container {
+      flex-direction: column;
+    }
+
+    .department-section {
+      padding: 20px;
+    }
+    
+    .emotional-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .cta-button {
+      width: 100%;
+      max-width: 300px;
+    }
+    
+    .gallery {
+      --z: 24px;  /* smaller zig-zag for mobile */
+      --s: 240px;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Background Container -->
+  <div class="background-container">
+    <!-- Add your background image here -->
+    <img src="assets/images/bg.jpg" alt="Background" class="background-image"> 
+    <div class="background-overlay"></div>
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
+      </div>
+        <ul class="nav-menu">
+            <!-- UPDATED LINKS -->
+            <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="about.html" class="nav-link active">About</a></li>
+            <li class="nav-item"><a href="index.html#reboot-explanation" class="nav-link">REBOOT 40</a></li>
+            <li class="nav-item"><a href="memories.php" class="nav-link ">Memories</a></li>
+            <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+            <li class="nav-item"><a href="index.html#schedule" class="nav-link">Schedule</a></li>
+            <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
+            <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
+        </ul>
+      <div class="hamburger">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <!-- About Section Content -->
+    <section class="about-section">
+      <!-- Register Now Section -->
+    
+
+      <small class="subtitle">REBOOT 40 ALUMNI MEET</small>
+      <h1>About Reboot 40</h1>
+      <p>Welcome to <strong>Reboot 40</strong>, grand alumni reunion celebrating 40 years of excellence in Computer Systems and Design education at PSG College of Technology. This milestone event brings together generations of tech innovators, industry leaders and visionaries.</p>
+      
+      <p>Join us as we reconnect, reminisce, and reimagine future of technology together, celebrating the legacy of our department and its impact on the tech industry.</p>
+
+		<div class="cta-section">
+        <h2>Be Part of This Historic Milestone</h2>
+        <p>Join us as we celebrate 40 years of excellence and create new memories that will last a lifetime. Your presence will make this reunion truly special as we honor our past and look toward our future together.</p>
+        
+        <div class="cta-buttons">
+          <a href="register.php" class="cta-button cta-primary">Register Now</a>
+          <a href="#contact" class="cta-button cta-secondary">Learn More</a>
+        </div>
+      </div>
+	  
+	  <div class="yellow-banner" role="region" aria-label="Event Statistics">
+        Celebrating 40 Years of Excellence & 3000+ Successful Alumni!
+      </div>
+	  
+      <div class="cards-container">
+        <div class="card faculty" tabindex="0" role="button" aria-label="Faculty Leadership">
+          <div class="icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#FFD700" viewBox="0 0 64 64" width="44" height="44"><path d="M32 12c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm10 12c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10 10 4.477 10 10zm-10 20c-8.837 0-16 7.163-16 16h32c0-8.837-7.163-16-16-16z"/></svg>
+          </div>
+          <h3>Faculty Leadership</h3>
+          <p>Meet our distinguished faculty who have shaped generations of tech professionals.</p>
+          <a href="#leadership" class="more-link">MEET OUR LEADERSHIP</a>
+        </div>
+        <div class="card vision" tabindex="0" role="button" aria-label="Department Vision">
+          <div class="icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#FFC107" viewBox="0 0 64 64" width="44" height="44"><path d="M52 14H12a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h40a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2zm-26 18H16v-4h10zm22 0H38v-4h10z"/></svg>
+          </div>
+          <h3>Department Vision</h3>
+          <p>"Stay Ahead and Be Relevant" - Our guiding principle for four decades of excellence.</p>
+          <a href="#department" class="more-link">LEARN MORE</a>
+        </div>
+        <div class="card programs" tabindex="0" role="button" aria-label="Academic Programs">
+          <div class="icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#FFB300" viewBox="0 0 64 64" width="44" height="44"><path d="M52 12H12a4 4 0 0 0-4 4v24a4 4 0 0 0 4 4h40a4 4 0 0 0 4-4V16a4 4 0 0 0-4-4zm-4 22H16v-4h32z"/></svg>
+          </div>
+          <h3>Academic Programs</h3>
+          <p>6 specialized programs preparing students for the ever-changing technological landscape.</p>
+          <a href="#programs" class="more-link">EXPLORE</a>
+        </div>
+      </div>
+	  
+	  
+
+      <!-- Faculty Leadership Section -->
+      <div class="faculty-section" id="leadership">
+        <small class="subtitle">MEET OUR LEADERSHIP</small>
+        <h1>Department Leadership</h1>
+        <p>Our distinguished faculty members have been the guiding force behind four decades of excellence in computer education.</p>
+        
+        <div class="faculty-container">
+      
+          <div class="faculty-card">
+            <div class="faculty-image">
+              <img src="assets/images/principal.png" alt="Dr. P. Venkatesh">
+            </div>
+            <h3 class="faculty-name">Dr. K. Prakasan</h3>
+            <p class="faculty-position">Principal</p>
+            <p class="faculty-description">Guiding our institution with wisdom and foresight, maintaining our legacy of academic excellence and innovation.</p>
+          </div>
+		  
+		   <div class="faculty-card">
+            <div class="faculty-image">
+              <img src="assets/images/director.png" alt="Dr. R. Nadarajan">
+            </div>
+            <h3 class="faculty-name">Dr. R. Nadarajan</h3>
+            <p class="faculty-position">Director</p>
+            <p class="faculty-description">Providing strategic direction and leadership to the institution, fostering innovation and academic excellence across all departments.</p>
+          </div>
+          
+          <div class="faculty-card">
+            <div class="faculty-image">
+              <img src="assets/images/hod.png" alt="Dr. Shina Sheen">
+            </div>
+            <h3 class="faculty-name">Dr. Shina Sheen</h3>
+            <p class="faculty-position">Professor & Head</p>
+            <p class="faculty-description">Leading the AMCS department with vision and dedication, shaping the future of computer education and research.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Department Vision & Mission Section -->
+      <div class="department-section" id="department">
+        <small class="subtitle">OUR DEPARTMENT</small>
+        <h1>HOD's Desk</h1>
+        <p>Aligned to the vision of the department - Stay Ahead and Be Relevant, the Department of Applied Mathematics and Computational Sciences has introduced various programmes predicting the demands of this ever-changing world. It is also the largest department in PSG College of Technology and its breadth and scale bring unique advantage in terms of bridging the demand of industry-ready professionals through state-of-the-art programmes run by the department. Graduate teaching provides a strong foundation in Mathematics and Computer science and also exposes students to the latest research and developments. The department offers 5 graduate programmes and one undergraduate programme.</p>
+        
+        <div class="vision-mission-container">
+          <div class="vision-box">
+            <h3>Our Vision</h3>
+            <p>"Stay Ahead and Be Relevant" - Preparing students to lead in the ever-evolving technological landscape through innovative education and research that anticipates future industry needs.</p>
+          </div>
+          
+          <div class="mission-box">
+            <h3>Our Mission</h3>
+            <p>To develop quality professionals by providing concept-oriented subject knowledge through high quality teaching supplemented with practical training, while inculcating values of honesty, sincerity, team spirit and work culture.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <h3 style="color: #FFD700; margin-bottom: 15px;">Our Academic Programs</h3>
+          <div class="program-list">
+            <div class="program-item">
+              <h4>M.Sc Software Systems (since 1997)</h4>
+            </div>
+            
+            <div class="program-item">
+              <h4>M.Sc Theoretical Computer Science (since 2007)</h4>
+            </div>
+            
+            <div class="program-item">
+              <h4>M.Sc Data Science (since 2015)</h4>
+            </div>
+            
+            <div class="program-item">
+              <h4>M.Sc Cyber Security (since 2020)</h4>
+            </div>
+            
+            <div class="program-item">
+              <h4>M.Sc Applied Mathematics (since 1975)</h4>
+            </div>
+            
+            <div class="program-item">
+              <h4>B.Sc Computer Systems & Design (since 1985)</h4>
+            </div>
+          </div>
+          
+          <p style="margin-top: 20px;">The Department has over 60 faculty members with a wide range of research specialties, spanning Mathematical Modelling, Topology, Epidemic Modelling, Graph Algorithms, Applied Machine learning to Cybersecurity. Their publications, fellowships and project funding strengthen the recognition of our department as a powerhouse of research as well as excellent teaching.</p>
+        </div>
+        
+        <!-- B.Sc Computer Systems and Design Program Details -->
+        <div class="program-details">
+          <h3>B.Sc. Computer Systems and Design</h3>
+          <p>The B.Sc. Computer Systems and Design (CSD) program is one of the pioneering undergraduate courses offered by PSG College of Technology. The course was initiated under the guidance of the first Principal, Dr. G. R. Damodaran, whose vision was to integrate scientific principles with technological innovation to meet the demands of the emerging digital era.</p>
+          
+          <div class="timeline">
+            <div class="timeline-item">
+              <p><span class="timeline-year">1985:</span> Introduced as B.Sc. Applied Sciences – Computer Technology</p>
+            </div>
+            
+            <div class="timeline-item">
+              <p><span class="timeline-year">1999:</span> Renamed as B.Sc. Computer Technology</p>
+            </div>
+            
+            <div class="timeline-item">
+              <p><span class="timeline-year">2007:</span> Functioned under Department of Computer Information and Sciences</p>
+            </div>
+            
+            <div class="timeline-item">
+              <p><span class="timeline-year">2016:</span> Restructured as B.Sc. Computer Systems and Design under AMCS</p>
+            </div>
+          </div>
+          
+          <p>Guided by the motto "Stay Ahead and Be Relevant," the B.Sc. Computer Systems and Design program continues to carry forward PSG Tech's legacy of academic excellence, innovation, and industry collaboration, shaping graduates who are ready to thrive in an ever-changing technological landscape.</p>
+        </div>
+      </div>
+
+      <!-- Emotional Connection Section -->
+      <div class="emotional-section">
+        <small class="subtitle">RECONNECT & CELEBRATE</small>
+        <h1>Why Reboot 40 Matters</h1>
+        
+        <div class="emotional-grid">
+          <div class="emotional-card">
+            <h3><i class="fas fa-heart"></i>A Timeless Bond</h3>
+            <div class="program-list">
+              <div class="program-item">
+			  <h4>Celebrating 40 Years of Journey</h4>
+			  <p>This moment allows us to honor our past, acknowledge our present, and feel proud of the journey we have completed together.</p>
+              </div>
+              
+              <div class="program-item">
+                <h4>Reconnecting with Roots</h4>
+				<p>Returning to the same campus, the same corridors, and the same classrooms brings back powerful memories.</p>
+              </div>
+              
+
+            </div>
+          </div>
+          
+          <div class="emotional-card">
+            <h3><i class="fas fa-users"></i> Reuniting Bonds</h3>
+            <div class="program-list">
+              <div class="program-item">
+                <h4>Strengthening the Alumni Network</h4>
+                  <p>Beyond nostalgia, this reunion strengthens the extended PSG Tech alumni network.</p>
+              </div>
+              
+              <div class="program-item">
+                <h4>Bridging Generations</h4>
+                  <p>Reboot 40 is not only about looking back, but also about inspiring the future.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="emotional-card">
+            <h3><i class="fas fa-lightbulb"></i> Legacy of Innovation</h3>
+            <div class="program-list">
+              <div class="program-item">
+                <h4>Foundation of Excellence</h4>
+                  <p>For 40 years, PSG Tech has stood as a center of academic excellence and innovation.</p>
+              </div>
+              
+              <div class="program-item">
+                <h4>Alumni Achievements</h4>
+                  <p>Our alumni have gone on to become leaders, innovators, researchers, entrepreneurs, and change-makers across industries and countries.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="emotional-card">
+  <h3><i class="fas fa-trophy"></i> Pride Points</h3>
+
+  <div class="program-list">
+
+    <div class="program-item">
+      <h4>A Badge of Honor</h4>
+      <p>
+        Being a PSG Tech alumnus is a symbol of dedication, discipline, and distinction. 
+    
+      </p>
+    </div>
+
+    <div class="program-item">
+      <h4>Collective Achievements</h4>
+      <p>
+        Every alumnus carries a unique story of growth, success, and impact.
+      </p>
+    </div>
+
+   
+
+  </div>
+</div>
+
+        </div>
+      </div>
+
+      <!-- Gallery Section -->
+      <div class="gallery-title">
+        <h2><span>Then</span> Vs <span>Now</span></h2>
+        <p>Where past meets present, creating a bridge between our legacy and future. Explore our visual journey through the decades.</p>
+        
+        <div class="gallery">
+          <img src="assets/images/1985.jpg" alt="Archer from Fate/Stay">
+          <img src="assets/images/2025.jpg" alt="Saber from Fate/Stay">
+        </div>
+      </div>
+
+      <!-- Call to Action Section -->
+      
+
+      
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-container">
+      <p class="footer-main">© 2025 PSG College of Technology. All Rights Reserved. | REBOOT 40 Alumni Meet</p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger');
+      const navMenu = document.querySelector('.nav-menu');
+      
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+      
+      // Close mobile menu when clicking on a link
+      document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      }));
+
+      // Card click functionality
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', function() {
+          const link = this.querySelector('.more-link');
+          if (link && link.getAttribute('href')) {
+            const target = link.getAttribute('href');
+            if (target.startsWith('#')) {
+              // Scroll to section for internal links
+              const section = document.querySelector(target);
+              if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          }
+        });
+        
+        // Keyboard accessibility for cards
+        card.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const link = this.querySelector('.more-link');
+            if (link && link.getAttribute('href')) {
+              const target = link.getAttribute('href');
+              if (target.startsWith('#')) {
+                const section = document.querySelector(target);
+                if (section) {
+                  section.scrollIntoView({ behavior: 'smooth' });
+                }
+              }
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
