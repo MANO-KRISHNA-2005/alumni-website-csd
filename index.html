@@ -79,81 +79,87 @@
         </nav>
 
         <!-- Hero Section -->
-        <section class="hero" id="home">
-            <video class="hero-bg-video" autoplay muted loop playsinline>
-                <source src="assets/videos/hero.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            
-            <div class="hero-container">
-                <!-- Main Content -->
-                <div class="hero-content">
-                    <!-- College Info -->
-                    <div class="college-info">
-                        <h1 class="college-name">PSG College of Technology</h1>
-                        <h2 class="department-name">Department of Applied Mathematics and Computational Sciences</h2>
-                        <h3 class="course-name">B Sc Computer Systems and Design (erstwhile Computer Technology)</h3>
-                    </div>
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <video class="hero-bg-video" autoplay muted loop playsinline>
+        <source src="assets/videos/hero.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div class="hero-container">
+        <!-- Main Content -->
+        <div class="hero-content">
+            <!-- College Info -->
+            <div class="college-info">
+                <h1 class="college-name">PSG College of Technology</h1>
+                <h2 class="department-name">Department of Applied Mathematics and Computational Sciences</h2>
+                <h3 class="course-name">B Sc Computer Systems and Design (erstwhile Computer Technology)</h3>
+            </div>
 
-                    <!-- Logos after course name -->
-                    <div class="logo-row">
-                        <img src="assets/logo/csa.png" alt="75 Years Logo" class="small-logo">
-                        <img src="assets/logo/75.png" alt="75 Years Logo" class="small-logo">
-                        <img src="assets/logo/100.png" alt="100 Years Logo" class="small-logo">
-                    </div>
+            <!-- Logos after course name -->
+            <div class="logo-row">
+                <img src="assets/logo/csa.png" alt="75 Years Logo" class="small-logo">
+                <img src="assets/logo/75.png" alt="75 Years Logo" class="small-logo">
+                <img src="assets/logo/100.png" alt="100 Years Logo" class="small-logo">
+            </div>
 
-                    <!-- Event Presentation -->
-                    <div class="event-presentation">
-                        <div class="presents-text">presents</div>
-                        <video class="event-logo" autoplay muted loop playsinline>
-                            <source src="assets/videos/logo.webm" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+            <!-- Event Presentation -->
+            <div class="event-presentation">
+                <div class="presents-text">presents</div>
+                <video class="event-logo" autoplay muted loop playsinline>
+                    <source src="assets/videos/logo.webm" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
 
-                    <!-- Date and Venue - Updated for mobile -->
-                    <div class="event-details">
-                        <div class="event-date">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>January 3, 2026</span>
-                        </div>
-                        <div class="event-venue">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>PSG College of Technology, Coimbatore</span>
-                        </div>
-                    </div>
+            <!-- NEW: Alumni Meet Text Before Venue -->
+            <div class="alumni-meet-announcement">
+                <h2 class="alumni-meet-title">ALUMNI MEET (1985 - 2025)</h2>
+            </div>
 
-                    <!-- Countdown Section -->
-                    <div class="countdown-section">
-                        <h2 class="event-title">ALUMNI MEET - (1985 - 2025)</h2>
-                        <div class="countdown" id="countdown">
-                            <div class="countdown-item">
-                                <span class="countdown-number" id="days">00</span>
-                                <span class="countdown-label"><br>Days</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-number" id="hours">00</span>
-                                <span class="countdown-label"><br>Hours</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-number" id="minutes">00</span>
-                                <span class="countdown-label"><br>Minutes</span>
-                            </div>
-                            <div class="countdown-item">
-                                <span class="countdown-number" id="seconds">00</span>
-                                <span class="countdown-label"><br>Seconds</span>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Date and Venue - Updated for mobile -->
+            <div class="event-details">
+                <div class="event-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>January 3, 2026</span>
+                </div>
+                <div class="event-venue">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>PSG College of Technology, Coimbatore</span>
+                </div>
+            </div>
 
-                    <!-- Buttons - Updated for mobile -->
-                    <div class="hero-btns">
-                        <a href="register.php" class="btn">Register Now</a>
-                        <a href="#about" class="btn btn-secondary">Learn More</a>
+            <!-- Countdown Section -->
+            <div class="countdown-section">
+                <!-- REMOVED: Alumni meet text from here -->
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="days">00</span>
+                        <span class="countdown-label"><br>Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="hours">00</span>
+                        <span class="countdown-label"><br>Hours</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="minutes">00</span>
+                        <span class="countdown-label"><br>Minutes</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="seconds">00</span>
+                        <span class="countdown-label"><br>Seconds</span>
                     </div>
                 </div>
             </div>
-        </section>
+
+            <!-- Buttons - Updated for mobile -->
+            <div class="hero-btns">
+                <a href="register.php" class="btn">Register Now</a>
+                <a href="#about" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
 
         <!-- About Section -->
         <section class="about" id="about">
@@ -204,6 +210,15 @@
                 <div class="section-title">
                     <h2>Decoding Reboot 40</h2>
                 </div>
+                <div class="reboot-message">
+    <p>REBOOT 40: Where we <span class="changebox">
+        <span>Reunite</span>
+        <span>Relive</span>
+        <span>Rejoice</span>
+        <span>Rediscover</span>
+        <span>Reboot</span>
+    </span> our legacy</p>
+</div>
                 <div class="reboot-content">
                     
                     <!-- Letter Grid: Always 2 rows x 3 columns -->
@@ -271,6 +286,15 @@
                     </div>
                 </div>
             </div>
+<div class="reboot-message">
+    <p>From <span class="changebox">
+        <span>Skywalk</span>
+        <span>A-Block</span>
+        <span>F-Block</span>
+        <span>Skava</span>
+        <span>B.Sc CSD</span>
+    </span> to forever memories</p>
+</div>
         </section>
 
         <!-- Registration Section -->
@@ -289,6 +313,7 @@
         </section>
 
         <!-- Alumni Section - Updated -->
+<!-- Alumni Section - Updated -->
 <section class="alumni" id="alumni">
     <div class="container">
         <div class="section-title">
@@ -408,7 +433,7 @@
                             <div class="alumni-info">
                                 <h3 class="alumni-name">Mr. Sundar Murali</h3>
                                 <div class="alumni-details">
-                                    <div class="alumni-position">Senior Manager</div>
+                                    <div class="alumni-position">Associate Director- Sales</div>
                                     <div class="alumni-company">KGiSL WP, Kuala Lumpur, Malaysia</div>
                                     <div class="alumni-expertise">IT Services & Solutions</div>
                                     <div class="alumni-experience">Passed Out: 2005</div>
@@ -509,7 +534,7 @@
                                     <div class="alumni-expertise">Cloud & Infrastructure</div>
                                     <div class="alumni-experience">Passed Out: 2007</div>
                                 </div>
-                                <p class="alumni-desc">Leading cloud infrastructure solutions at Google's US headquarters, bringing cutting-edge technology to global clients.</p>
+                                <p class="alumni-desc">Leading Google Gemini team at Google's US headquarters, bringing cutting-edge technology to global clients.</p>
                             </div>
                         </div>
                     </div>
@@ -634,6 +659,30 @@
                         </div>
                     </div>
                     
+                    <!-- 2015 - Aishwarya M -->
+                    <div class="swiper-slide">
+                        <div class="alumni-card">
+                            <div class="alumni-image">
+                                <div class="image-wrapper">
+                                    <div class="image-frame profile-frame">
+                                        <img src="assets/alumni/Aiswaryam.jpeg" alt="Aishwarya M">
+                                        <div class="left-line"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alumni-info">
+                                <h3 class="alumni-name">Ms. Aishwarya M</h3>
+                                <div class="alumni-details">
+                                    <div class="alumni-position">Manager - Business Consulting and Data Science</div>
+                                    <div class="alumni-company">HSBC</div>
+                                    <div class="alumni-expertise">Data Science and Analytics</div>
+                                    <div class="alumni-experience">Passed Out: 2015 </div>
+                                </div>
+                                <p class="alumni-desc">Leading business consulting and data science initiatives at HSBC, leveraging advanced analytics to drive business decisions and strategic planning in the financial sector.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- 2021 - Kundan M -->
                     <div class="swiper-slide">
                         <div class="alumni-card">
@@ -654,6 +703,30 @@
                                     <div class="alumni-experience">Passed Out: 2021</div>
                                 </div>
                                 <p class="alumni-desc">Driving technological innovation in financial services at Morgan Stanley, developing cutting-edge solutions for investment banking.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2021 - Santhosh R -->
+                    <div class="swiper-slide">
+                        <div class="alumni-card">
+                            <div class="alumni-image">
+                                <div class="image-wrapper">
+                                    <div class="image-frame profile-frame">
+                                        <img src="assets/alumni/santhos.jpeg" alt="Santhosh R">
+                                        <div class="left-line"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alumni-info">
+                                <h3 class="alumni-name">Mr. Santhosh R</h3>
+                                <div class="alumni-details">
+                                    <div class="alumni-position">Software Engineer</div>
+                                    <div class="alumni-company">Caterpillar Inc.</div>
+                                    <div class="alumni-expertise">Data Harmonization, Data Engineering, Data Modelling</div>
+                                    <div class="alumni-experience">Passed Out: 2021</div>
+                                </div>
+                                <p class="alumni-desc">Applying expertise in data engineering and modelling to drive innovation at Caterpillar Inc. Leveraging strong academic background (9.79 CGPA) to contribute to organizational growth while continuously learning and exploring new challenges.</p>
                             </div>
                         </div>
                     </div>
@@ -1107,9 +1180,25 @@
                             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                             <div class="contact-info"><h3>Location</h3><p>PSG College of Technology Peelamedu, Coimbatore - 641004 Tamil Nadu, India</p></div>
                         </div>
-                        <div class="contact-item">
-                            <div class="contact-icon"><i class="fas fa-phone"></i></div>
-                            <div class="contact-info"><h3>Contact</h3><p>+91 9043872476 - SANJIVKUMAR A <br> +91 9600766305 - MANO KRISHNA S R</p></div>                        </div>
+<div class="contact-item">
+    <div class="contact-icon"><i class="fas fa-phone"></i></div>
+    <div class="contact-info">
+        <h3>Contact</h3>
+        <p>
+            <a href="https://wa.me/919043872476?text=Hi%20SANJIVKUMAR%20A,%20I'm%20interested%20in%20REBOOT%2040%20Alumni%20Meet.%20Could%20you%20please%20provide%20more%20information?" 
+               class="whatsapp-link" target="_blank">
+                <span class="contact-name">SANJIVKUMAR A</span> - 
+                <span class="contact-number">+91 9043872476</span>
+            </a>
+            <br>
+            <a href="https://wa.me/919600766305?text=Hi%20MANO%20KRISHNA%20S%20R,%20I'm%20interested%20in%20REBOOT%2040%20Alumni%20Meet.%20Could%20you%20please%20provide%20more%20information?" 
+               class="whatsapp-link" target="_blank">
+                <span class="contact-name">MANO KRISHNA S R</span> - 
+                <span class="contact-number">+91 9600766305</span>
+            </a>
+        </p>
+    </div>
+</div>
                         <div class="contact-item">
                             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                             <div class="contact-info"><h3>Email</h3><p>ct.Reboot40.csd@gmail.com</p></div>
@@ -1121,7 +1210,14 @@
                 </div>
             </div>
         </section>
-
+<section id="go-to-top-section">
+    <div class="container">
+        <button id="go-to-top-btn" title="Go to Top">
+            <i class="fas fa-arrow-up"></i>
+            Back to Top
+        </button>
+    </div>
+</section>
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
@@ -1139,7 +1235,7 @@
                             <h4>Follow Us</h4>
                             <div class="social-icons">
                                 <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                                <a href="https://wa.me/919043872476" class="social-link"><i class="fab fa-whatsapp"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1149,12 +1245,9 @@
                 </div>
             </div>
         </footer>
+
     </div>
-<!-- Back to Top Button - FIXED POSITION -->
-<a href="#home" id="back-to-top" class="back-to-top-btn" aria-label="Back to top">
-    <i class="fas fa-arrow-up"></i>
-    <span class="arrow-text">↑</span>
-</a>
+    
     <!-- JavaScript -->
     <script src="js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

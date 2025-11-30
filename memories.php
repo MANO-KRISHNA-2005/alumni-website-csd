@@ -6,8 +6,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Memory Wall - Fixed Sticky Notes</title>
+    <title>Memory Wall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Confetti animation library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         /* Your existing CSS styles */
         :root {
@@ -375,7 +377,7 @@
             display: inline-block;
             width: 18px;
             height: 18px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21,6H3C2.4,6,2,6.4,2,7v10c0,0.6,0.4,1,1,1h18c0.6,0,1-0.4,1-1V7C22,6.4,21.6,6,21,6z M20,16H4V8h16V16z"/><path d="M6,10h2v2H6V10z M9,10h2v2H9V10z M12,10h2v2H12V10z M15,10h2v2H15V10z"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21,6H3C2.4,6,2,6.4,2,7v10c0,0.6,0.4,1,1h18c0.6,0.1-0.4,1-1V7C22,6.4,21.6,6,21,6z M20,16H4V8h16V16z"/><path d="M6,10h2v2H6V10z M9,10h2v2H9V10z M12,10h2v2H12V10z M15,10h2v2H15V10z"/></svg>');
             background-repeat: no-repeat;
             background-position: center;
         }
@@ -397,8 +399,8 @@
             border-radius: 10px;
             box-shadow: 
                 0 6px 16px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.4),
-                inset 0 -1px 0 rgba(0,0,0,0.1);
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
             cursor: pointer;
             font-weight: 700;
             color: #fff;
@@ -411,7 +413,7 @@
             transform: translateY(-3px) scale(1.05);
             box-shadow: 
                 0 10px 24px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255,255,255,0.5);
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
 
         .ctrl-btn:active {
@@ -421,21 +423,35 @@
         .board-wrap {
             width: calc(100% - var(--sidebar-width));
             height: calc(100vh - 130px); /* Adjusted for navbar + header */
-            overflow: auto;
+            overflow: auto; /* Changed from overflow-x: hidden to allow both horizontal and vertical scrolling */
             position: relative;
             -webkit-overflow-scrolling: touch;
             margin-left: var(--sidebar-width);
             margin-top: 130px; /* Adjusted for navbar + header */
             transition: transform 0.5s ease;
-            /* Remove horizontal scrollbar and hide vertical scrollbar */
-            overflow-x: hidden;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
+            /* Enable both horizontal and vertical scrollbars */
+            scrollbar-width: thin; /* Firefox */
+            -ms-overflow-style: scrollbar; /* IE and Edge */
         }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
+        /* Custom scrollbar styling */
         .board-wrap::-webkit-scrollbar {
-            display: none;
+            width: 8px;
+            height: 8px;
+        }
+
+        .board-wrap::-webkit-scrollbar-track {
+            background: rgba(26, 10, 10, 0.3);
+            border-radius: 4px;
+        }
+
+        .board-wrap::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffcc00, #ffaa00);
+            border-radius: 4px;
+        }
+
+        .board-wrap::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #ffdd33, #ffbb00);
         }
 
         .board {
@@ -472,7 +488,7 @@
             border-radius: 24px;
             box-shadow: 
                 0 0 80px rgba(0, 0, 0, 0.3),
-                inset 0 0 100px rgba(0,0,0,0.2);
+                inset 0 0 100px rgba(0, 0, 0, 0.2);
             border: 3px solid #3a0a0a;
             position: relative;
             transform-origin: 0 0;
@@ -522,7 +538,7 @@
                 0 0 24px 8px rgba(255,204,0,1), /* Changed to yellow */
                 0 0 12px 4px rgba(255,180,0,0.8), /* Changed to yellow */
                 inset 0 0 6px rgba(255,255,200,0.9), /* Changed to yellow */
-                inset 0 2px 4px rgba(255,255,255,0.6);
+                inset 0 0 2px 4px rgba(255,255,255,0.6);
             background: radial-gradient(circle at 30% 25%, #fff5f5, #ffcc00 40%, #ff8800 80%); /* Changed to yellow */
             transform: translate(-50%, -50%);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -581,8 +597,8 @@
             transform: translate(-50%, -50%) scale(1.4);
             box-shadow: 
                 0 0 32px 12px rgba(255,210,0,1), /* Changed to yellow */
-                0 0 16px 6px rgba(255,220,0,0.9); /* Changed to yellow */
-            filter: brightness(1.3);
+                    0 0 16px 6px rgba(255,220,0,0.9); /* Changed to yellow */
+                filter: brightness(1.3);
             animation: none;
         }
 
@@ -605,10 +621,10 @@
             background-blend-mode: soft-light, normal;
             border-radius: 10px;
             box-shadow: 
-                3px 6px 12px rgba(0,0,0,0.25),
-                0 12px 24px rgba(0,0,0,0.15),
-                inset 0 1px 2px rgba(255,255,255,0.6),
-                inset 0 0 20px rgba(255,255,200,0.5); /* Changed to yellow */
+                3px 6px 12px rgba(0, 0, 0, 0.25),
+                0 12px 24px rgba(0, 0, 0, 0.15),
+                inset 0 1px 2px rgba(255, 255, 255, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.5);
             color: var(--dark-yellow); /* Changed to yellow */
             font-size: clamp(13px, 3vw, 15px);
             line-height: 1.4;
@@ -637,7 +653,7 @@
             bottom: 0;
             background-image: 
                 linear-gradient(90deg, rgba(255,204,0,0.05) 1px, transparent 1px), /* Changed to yellow */
-                linear-gradient(0deg, rgba(255,204,0,0.05) 1px, transparent 1px); /* Changed to yellow */
+                linear-gradient(0deg, rgba(255, 204, 0, 0.05) 1px, transparent 1px); /* Changed to yellow */
             background-size: 24px 24px;
             pointer-events: none;
             opacity: 0.3;
@@ -656,12 +672,51 @@
                 radial-gradient(circle at 40% 35%, #fff5f5 40%, #ffcc00 70%, #ff8800 100%); /* Changed to yellow */
             border-radius: 50%;
             box-shadow:
-                0 6px 12px rgba(0,0,0,0.25),
-                inset 0 2px 6px rgba(255,255,255,0.8),
-                inset 0 -2px 4px rgba(0,0,0,0.1);
+                0 6px 12px rgba(0, 0, 0, 0.25),
+                inset 0 2px 6px rgba(255, 255, 255, 0.8),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
             transform: translateX(-50%) rotate(5deg);
             z-index: 2;
-            border: 1px solid rgba(255,255,200,0.8); /* Changed to yellow */
+            border: 1px solid rgba(255, 255, 200, 0.8); /* Changed to yellow */
+            animation: pinAnimation 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes pinAnimation {
+            0% {
+                transform: translateX(-50%) rotate(5deg) scale(1);
+                box-shadow:
+                    0 6px 12px rgba(0, 0, 0, 0.25),
+                    inset 0 2px 6px rgba(255, 255, 255, 0.8),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            }
+            25% {
+                transform: translateX(-50%) rotate(3deg) scale(1.05);
+                box-shadow:
+                    0 8px 14px rgba(0, 0, 0, 0.25),
+                    inset 0 2px 6px rgba(255, 255, 255, 0.8),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            }
+            50% {
+                transform: translateX(-50%) rotate(0deg) scale(1.1);
+                box-shadow:
+                    0 10px 16px rgba(0, 0, 0, 0.25),
+                    inset 0 2px 6px rgba(255, 255, 255, 0.8),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            }
+            75% {
+                transform: translateX(-50%) rotate(-3deg) scale(1.05);
+                box-shadow:
+                    0 8px 14px rgba(0, 0, 0, 0.25),
+                    inset 0 2px 6px rgba(255, 255, 255, 0.8),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            }
+            100% {
+                transform: translateX(-50%) rotate(5deg) scale(1);
+                box-shadow:
+                    0 6px 12px rgba(0, 0, 0, 0.25),
+                    inset 0 2px 6px rgba(255, 255, 255, 0.8),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            }
         }
 
         .note .thread-connector {
@@ -677,10 +732,10 @@
 
         .note:hover {
             box-shadow: 
-                0 12px 24px rgba(0,0,0,0.2),
-                0 18px 36px rgba(0,0,0,0.18),
-                inset 0 1px 2px rgba(255,255,255,0.7),
-                0 0 0 1px rgba(0,0,0,0.08);
+                0 12px 24px rgba(0, 0, 0, 0.2),
+                0 18px 36px rgba(0, 0, 0, 0.18),
+                inset 0 1px 2px rgba(255, 255, 255, 0.7),
+                0 0 0 1px rgba(0, 0, 0, 0.08);
             transform: translateY(-4px) rotate(1deg) scale(1.02);
         }
 
@@ -688,7 +743,7 @@
             font-weight: 700;
             font-size: clamp(12px, 2.8vw, 14px);
             color: var(--dark-yellow); /* Changed to yellow */
-            border-bottom: 1px solid rgba(204,153,0,0.3); /* Changed to yellow */
+            border-bottom: 1px solid rgba(204, 153, 0, 0.3); /* Changed to yellow */
             padding-bottom: 4px;
             position: relative;
             z-index: 1;
@@ -716,7 +771,7 @@
             display: flex;
             flex-direction: column;
             padding: 85px 20px 20px;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
             border-right: 1px solid rgba(58, 10, 10, 0.5);
             overflow-y: auto;
             /* Remove left scrollbar and hide vertical scrollbar */
@@ -736,7 +791,7 @@
             font-weight: 700;
             margin-bottom: 20px;
             text-align: center;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .input-box {
@@ -744,27 +799,27 @@
             padding: 20px;
             border-radius: 16px;
             box-shadow: 
-                0 8px 28px rgba(0,0,0,0.45),
-                inset 0 1px 0 rgba(255,255,255,0.6),
-                0 0 0 1px solid rgba(255,204,0,0.3); /* Changed to yellow */
+                0 8px 28px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                0 0 0 1px solid rgba(255, 204, 0, 0.3); /* Changed to yellow */
             display: flex;
             flex-direction: column;
             gap: 16px;
             align-items: stretch;
             margin-bottom: 30px;
-            border: 2px solid rgba(255,204,0,0.3); /* Changed to yellow */
+            border: 2px solid rgba(255, 204, 0, 0.3); /* Changed to yellow */
         }
 
         .input-box input, .input-box textarea {
-            border: 2px solid rgba(255,204,0,0.2); /* Changed to yellow */
+            border: 2px solid rgba(255, 204, 0, 0.2); /* Changed to yellow */
             padding: 12px 14px;
             border-radius: 10px;
             outline: none;
             font-family: inherit;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 16px;
-            background: rgba(255,255,255,0.9);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
             width: 100%;
             color: var(--dark-yellow); /* Changed to yellow */
         }
@@ -783,7 +838,7 @@
             border-color: var(--text-yellow); /* Changed to yellow */
             box-shadow: 
                 0 0 0 3px rgba(255, 204, 0, 0.2), /* Changed to yellow */
-                inset 0 2px 4px rgba(0,0,0,0.05);
+                inset 0 2px 4px rgba(0, 0, 0, 0.05);
             transform: scale(1.02);
         }
 
@@ -799,8 +854,9 @@
             font-size: 16px;
             white-space: nowrap;
             box-shadow: 
-                0 4px 12px rgba(0,0,0,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.4);
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
             letter-spacing: 0.3px;
             color: #fff;
         }
@@ -809,8 +865,8 @@
             background: var(--light-yellow); /* Lighter yellow on hover */
             transform: translateY(-3px) scale(1.05);
             box-shadow: 
-                0 8px 20px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(255,255,255,0.5);
+                0 8px 20px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
 
         .input-box button:active {
@@ -824,9 +880,9 @@
             text-align: center;
             margin-top: 20px;
             padding: 15px;
-            background: rgba(255,204,0,0.1); /* Changed to yellow */
+            background: rgba(255, 204, 0, 0.1); /* Changed to yellow */
             border-radius: 10px;
-            border: 1px solid rgba(255,204,0,0.2); /* Changed to yellow */
+            border: 1px solid rgba(255, 204, 0, 0.2); /* Changed to yellow */
         }
 
         /* Mini-map styles - REDUCED SIZE and square viewport */
@@ -838,8 +894,8 @@
             height: 150px; /* Reduced from 225px */
             background: rgba(26, 10, 10, 0.9);
             border-radius: 12px;
-            border: 2px solid rgba(255,204,0,0.3); /* Changed to yellow */
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            border: 2px solid rgba(255, 204, 0, 0.3); /* Changed to yellow */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             z-index: 100;
             overflow: hidden;
             cursor: pointer;
@@ -848,7 +904,7 @@
 
         .minimap-container:hover {
             transform: scale(1.05);
-            border-color: rgba(255,204,0,0.5); /* Changed to yellow */
+            border-color: rgba(255, 204, 0, 0.5); /* Changed to yellow */
         }
 
         .minimap-container.expanded {
@@ -883,8 +939,8 @@
             background: #ffeeee;
             border-radius: 3px;
             transform: translate(-50%, -50%);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             z-index: 10;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -909,8 +965,8 @@
         /* Changed to square viewport */
         .minimap-viewport {
             position: absolute;
-            border: 2px solid rgba(255,204,0,0.8); /* Changed to yellow */
-            background: rgba(255,204,0,0.2); /* Changed to yellow */
+            border: 2px solid rgba(255, 204, 0, 0.8); /* Changed to yellow */
+            background: rgba(255, 204, 0, 0.2); /* Changed to yellow */
             z-index: 15;
             pointer-events: none;
             width: 80px; /* Square dimensions */
@@ -924,7 +980,7 @@
             color: var(--text-yellow); /* Changed to yellow */
             font-weight: 700;
             font-size: 11px; /* Reduced from 14px */
-            text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
             z-index: 20;
         }
         
@@ -935,7 +991,7 @@
             right: 6px;
             width: 20px;
             height: 20px;
-            background: rgba(255,204,0,0.8); /* Changed to yellow */
+            background: rgba(255, 204, 0, 0.8); /* Changed to yellow */
             border-radius: 50%;
             display: none;
             align-items: center;
@@ -946,9 +1002,9 @@
             z-index: 25;
             transition: all 0.2s ease;
         }
-        
+
         .minimap-close:hover {
-            background: rgba(255,204,0,1); /* Changed to yellow */
+            background: rgba(255, 204, 0, 1); /* Changed to yellow */
             transform: scale(1.1);
         }
         
@@ -979,7 +1035,7 @@
             font-weight: bold;
             color: #fff;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
             transition: all 0.3s ease;
         }
 
@@ -996,8 +1052,9 @@
             padding: 18px 24px;
             border-radius: 14px;
             box-shadow: 
-                0 12px 40px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.6);
+                0 12px 40px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
             z-index: 100;
             text-align: center;
             max-width: 320px;
@@ -1007,7 +1064,7 @@
             pointer-events: none;
             font-weight: 600;
             color: var(--dark-yellow); /* Changed to yellow */
-            border: 2px solid rgba(255,204,0,0.4); /* Changed to yellow */
+            border: 2px solid rgba(255, 204, 0, 0.4); /* Changed to yellow */
         }
 
         .notification.show {
@@ -1018,11 +1075,11 @@
             position: absolute;
             width: 6px;
             height: 6px;
-            background: rgba(255,204,0,0.8); /* Changed to yellow */
+            background: rgba(255, 204, 0, 0.8); /* Changed to yellow */
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 16;
-            box-shadow: 0 0 8px rgba(255,204,0,0.6); /* Changed to yellow */
+            box-shadow: 0 0 8px var(--text-yellow); /* Changed to yellow */
         }
 
         /* Mobile menu button */
@@ -1042,7 +1099,7 @@
             align-items: center;
             gap: 4px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
         .mobile-menu-btn span {
@@ -1051,7 +1108,7 @@
             height: 2px;
             background: #fff;
             border-radius: 1px;
-            transition: all 0.3s ease;
+            transition: all 0.3s linear;
         }
 
         .mobile-menu-btn.active span:nth-child(1) {
@@ -1115,7 +1172,7 @@
                 overflow-y: auto;
                 border-right: none;
                 border-top: 1px solid rgba(58, 10, 10, 0.5);
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
             }
             
             .board-wrap {
@@ -1245,6 +1302,7 @@
                 width: 130px;
                 min-height: 110px;
                 padding: 10px 8px 12px;
+                font-size: 11px;
             }
             
             .sidebar {
@@ -1365,12 +1423,12 @@
             padding: 10px 15px;
             font-weight: 800;
             color: var(--text-yellow); /* Changed to yellow */
-            text-shadow: 0 3px 16px rgba(0,0,0,0.7), 0 1px 3px rgba(255,204,0,0.4); /* Changed to yellow */
+            text-shadow: 0 3px 16px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(255, 204, 0, 0.4); /* Changed to yellow */
             box-shadow: 
-                0 4px 24px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255,255,255,0.1);
+                0 4px 24px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             user-select: none;
-            border-bottom: 1px solid rgba(255,204,0,0.3); /* Changed to yellow */
+            border-bottom: 1px solid rgba(255, 204, 0, 0.3); /* Changed to yellow */
             letter-spacing: 0.5px;
             height: 65px;
         }
@@ -1389,9 +1447,8 @@
             padding: 8px 14px;
             border-radius: 10px;
             box-shadow: 
-                0 6px 16px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.4),
-                inset 0 -1px 0 rgba(0,0,0,0.1);
+                0 6px 16px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             cursor: pointer;
             font-weight: 700;
             color: #fff;
@@ -1403,8 +1460,8 @@
         .back-btn:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: 
-                0 10px 24px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255,255,255,0.5);
+                0 10px 24px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
         
         .back-btn:active {
@@ -1448,6 +1505,11 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            display: none; /* Initially hide all questions */
+        }
+        
+        .question.active {
+            display: block; /* Show only active question */
         }
         
         .question::before {
@@ -1463,6 +1525,14 @@
         .question:hover {
             background: rgba(0, 0, 0, 0.3);
             transform: translateY(-3px);
+        }
+        
+        .question-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: var(--text-yellow); /* Changed to yellow */
+            text-align: center;
         }
         
         .question-text {
@@ -1514,17 +1584,11 @@
             box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); /* Changed to yellow */
         }
         
-        .image-container {
-            margin-top: 20px;
-            text-align: center;
-            display: none;
-        }
-        
-        .result-image {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .option.answered {
+            background: rgba(255, 204, 0, 0.3); /* Changed to yellow */
+            border-color: #ffcc00; /* Changed to yellow */
+            pointer-events: none;
+            opacity: 0.7;
         }
         
         .popup {
@@ -1556,16 +1620,12 @@
             position: relative;
         }
         
-        .wrong-popup .popup-content {
-            max-width: 400px;
-        }
-        
-        .correct-popup .popup-content {
+        .memory-popup .popup-content {
             max-width: 600px;
             width: 100%;
         }
         
-        .correct-popup .popup-content::before {
+        .memory-popup .popup-content::before {
             content: "";
             position: absolute;
             top: -10px;
@@ -1587,39 +1647,6 @@
             font-size: 1.2rem;
             margin-bottom: 20px;
             font-style: italic;
-        }
-        
-        .image-frame {
-            position: relative;
-            margin: 20px auto;
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .image-frame::before {
-            content: "";
-            position: absolute;
-            top: -15px;
-            left: -15px;
-            right: -15px;
-            bottom: -15px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="none" stroke="%23ffcc00" stroke-width="1"/></svg>'); /* Changed to yellow */
-            background-size: 20px 20px;
-            z-index: -1;
-        }
-        
-        .popup img {
-            width: 100%;
-            max-height: 50vh;
-            object-fit: cover;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            filter: sepia(20%);
-            transition: filter 0.5s;
-        }
-        
-        .popup img:hover {
-            filter: sepia(0%);
         }
         
         .memory-caption {
@@ -1647,8 +1674,22 @@
             font-size: 1rem;
         }
         
-        .close-popup:hover {
-            background: rgba(255, 204, 0, 0.5); /* Changed to yellow */
+        .continue-memories {
+            background: linear-gradient(135deg, #ffcc00, #ffaa00, #ff8800); /* Changed to yellow */
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .continue-memories:hover {
+            background: linear-gradient(135deg, #ffdd33, #ffbb00, #ff9900); /* Changed to yellow */
+            transform: translateY(-3px);
         }
         
         .progress {
@@ -1720,33 +1761,21 @@
             color: var(--light-yellow); /* Changed to yellow */
         }
         
-        .restart-btn {
+        .back-to-memories {
             padding: 12px 24px;
-            background: rgba(255, 204, 0, 0.3); /* Changed to yellow */
-            border: 1px solid var(--text-yellow); /* Changed to yellow */
+            background: linear-gradient(135deg, #ffcc00, #ffaa00, #ff8800); /* Changed to yellow */
+            border: none;
             border-radius: 5px;
-            color: var(--text-yellow); /* Changed to yellow */
+            color: #fff;
             cursor: pointer;
             font-size: 1rem;
+            font-weight: 700;
             transition: all 0.3s;
         }
         
-        .restart-btn:hover {
-            background: rgba(255, 204, 0, 0.5); /* Changed to yellow */
-        }
-        
-        .memory-badge {
-            display: inline-block;
-            background: rgba(255, 204, 0, 0.2); /* Changed to yellow */
-            border: 1px solid var(--text-yellow); /* Changed to yellow */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            text-align: center;
-            margin: 0 5px;
-            font-weight: bold;
-            color: var(--text-yellow); /* Changed to yellow */
+        .back-to-memories:hover {
+            background: linear-gradient(135deg, #ffdd33, #ffbb00, #ff9900); /* Changed to yellow */
+            transform: translateY(-3px);
         }
         
         /* Mobile Responsive Styles for Game */
@@ -1757,6 +1786,10 @@
             
             .quiz-container {
                 padding: 20px;
+            }
+            
+            .question-title {
+                font-size: 1.3rem;
             }
             
             .question-text {
@@ -1786,11 +1819,12 @@
                 font-size: 1rem;
             }
             
-            .popup img {
-                max-height: 40vh;
+            .close-popup {
+                padding: 10px 20px;
+                font-size: 0.9rem;
             }
             
-            .close-popup {
+            .continue-memories {
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
@@ -1798,14 +1832,6 @@
             .progress {
                 font-size: 1rem;
                 padding: 10px;
-            }
-            
-            .memory-badge {
-                width: 30px;
-                height: 30px;
-                line-height: 30px;
-                font-size: 0.9rem;
-                margin: 0 3px;
             }
             
             .completion-content h2 {
@@ -1816,13 +1842,17 @@
                 font-size: 1rem;
             }
             
-            .restart-btn {
+            .back-to-memories {
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
         }
         
         @media (max-width: 480px) {
+            .question-title {
+                font-size: 1.2rem;
+            }
+            
             .question-text {
                 font-size: 1rem;
             }
@@ -1849,6 +1879,11 @@
             }
             
             .completion-content p {
+                font-size: 0.9rem;
+            }
+            
+            .back-to-memories {
+                padding: 10px 20px;
                 font-size: 0.9rem;
             }
         }
@@ -1906,7 +1941,7 @@
         </div>
         <div class="sidebar-hint">
             <strong>Navigation Tips:</strong><br>
-            • Use the mini-map for overview<br>
+            • Use mini-map for overview<br>
             • Click on mini-map to zoom to area<br>
             • Notes are fixed and cannot be moved<br>
             • Use zoom controls to adjust view
@@ -1950,185 +1985,151 @@
         
         <div class="game-content">
             <div class="quiz-container">
-                <div class="question" id="question1">
-                    <div class="question-text">1. Which iconic bridge connects different blocks of PSG Tech campus?</div>
+                <div class="question active" id="question1">
+                    <div class="question-title">Morning Memories</div>
+                    <div class="question-text">What do you miss most about entering PSG Tech in morning?</div>
                     <div class="options">
-                        <div class="option" data-correct="true">Skywalk</div>
-                        <div class="option" data-correct="false">Golden Gate</div>
-                        <div class="option" data-correct="false">Tech Bridge</div>
-                        <div class="option" data-correct="false">PSG Link</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/skywalk/500/300.jpg" alt="PSG Tech Campus">
+                        <div class="option" data-response="The day didn't even start, but campus already felt like home.">A) The campus air & morning breeze</div>
+                        <div class="option" data-response="Finding your people was the best way to start the day.">B) Searching for friends instantly</div>
+                        <div class="option" data-response="Time never ran fast in the place where memories were born.">C) Walking slowly without any rush</div>
+                        <div class="option" data-response="Some places don't need words — they just feel like yours.">D) Feeling like 'this is my place'</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question2">
-                    <div class="question-text">2. Which is the central landmark with water features in front of the main building?</div>
+                    <div class="question-title">Block to Block Journey</div>
+                    <div class="question-text">What made moving from block to block special?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">PSG Pond</div>
-                        <div class="option" data-correct="true">Fountain</div>
-                        <div class="option" data-correct="false">Water Garden</div>
-                        <div class="option" data-correct="false">Tech Lake</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/fountain/500/300.jpg" alt="Fountain" class="result-image">
+                        <div class="option" data-response="The best conversations were never planned — just met and flowed.">A) Meeting someone unexpectedly</div>
+                        <div class="option" data-response="Two-minute walks turned into memories that will stay forever.">B) Group walk with friends</div>
+                        <div class="option" data-response="No timetable could stop a plan made on the way.">C) Making plans while walking</div>
+                        <div class="option" data-response="College wasn't just a place — it was a soundtrack.">D) Walking alone with music</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question3">
-                    <div class="question-text">3. Which building houses a vast collection of books and journals at PSG Tech?</div>
+                    <div class="question-title">Break Time Bliss</div>
+                    <div class="question-text">What was the sweetest part of break time?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">Knowledge Center</div>
-                        <div class="option" data-correct="false">Study Hall</div>
-                        <div class="option" data-correct="true">Library</div>
-                        <div class="option" data-correct="false">Book Tower</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/library/500/300.jpg" alt="Library" class="result-image">
+                        <div class="option" data-response="Food brought us together more than hunger did.">A) Running to canteen</div>
+                        <div class="option" data-response="The classroom became a world of its own when it was just us.">B) Staying in class and talking</div>
+                        <div class="option" data-response="Some steps were just excuses to stay with our people.">C) Roaming the corridor</div>
+                        <div class="option" data-response="Some smiles were worth the wait — every single day.">D) Waiting to see a special person</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question4">
-                    <div class="question-text">4. What is the name of the main auditorium in PSG Tech?</div>
+                    <div class="question-title">Classroom Chronicles</div>
+                    <div class="question-text">What classroom moment do you miss the most?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">Tech Auditorium</div>
-                        <div class="option" data-correct="false">PSG Hall</div>
-                        <div class="option" data-correct="true">IMS Auditorium</div>
-                        <div class="option" data-correct="false">Main Stage</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/auditorium/500/300.jpg" alt="Auditorium" class="result-image">
+                        <div class="option" data-response="One look… and the whole bench understood everything.">A) Silent jokes</div>
+                        <div class="option" data-response="Those little notes carried the biggest happiness.">B) Passing paper messages</div>
+                        <div class="option" data-response="Even the teacher couldn't stop the stories of friendship.">C) Whisper gossip</div>
+                        <div class="option" data-response="Controlling laughter was harder than any exam.">D) Laughing without making noise</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question5">
-                    <div class="question-text">5. Which department is known for its association with the textile industry?</div>
+                    <div class="question-title">Tiny Joys</div>
+                    <div class="question-text">Which tiny joy still stays in your heart?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">Computer Science</div>
-                        <div class="option" data-correct="true">Textile Technology</div>
-                        <div class="option" data-correct="false">Mechanical Engineering</div>
-                        <div class="option" data-correct="false">Electronics</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/textile/500/300.jpg" alt="Textile Technology" class="result-image">
+                        <div class="option" data-response="A single call could brighten the whole day.">A) Someone calling your name from far</div>
+                        <div class="option" data-response="Sometimes love came in the form of someone waiting.">B) Friends waiting for you</div>
+                        <div class="option" data-response="The best treats were the ones we didn't ask for.">C) Getting surprise treats</div>
+                        <div class="option" data-response="A saved seat meant — you matter here.">D) Someone saving a seat for you</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question6">
-                    <div class="question-text">6. What is the name of the annual technical symposium of PSG Tech?</div>
+                    <div class="question-title">Magical Walks</div>
+                    <div class="question-text">Which walk felt magical?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">Tech Fest</div>
-                        <div class="option" data-correct="false">PSG Expo</div>
-                        <div class="option" data-correct="true">Pragyan</div>
-                        <div class="option" data-correct="false">Innovation Summit</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/pragyan/500/300.jpg" alt="Pragyan" class="result-image">
+                        <div class="option" data-response="Rain didn't fall — memories did.">A) Campus walk after rain</div>
+                        <div class="option" data-response="The sky turned golden, and so did life.">B) Sunset walk</div>
+                        <div class="option" data-response="Exhausted bodies, happy hearts.">C) Night walk after labs</div>
+                        <div class="option" data-response="Some days ended… but some moments never did.">D) Slow walk when you didn't want to day to end</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question7">
-                    <div class="question-text">7. Which sports facility is prominent at PSG Tech?</div>
+                    <div class="question-title">Bonding Moments</div>
+                    <div class="question-text">What made friendships stronger in PSG Tech?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">Swimming Pool</div>
-                        <div class="option" data-correct="false">Tennis Court</div>
-                        <div class="option" data-correct="false">Cricket Ground</div>
-                        <div class="option" data-correct="true">PSG Tech Stadium</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/stadium/500/300.jpg" alt="Stadium" class="result-image">
+                        <div class="option" data-response="Friendship tasted better than anything in the menu.">A) Sharing food</div>
+                        <div class="option" data-response="A trust built in whispers is unbreakable.">B) Sharing secrets</div>
+                        <div class="option" data-response="We were scared… but never alone.">C) Sharing stress before exams</div>
+                        <div class="option" data-response="Some friendships didn't need words — they just existed.">D) Sharing silence</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question8">
-                    <div class="question-text">8. What is the name of the student activity center?</div>
+                    <div class="question-title">Daily Goodbyes</div>
+                    <div class="question-text">What is the most unforgettable goodbye each day?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">Student Hub</div>
-                        <div class="option" data-correct="true">PSG STEP</div>
-                        <div class="option" data-correct="false">Activity Block</div>
-                        <div class="option" data-correct="false">Youth Center</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/studentcenter/500/300.jpg" alt="Student Center" class="result-image">
+                        <div class="option" data-response="Every tomorrow was a promise we never questioned.">A) "See you tomorrow"</div>
+                        <div class="option" data-response="Even goodbyes felt soft inside campus.">B) Waving from distance</div>
+                        <div class="option" data-response="Some friendships didn't let go until the last turn.">C) Walking halfway before splitting roads</div>
+                        <div class="option" data-response="Time never ended when you walked together.">D) No goodbye — just leaving together until hostel/gate</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question9">
-                    <div class="question-text">9. Which is the oldest block in PSG Tech?</div>
+                    <div class="question-title">Life Lessons</div>
+                    <div class="question-text">What did campus teach you without saying?</div>
                     <div class="options">
-                        <div class="option" data-correct="true">Main Building</div>
-                        <div class="option" data-correct="false">New Block</div>
-                        <div class="option" data-correct="false">Tech Tower</div>
-                        <div class="option" data-correct="false">Administration Block</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/mainbuilding/500/300.jpg" alt="Main Building" class="result-image">
+                        <div class="option" data-response="Months were enough to create memories of a lifetime.">A) Friendship is a feeling, not time</div>
+                        <div class="option" data-response="A tea, a laugh, a walk — that was life.">B) Happiness hides in small things</div>
+                        <div class="option" data-response="We forgot marks… but we remember moments.">C) People matter more than marks</div>
+                        <div class="option" data-response="We didn't just study — we belonged.">D) Home is not always a place — sometimes people</div>
                     </div>
                 </div>
                 
                 <div class="question" id="question10">
-                    <div class="question-text">10. What is the name of the PSG Tech alumni association?</div>
+                    <div class="question-title">If You Could Relive...</div>
+                    <div class="question-text">If you could relive just one thing again, what would it be?</div>
                     <div class="options">
-                        <div class="option" data-correct="false">PSG Alumni</div>
-                        <div class="option" data-correct="false">Tech Graduates</div>
-                        <div class="option" data-correct="true">PSG Tech Alumni Association</div>
-                        <div class="option" data-correct="false">PSG Former Students</div>
-                    </div>
-                    <div class="image-container">
-                        <img src="https://picsum.photos/seed/alumni/500/300.jpg" alt="Alumni" class="result-image">
+                        <div class="option" data-response="To start a day where everything felt possible…">A) One more morning in campus</div>
+                        <div class="option" data-response="To laugh like nothing else mattered…">B) One more break with friends</div>
+                        <div class="option" data-response="To feel time slow down again…">C) One more walk without a destination</div>
+                        <div class="option" data-response="To hold the world we didn't know we were losing…">D) One more day with the same people</div>
                     </div>
                 </div>
                 
                 <div class="progress" style="--progress: 0">
-                    Score: <span id="score">0</span>/10
-                    <div style="margin-top: 10px;">
-                        Memories Unlocked: 
-                        <span id="memoryBadges"></span>
-                    </div>
+                    Journey Progress: <span id="progressText">1/10</span>
                 </div>
             </div>
             
             <div class="footer">
                 <p>"Every corner of PSG Tech holds a story, every path a memory..."</p>
             </div>
-        </div>
-    </div>
-    
-    <div class="popup wrong-popup" id="wrongPopup">
-        <div class="popup-content">
-            <h3>Not quite right...</h3>
-            <p>Try again. The memory is still there, waiting to be unlocked!</p>
-            <button class="close-popup">Close</button>
-        </div>
-    </div>
-    
-    <div class="popup correct-popup" id="correctPopup">
-        <div class="popup-content">
-            <h3>Memory Unlocked!</h3>
-            <p>Relive the moments spent in this cherished place...</p>
-            <div class="image-frame">
-                <img id="correctImage" src="" alt="Correct answer image">
             </div>
-            <p class="memory-caption" id="memoryCaption"></p>
-            <button class="close-popup">Continue Journey</button>
-        </div>
-    </div>
-    
-    <div class="completion-screen" id="completionScreen">
-        <div class="completion-content">
-            <h2>Journey Complete!</h2>
-            <p>You've unlocked <span id="finalScore">0</span> memories from your time at PSG Tech. Each place holds a special story, a moment frozen in time. These memories will forever remain etched in your heart, connecting you to the institution that shaped your future.</p>
-            <p>Thank you for walking down memory lane with us!</p>
-            <button class="restart-btn" id="restartBtn">Begin New Journey</button>
+            
+            <div class="popup memory-popup" id="memoryPopup">
+                <div class="popup-content">
+                    <h3 id="memoryTitle">Memory Unlocked!</h3>
+                    <p id="memoryResponse"></p>
+                    <p class="memory-caption">This moment will forever remain etched in your heart...</p>
+                    <button class="continue-memories" id="continueMemories">Continue Memories</button>
+                </div>
+            </div>
+            
+            <div class="completion-screen" id="completionScreen">
+                <div class="completion-content">
+                    <h2>Journey Complete!</h2>
+                    <p>You've completed the nostalgic journey through PSG Tech memories. Each choice you made represents a precious moment frozen in time. These memories will forever remain etched in your heart, connecting you to the institution that shaped your future.</p>
+                    <p>Thank you for walking down memory lane with us!</p>
+                    <button class="back-to-memories" id="backToMemories">Back to Memory Wall</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         // Config & defaults
         const BOARD_W = 3200, BOARD_H = 2400;
-        const THREADS = 12; // Increased to create more rows
-        const NOTES_PER_THREAD = 8; // Increased to create more columns
+        const THREADS = 4; // Changed to 4 rows as requested
+        const NOTES_PER_THREAD = 8; // Keep same number of notes per thread
         const NOTES_LAYER = document.getElementById('notesLayer');
         const SVG = document.getElementById('wires');
         const BOARD = document.getElementById('board');
@@ -2149,6 +2150,7 @@
         let isAddingNote = false;
         let zoomLevel = 1;
         let isMinimapExpanded = false;
+        let answeredQuestions = new Set(); // Track answered questions
 
         // Show/hide loading overlay
         function showLoading() {
@@ -2169,7 +2171,7 @@
             }, 3000);
         }
 
-        // FIX #2: Correct the fetchNotes function to handle the API response properly
+        // FIX #2: Correct fetchNotes function to handle the API response properly
         function fetchNotes() {
             showLoading();
             
@@ -2514,21 +2516,7 @@
                 }
             }
             
-            // If all positions are occupied, find a random position
-            for (let attempts = 0; attempts < 50; attempts++) {
-                const randomX = 200 + Math.random() * (BOARD_W - 400);
-                const randomY = 100 + Math.random() * (BOARD_H - 200);
-                
-                const tempNote = {
-                    el: { style: { left: randomX + 'px', top: randomY + 'px' } }
-                };
-                
-                if (!checkNoteCollision(tempNote, existingNotes)) {
-                    return { x: randomX, y: randomY };
-                }
-            }
-            
-            // Fallback: place near the thread line
+            //            // Fallback: place near the thread line
             return { x: 400 + Math.random() * (BOARD_W - 800), y: yBase };
         }
 
@@ -2672,49 +2660,55 @@
             GAME_CONTAINER.style.display = 'none';
         }
 
+        // Enhanced confetti effects
+        function triggerAnswerConfetti() {
+            // Quick confetti burst for answer
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.6 },
+                colors: ['#ffcc00', '#ffaa00', '#ff8800', '#ff6600'],
+                ticks: 30,
+                gravity: 0.8
+            });
+        }
+
         function initQuiz() {
             const options = document.querySelectorAll('.option');
-            const wrongPopup = document.getElementById('wrongPopup');
-            const correctPopup = document.getElementById('correctPopup');
-            const correctImage = document.getElementById('correctImage');
-            const memoryCaption = document.getElementById('memoryCaption');
-            const closePopup = document.querySelectorAll('.close-popup');
-            const scoreElement = document.getElementById('score');
+            const memoryPopup = document.getElementById('memoryPopup');
+            const memoryResponse = document.getElementById('memoryResponse');
+            const memoryTitle = document.getElementById('memoryTitle');
+            const continueMemories = document.getElementById('continueMemories');
+            const progressText = document.getElementById('progressText');
             const progressElement = document.querySelector('.progress');
-            const memoryBadges = document.getElementById('memoryBadges');
             const completionScreen = document.getElementById('completionScreen');
-            const finalScore = document.getElementById('finalScore');
-            const restartBtn = document.getElementById('restartBtn');
+            const backToMemories = document.getElementById('backToMemories');
             
-            let score = 0;
-            let answeredQuestions = new Set();
+            let currentQuestion = 1;
+            const totalQuestions = 10;
             
-            // Reset score and badges
-            scoreElement.textContent = '0';
-            memoryBadges.innerHTML = '';
-            progressElement.style.setProperty('--progress', '0');
+            // Reset answered questions
+            answeredQuestions.clear();
             
-            // Reset all options
-            options.forEach(option => {
-                option.style.pointerEvents = 'auto';
-                option.style.background = 'rgba(139, 19, 19, 0.5)';
-                option.style.borderColor = 'rgba(255, 204, 0, 0.3)'; // Changed to yellow
-                option.style.opacity = '1';
+            // Reset progress
+            progressText.textContent = `${currentQuestion}/${totalQuestions}`;
+            progressElement.style.setProperty('--progress', (currentQuestion / totalQuestions) * 10);
+            
+            // Show only the first question initially
+            document.querySelectorAll('.question').forEach((q, index) => {
+                q.classList.remove('active');
+                if (index === 0) {
+                    q.classList.add('active');
+                }
+                // Reset answered status for all options
+                const allOptions = q.querySelectorAll('.option');
+                allOptions.forEach(opt => {
+                    opt.classList.remove('answered');
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.background = 'rgba(139, 19, 19, 0.5)';
+                    opt.style.borderColor = 'rgba(255, 204, 0, 0.3)';
+                });
             });
-            
-            // Memory captions for each question
-            const memoryCaptions = {
-                question1: "Countless steps taken, conversations shared, and friendships forged on this iconic bridge.",
-                question2: "The sound of water, the backdrop of countless photos, and the centerpiece of campus life.",
-                question3: "Where knowledge was sought, dreams were nurtured, and futures were shaped.",
-                question4: "Witness to countless cultural events, lectures, and moments of inspiration.",
-                question5: "Where tradition met innovation, and craftsmanship was celebrated.",
-                question6: "The excitement of innovation, the thrill of competition, and the joy of learning.",
-                question7: "Where champions were made, records were broken, and spirits soared.",
-                question8: "The hub of creativity, collaboration, and student initiatives.",
-                question9: "The foundation of it all, where the journey began for generations.",
-                question10: "A network that extends beyond campus, connecting PSGians across the world."
-            };
             
             // Remove existing event listeners
             options.forEach(option => {
@@ -2725,90 +2719,147 @@
             // Add new event listeners
             document.querySelectorAll('.option').forEach(option => {
                 option.addEventListener('click', function() {
-                    const isCorrect = this.getAttribute('data-correct') === 'true';
                     const questionContainer = this.closest('.question');
                     const questionId = questionContainer.id;
-                    const imageContainer = questionContainer.querySelector('.image-container');
-                    const imageSrc = imageContainer.querySelector('img').src;
                     
+                    // Check if this question is already answered
                     if (answeredQuestions.has(questionId)) {
-                        return; // Already answered this question
+                        return; // Skip if already answered
                     }
                     
-                    if (isCorrect) {
-                        // Set the image source in the popup
-                        correctImage.src = imageSrc;
+                    const response = this.getAttribute('data-response');
+                    const questionTitle = questionContainer.querySelector('.question-title').textContent;
+                    
+                    // Mark this option as answered
+                    this.classList.add('answered');
+                    
+                    // Mark question as answered
+                    answeredQuestions.add(questionId);
+                    
+                    // Set popup content
+                    memoryTitle.textContent = questionTitle;
+                    memoryResponse.textContent = response;
+                    
+                    // Show popup
+                    memoryPopup.style.display = 'flex';
+                    
+                    // Trigger confetti effect
+                    triggerAnswerConfetti();
+                    
+                    // Disable all options in this question
+                    const allOptions = questionContainer.querySelectorAll('.option');
+                    allOptions.forEach(opt => {
+                        opt.style.pointerEvents = 'none';
+                        opt.style.background = 'rgba(255, 204, 0, 0.3)'; // Changed to yellow
+                        opt.style.borderColor = '#ffcc00'; // Changed to yellow
+                        opt.classList.add('answered');
+                    });
+                });
+            });
+            
+            // Continue memories button
+            continueMemories.addEventListener('click', function() {
+                memoryPopup.style.display = 'none';
+                
+                // Hide current question
+                document.getElementById(`question${currentQuestion}`).classList.remove('active');
+                
+                // Move to next question
+                currentQuestion++;
+                
+                if (currentQuestion <= totalQuestions) {
+                    // Show next question
+                    const nextQuestion = document.getElementById(`question${currentQuestion}`);
+                    if (nextQuestion) {
+                        nextQuestion.classList.add('active');
                         
-                        // Set the memory caption
-                        memoryCaption.textContent = memoryCaptions[questionId] || "A special place in your PSG Tech journey.";
+                        // Update progress
+                        progressText.textContent = `${currentQuestion}/${totalQuestions}`;
+                        progressElement.style.setProperty('--progress', (currentQuestion / totalQuestions) * 10);
                         
-                        // Show the correct answer popup
-                        correctPopup.style.display = 'flex';
-                        
-                        // Update score
-                        score++;
-                        scoreElement.textContent = score;
-                        
-                        // Update progress bar
-                        progressElement.style.setProperty('--progress', score);
-                        
-                        // Add memory badge
-                        const badge = document.createElement('span');
-                        badge.className = 'memory-badge';
-                        badge.textContent = '✓';
-                        memoryBadges.appendChild(badge);
-                        
-                        // Mark question as answered
-                        answeredQuestions.add(questionId);
-                        
-                        // Disable all options in this question
-                        const allOptions = questionContainer.querySelectorAll('.option');
-                        allOptions.forEach(opt => {
-                            opt.style.pointerEvents = 'none';
-                            if (opt.getAttribute('data-correct') === 'true') {
-                                opt.style.background = 'rgba(255, 204, 0, 0.5)'; // Changed to yellow
-                                opt.style.borderColor = '#ffcc00'; // Changed to yellow
-                            } else {
-                                opt.style.opacity = '0.6';
-                            }
-                        });
-                        
-                        // Check if quiz is complete
-                        if (answeredQuestions.size === 10) {
-                            setTimeout(() => {
-                                finalScore.textContent = score;
-                                completionScreen.style.display = 'flex';
-                            }, 1000);
-                        }
-                    } else {
-                        // Show wrong answer popup
-                        wrongPopup.style.display = 'flex';
+                        // Scroll to top of quiz
+                        document.querySelector('.quiz-container').scrollIntoView({ behavior: 'smooth' });
                     }
-                });
+                } else {
+                    // Show completion screen
+                    completionScreen.style.display = 'flex';
+                    
+                    // Trigger celebration confetti
+                    triggerCelebrationConfetti();
+                }
             });
             
-            // Close popup buttons
-            closePopup.forEach(button => {
-                button.addEventListener('click', function() {
-                    wrongPopup.style.display = 'none';
-                    correctPopup.style.display = 'none';
-                });
-            });
-            
-            // Restart button
-            restartBtn.addEventListener('click', function() {
-                initQuiz();
+            // Back to memories button
+            backToMemories.addEventListener('click', function() {
+                hideGame();
             });
             
             // Close popup if clicked outside
             window.addEventListener('click', function(event) {
-                if (event.target === wrongPopup) {
-                    wrongPopup.style.display = 'none';
-                }
-                if (event.target === correctPopup) {
-                    correctPopup.style.display = 'none';
+                if (event.target === memoryPopup) {
+                    memoryPopup.style.display = 'none';
                 }
             });
+        }
+
+        // Enhanced confetti effects
+        function triggerCelebrationConfetti() {
+            // Multiple confetti bursts for celebration
+            const duration = 3000; // 3 seconds of celebration
+            const animationEnd = Date.now() + duration;
+            const colors = ['#ffcc00', '#ffaa00', '#ff8800', '#ff6600', '#ff4400'];
+            
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+            
+            // Create continuous confetti effect
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+                
+                const particleCount = 30 * (timeLeft / duration);
+                
+                // Create confetti from multiple origins
+                confetti({
+                    particleCount: Math.floor(particleCount / 3),
+                    spread: 60,
+                    ticks: 50,
+                    gravity: 0.8,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() * 0.2 },
+                    colors: colors,
+                    scalar: 0.8
+                });
+                
+                confetti({
+                    particleCount: Math.floor(particleCount / 3),
+                    spread: 60,
+                    ticks: 50,
+                    gravity: 0.8,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() * 0.2 },
+                    colors: colors,
+                    scalar: 0.8
+                });
+                
+                confetti({
+                    particleCount: Math.floor(particleCount / 3),
+                    spread: 90,
+                    ticks: 50,
+                    gravity: 0.8,
+                    origin: { x: 0.5, y: Math.random() * 0.2 - 0.1 },
+                    colors: colors,
+                    scalar: 1.2
+                });
+                
+            }, 200); // Every 200ms
+            
+            // Clear interval after duration
+            setTimeout(() => {
+                clearInterval(interval);
+            }, duration);
         }
 
         // Initialize everything

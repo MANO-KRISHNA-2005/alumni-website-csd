@@ -1,31 +1,27 @@
-// Main JavaScript for REBOOT 40 Alumni Website
-
-// Update the main initialization function
-// Main JavaScript for REBOOT 40 Alumni Website
-
-// Update the main initialization function
 document.addEventListener('DOMContentLoaded', function() {
-    
     console.log('=== DOM CONTENT LOADED ===');
     
     // Initialize all components
     initPreloader();
     initCountdown();
     initStatsCounter();
-    initAlumniSliderWithFallback();
+    initAlumniSliderWithFallback(); // This now includes typing effect
     initNavbar();
-    initScheduleTimeline(); // NEW: Initialize timeline schedule
+    initScheduleTimeline();
     initGalleryCarousel();
     initMobileMenu();
     initMapFix();
     initLogoSliders();
     initRebootAnimations();
     initCompaniesSection();
-    initBackToTopButton(); // Initialize back to top button
-
+    initRebootTextAnimation();
+    initAlumniMeetTypingEffect();
+    
+    // Initialize the typing effect for alumni section
+    initAlumniTypingEffect();
+    
     console.log('REBOOT 40 Alumni Website initialized successfully');
 });
-
 // Preloader functionality
 function initPreloader() {
     const splash = document.getElementById('splash');
@@ -556,55 +552,272 @@ function initAlumniSlider() {
 }
 
 // ENHANCED Swiper fallback with better error handling
-function initAlumniSliderWithFallback() {
-    console.log('=== INITIALIZING ALUMNI SLIDER WITH FALLBACK ===');
+// COMPLETELY REWRITTEN Alumni Typing Effect - Clean and Simple
+function initAlumniTypingEffect() {
+    console.log('=== INITIALIZING CLEAN ALUMNI TYPING ===');
     
-    // Try Swiper first (if available and elements exist)
+    // Global state
+    let currentSlide = null;
+    let isTyping = false;
+    
+    // Very fast typing speeds
+    const SPEEDS = {
+        name: 8,       // Fast
+        details: 4,     // Faster
+        desc: 2         // Fastest
+    };
+    
+    // Simple typing function - no promises, no complications
+    function typeElement(element, text, speed, callback) {
+        if (!element) {
+            if (callback) callback();
+            return;
+        }
+        
+        element.textContent = '';
+        let i = 0;
+        
+        function typeChar() {
+            if (i < text.length) {
+                element.textContent = text.substring(0, i + 1);
+                i++;
+                setTimeout(typeChar, speed);
+            } else {
+                if (callback) callback();
+            }
+        }
+        
+        typeChar();
+    }
+    
+    // Main animation function
+    function animateAlumni(slide) {
+        // Prevent duplicate animations
+        if (isTyping || slide === currentSlide) {
+            console.log('Animation skipped - already running or same slide');
+            return;
+        }
+        
+        isTyping = true;
+        currentSlide = slide;
+        
+        console.log('Starting animation for new slide');
+        
+        // Get all elements with null checks
+        const nameEl = slide.querySelector('.alumni-name');
+        const positionEl = slide.querySelector('.alumni-position');
+        const companyEl = slide.querySelector('.alumni-company');
+        const expertiseEl = slide.querySelector('.alumni-expertise');
+        const experienceEl = slide.querySelector('.alumni-experience');
+        const descEl = slide.querySelector('.alumni-desc');
+        
+        // Store original text
+        const name = nameEl ? nameEl.textContent.trim() : '';
+        const position = positionEl ? positionEl.textContent.trim() : '';
+        const company = companyEl ? companyEl.textContent.trim() : '';
+        const expertise = expertiseEl ? expertiseEl.textContent.trim() : '';
+        const experience = experienceEl ? experienceEl.textContent.trim() : '';
+        const description = descEl ? descEl.textContent.trim() : '';
+        
+        // Clear all text immediately
+        if (nameEl) nameEl.textContent = '';
+        if (positionEl) positionEl.textContent = '';
+        if (companyEl) companyEl.textContent = '';
+        if (expertiseEl) expertiseEl.textContent = '';
+        if (experienceEl) experienceEl.textContent = '';
+        if (descEl) descEl.textContent = '';
+        
+        // Sequential typing - simple and reliable
+        function startTyping() {
+            // 1. Type name
+            typeElement(nameEl, name, SPEEDS.name, () => {
+                console.log('Name typed');
+                
+                // 2. Type position
+                typeElement(positionEl, position, SPEEDS.details, () => {
+                    console.log('Position typed');
+                    
+                    // 3. Type company
+                    typeElement(companyEl, company, SPEEDS.details, () => {
+                        console.log('Company typed');
+                        
+                        // 4. Type expertise
+                        typeElement(expertiseEl, expertise, SPEEDS.details, () => {
+                            console.log('Expertise typed');
+                            
+                            // 5. Type experience
+                            typeElement(experienceEl, experience, SPEEDS.details, () => {
+                                console.log('Experience typed');
+                                
+                                // 6. Type description
+                                typeElement(descEl, description, SPEEDS.desc, () => {
+                                    console.log('Description typed - animation complete');
+                                    isTyping = false;
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        }
+        
+        // Start typing immediately
+        startTyping();
+    }
+    
+    // Find current active slide
+    function getActiveSlide() {
+        // Try multiple methods
+        let slide = document.querySelector('.swiper-slide-active');
+        
+        if (!slide) {
+            slide = document.querySelector('.swiper-slide[style*="opacity: 1"]');
+        }
+        
+        if (!slide) {
+            const slides = document.querySelectorAll('.swiper-slide');
+            for (let s of slides) {
+                if (s.style.opacity !== '0') {
+                    slide = s;
+                    break;
+                }
+            }
+        }
+        
+        return slide;
+    }
+    
+    // Trigger animation with delay
+    function triggerWithDelay() {
+        setTimeout(() => {
+            const slide = getActiveSlide();
+            if (slide) {
+                animateAlumni(slide);
+            }
+        }, 200);
+    }
+    
+    // Initialize first slide
+    setTimeout(() => {
+        const firstSlide = getActiveSlide();
+        if (firstSlide) {
+            animateAlumni(firstSlide);
+        }
+    }, 1500);
+    
+    // Swiper event handling - simplified
+    if (typeof Swiper !== 'undefined') {
+        // Wait for Swiper to be ready
+        const setupSwiperEvents = () => {
+            const container = document.querySelector('.alumni-slider');
+            if (container && container.swiper) {
+                const swiper = container.swiper;
+                
+                // Only use one reliable event
+                swiper.on('slideChange', () => {
+                    console.log('Swiper slide changed');
+                    triggerWithDelay();
+                });
+                
+                console.log('Swiper events set up');
+            }
+        };
+        
+        // Try multiple times
+        setupSwiperEvents();
+        setTimeout(setupSwiperEvents, 500);
+        setTimeout(setupSwiperEvents, 1000);
+    }
+    
+    // Manual navigation
+    document.querySelector('.swiper-button-next')?.addEventListener('click', triggerWithDelay);
+    document.querySelector('.swiper-button-prev')?.addEventListener('click', triggerWithDelay);
+    
+    // Touch/swipe
+    document.querySelector('.alumni-slider')?.addEventListener('touchend', triggerWithDelay);
+    
+    // Make globally available
+    window.animateAlumni = animateAlumni;
+}
+
+// SIMPLIFIED Alumni Slider
+function initAlumniSliderWithFallback() {
+    console.log('=== INITIALIZING SIMPLIFIED ALUMNI SLIDER ===');
+    
     if (typeof Swiper !== 'undefined' && document.querySelector('.alumni-slider')) {
         try {
-            console.log('Attempting Swiper initialization...');
-            
-            // Reset any existing styles
-            const slides = document.querySelectorAll('.swiper-slide');
-            slides.forEach(slide => {
-                slide.style = ''; // Reset inline styles
+            // Clean up any existing styles
+            document.querySelectorAll('.swiper-slide').forEach(slide => {
+                slide.style.cssText = '';
             });
             
             const swiper = new Swiper('.alumni-slider', {
                 loop: true,
                 autoplay: {
-                    delay: 4000,
-                    disableOnInteraction: false, // Continue autoplay after manual interaction
+                    delay: 6000, // 6 seconds for typing to complete
+                    disableOnInteraction: false,
                     pauseOnMouseEnter: true
                 },
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev'
                 },
-                speed: 600,
+                speed: 400,
                 effect: 'slide',
                 grabCursor: true,
                 on: {
-                    init: () => console.log('Swiper initialized successfully'),
-                    autoplayStart: () => console.log('Swiper autoplay started'),
-                    slideChange: () => console.log('Swiper slide changed')
+                    init: function() {
+                        console.log('Swiper initialized');
+                        this.el.swiper = this;
+                        
+                        // Don't trigger animation here - let the separate init handle it
+                    }
                 }
             });
             
-            console.log('Swiper initialized successfully');
+            console.log('Swiper created successfully');
             return swiper;
             
         } catch (err) {
-            console.warn('Swiper failed, using custom implementation:', err);
+            console.warn('Swiper failed:', err);
         }
-    } else {
-        console.log('Swiper not available or slider not found, using custom implementation');
     }
     
-    // Fallback to custom implementation
-    console.log('Using custom slider implementation');
+    // Fallback
     return initAlumniSlider();
 }
+
+// CLEAN Main Initialization
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== CLEAN DOM INIT ===');
+    
+    // Initialize components in order
+    initPreloader();
+    initCountdown();
+    initStatsCounter();
+    
+    // Initialize slider first
+    initAlumniSliderWithFallback();
+    
+    // Then initialize typing
+    setTimeout(() => {
+        initAlumniTypingEffect();
+    }, 500);
+    
+    // Other components
+    initNavbar();
+    initScheduleTimeline();
+    initGalleryCarousel();
+    initMobileMenu();
+    initMapFix();
+    initLogoSliders();
+    initRebootAnimations();
+    initCompaniesSection();
+    initRebootTextAnimation();
+    initAlumniMeetTypingEffect();
+    
+    console.log('All components initialized');
+});
 
 // NEW: Schedule Timeline functionality
 // NEW: Schedule Timeline functionality - AUTO-SCROLL WITH STRAIGHT TIME
@@ -962,19 +1175,20 @@ function initMapFix() {
     }
 }
 
-// Initialize logo sliders
 function initLogoSliders() {
+    console.log('=== INITIALIZING ENHANCED LOGO SLIDERS ===');
+    
     const leftToRightSliders = document.querySelectorAll('.left-to-right');
     const rightToLeftSliders = document.querySelectorAll('.right-to-left');
     
     // Set different animation durations for variety
     leftToRightSliders.forEach((slider, index) => {
-        const duration = 25 + (index * 5); // 25s, 30s, 35s
+        const duration = 20 + (index * 3); // Faster for mobile
         slider.style.animationDuration = `${duration}s`;
     });
     
     rightToLeftSliders.forEach((slider, index) => {
-        const duration = 30 + (index * 5); // 30s, 35s, 40s
+        const duration = 25 + (index * 3); // Faster for mobile
         slider.style.animationDuration = `${duration}s`;
     });
     
@@ -988,7 +1202,50 @@ function initLogoSliders() {
         slider.addEventListener('mouseleave', () => {
             slider.style.animationPlayState = 'running';
         });
+        
+        // Touch support for mobile
+        slider.addEventListener('touchstart', () => {
+            slider.style.animationPlayState = 'paused';
+        });
+        
+        slider.addEventListener('touchend', () => {
+            setTimeout(() => {
+                slider.style.animationPlayState = 'running';
+            }, 1000); // Resume after 1 second
+        });
     });
+    
+    // Adjust for mobile viewport
+    function adjustForMobile() {
+        if (window.innerWidth <= 768) {
+            // Make logos smaller on mobile
+            document.querySelectorAll('.company-logo').forEach(logo => {
+                logo.style.transform = 'scale(0.85)';
+            });
+            
+            // Reduce gap between logos
+            allSliders.forEach(slider => {
+                slider.style.gap = '15px';
+            });
+        } else {
+            // Reset for desktop
+            document.querySelectorAll('.company-logo').forEach(logo => {
+                logo.style.transform = 'scale(1)';
+            });
+            
+            allSliders.forEach(slider => {
+                slider.style.gap = '40px';
+            });
+        }
+    }
+    
+    // Initial adjustment
+    adjustForMobile();
+    
+    // Adjust on resize
+    window.addEventListener('resize', adjustForMobile);
+    
+    console.log('Enhanced logo sliders initialized');
 }
 
 // NEW: REBOOT Explanation Border Animation
@@ -1117,90 +1374,175 @@ function initPerformanceMonitoring() {
 // Initialize performance monitoring
 initPerformanceMonitoring();
 // CORRECTED BACK TO TOP BUTTON - ONLY RIGHT & BOTTOM
-function initBackToTopButton() {
-    console.log('=== CREATING CORRECTED BACK TO TOP BUTTON ===');
+// Go to Top Section functionality using scrollIntoView
+document.addEventListener('DOMContentLoaded', () => {
+    const button = document.querySelector('#go-to-top-btn');
+    const heroSection = document.querySelector('#home');
+
+    if (button && heroSection) {
+        button.addEventListener('click', () => {
+            heroSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    } else {
+        console.warn("Scroll to top functionality: Button (#go-to-top-btn) or Hero section (#home) not found. Please ensure both elements exist.");
+    }
+});
+// Text Animation for REBOOT section
+// Text Animation for REBOOT section - Fixed version
+function initRebootTextAnimation() {
+    const changeboxes = document.querySelectorAll('.changebox');
+    if (!changeboxes.length) return;
     
-    // Remove any existing button first
-    const existingBtn = document.getElementById('back-to-top');
-    if (existingBtn) {
-        existingBtn.remove();
-        console.log('Removed existing button');
+    changeboxes.forEach((changebox, boxIndex) => {
+        const words = changebox.querySelectorAll('span');
+        let currentIndex = 0;
+        
+        // Set initial active word with delay for staggered start
+        setTimeout(() => {
+            words[currentIndex].classList.add('active');
+        }, boxIndex * 300);
+        
+        // Start animation for this specific changebox
+        setInterval(() => {
+            const currentWord = words[currentIndex];
+            const nextIndex = (currentIndex + 1) % words.length;
+            const nextWord = words[nextIndex];
+            
+            // Add exiting class to current word
+            currentWord.classList.add('exiting');
+            currentWord.classList.remove('active');
+            
+            // Add active class to next word
+            nextWord.classList.add('active');
+            nextWord.classList.remove('exiting');
+            
+            // Clean up classes after animation
+            setTimeout(() => {
+                currentWord.classList.remove('exiting');
+            }, 600);
+            
+            currentIndex = nextIndex;
+        }, 2000 + (boxIndex * 400)); // Staggered timing
+    });
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initRebootTextAnimation();
+});
+// Typing effect for Alumni Meet title
+function initAlumniMeetTypingEffect() {
+    const alumniTitle = document.querySelector('.alumni-meet-title');
+    if (!alumniTitle) return;
+    
+    const originalText = alumniTitle.textContent;
+    alumniTitle.textContent = '';
+    
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
+    let deletingSpeed = 50;
+    let pauseTime = 2000;
+    let pauseAfterType = false;
+    
+    function typeWriter() {
+        if (!isDeleting && charIndex < originalText.length) {
+            // Typing characters
+            alumniTitle.textContent = originalText.substring(0, charIndex + 1);
+            charIndex++;
+            
+            // Check if we've reached the end of the text
+            if (charIndex === originalText.length) {
+                pauseAfterType = true;
+                setTimeout(() => {
+                    isDeleting = true;
+                    typeWriter();
+                }, pauseTime);
+            } else {
+                setTimeout(typeWriter, typingSpeed);
+            }
+        } else if (isDeleting && charIndex > 0) {
+            // Deleting characters
+            alumniTitle.textContent = originalText.substring(0, charIndex - 1);
+            charIndex--;
+            
+            // Check if we've deleted all characters
+            if (charIndex === 0) {
+                isDeleting = false;
+                pauseAfterType = false;
+                setTimeout(typeWriter, 500); // Shorter pause before typing again
+            } else {
+                setTimeout(typeWriter, deletingSpeed);
+            }
+        } else if (!isDeleting && charIndex === 0) {
+            // Start typing from the beginning
+            setTimeout(typeWriter, 500);
+        }
     }
     
-    // Create new button element
-    const backToTopBtn = document.createElement('a');
-    backToTopBtn.id = 'back-to-top';
-    backToTopBtn.href = '#home';
-    backToTopBtn.setAttribute('aria-label', 'Back to top');
-    
-    // Create icon
-    const icon = document.createElement('i');
-    icon.className = 'fas fa-arrow-up';
-    backToTopBtn.appendChild(icon);
-    
-    // Apply CORRECTED styles - ONLY right and bottom, no left/top
-    const buttonStyles = {
-        position: 'fixed',
-        bottom: '30px',      // ONLY bottom
-        right: '30px',       // ONLY right
-        width: '60px',
-        height: '60px',
-        backgroundColor: '#000000',
-        border: '3px solid #FFD700',
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#FFD700',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        textDecoration: 'none',
-        zIndex: '99999',
-        opacity: '1',
-        visibility: 'visible',
-        cursor: 'pointer',
-        boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
-        transition: 'all 0.3s ease',
-        
-        // EXPLICITLY REMOVE left and top
-        left: 'auto',
-        top: 'auto',
-        transform: 'none'
-    };
-    
-    // Apply all styles
-    Object.assign(backToTopBtn.style, buttonStyles);
-    
-    // Add click event
-    backToTopBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log('Back to top clicked');
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-    
-    // Add hover effect
-    backToTopBtn.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = '#FFD700';
-        this.style.color = '#000000';
-        this.style.transform = 'scale(1.1)';
-        this.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.8)';
-    });
-    
-    backToTopBtn.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = '#000000';
-        this.style.color = '#FFD700';
-        this.style.transform = 'scale(1)';
-        this.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.5)';
-    });
-    
-    // Add to the body
-    document.body.appendChild(backToTopBtn);
-    
-    console.log('✅ Corrected back to top button created');
-    console.log('Using only bottom: 30px, right: 30px');
-    
-    return backToTopBtn;
+    // Start the typing effect
+    setTimeout(typeWriter, 1000); // Delay before starting the effect
 }
+// FAST Typing effect for all Alumni Names
+function initAlumniNamesTypingEffect() {
+    const alumniNames = document.querySelectorAll('.alumni-name');
+    if (!alumniNames.length) return;
+    
+    alumniNames.forEach((nameElement, index) => {
+        const originalText = nameElement.textContent;
+        nameElement.textContent = '';
+        
+        let charIndex = 0;
+        let isDeleting = false;
+        let typingSpeed = 25;      // Very fast typing
+        let deletingSpeed = 15;      // Ultra-fast deleting
+        let pauseTime = 1000;       // Short pause
+        let pauseAfterType = false;
+        
+        function typeWriter() {
+            if (!isDeleting && charIndex < originalText.length) {
+                // Fast typing characters
+                nameElement.textContent = originalText.substring(0, charIndex + 1);
+                charIndex++;
+                
+                if (charIndex === originalText.length) {
+                    pauseAfterType = true;
+                    setTimeout(() => {
+                        isDeleting = true;
+                        typeWriter();
+                    }, pauseTime);
+                } else {
+                    setTimeout(typeWriter, typingSpeed);
+                }
+            } else if (isDeleting && charIndex > 0) {
+                // Fast deleting characters
+                nameElement.textContent = originalText.substring(0, charIndex - 1);
+                charIndex--;
+                
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    pauseAfterType = false;
+                    setTimeout(typeWriter, 400); // Brief pause before typing again
+                } else {
+                    setTimeout(typeWriter, deletingSpeed);
+                }
+            } else if (!isDeleting && charIndex === 0) {
+                setTimeout(typeWriter, 400);
+            }
+        }
+        
+        // Stagger the start times for each name
+        setTimeout(() => {
+            typeWriter();
+        }, index * 300); // Each name starts 300ms after the previous one
+    });
+}
+
+// Add this to your main initialization function
+document.addEventListener('DOMContentLoaded', function() {
+    // ... other initialization code ...
+    // ... more initialization code ...
+});

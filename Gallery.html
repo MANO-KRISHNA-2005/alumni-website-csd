@@ -15,26 +15,47 @@
     }
     
     :root {
-      --primary: #ffcc00;
-      --primary-dark: #e6b800;
-      --primary-light: #ffdb4d;
-      --secondary: #1a1a1a;
-      --accent: #ff9900;
-      --dark: #0a0a0a;
-      --light: #f0f0f0;
-      --neon-glow: 0 0 8px rgba(255, 204, 0, 0.4), 0 0 15px rgba(255, 204, 0, 0.3);
-      --neon-glow-light: 0 0 5px rgba(255, 204, 0, 0.3), 0 0 8px rgba(255, 204, 0, 0.2);
-      --neon-text-glow: 0 0 5px rgba(255, 204, 0, 0.5), 0 0 10px rgba(255, 204, 0, 0.3);
-      --item-glow: 0 0 15px rgba(255, 204, 0, 0.6), 0 0 25px rgba(255, 204, 0, 0.4);
-      --neon-yellow: #ffcc00;
-      --neon-yellow-glow: rgba(255, 204, 0, 0.7);
-      --ivory-white: #f0f0f0;
+      --neon-yellow: #FFD700;
+      --neon-yellow-glow: rgba(255, 215, 0, 0.4);
+      --gold-yellow: #FFC107;
+      --gold-yellow-glow: rgba(255, 193, 7, 0.4);
+      --amber-yellow: #FFB300;
+      --amber-yellow-glow: rgba(255, 179, 0, 0.4);
+      --honey-yellow: #FFEB3B;
+      --honey-yellow-glow: rgba(255, 235, 59, 0.4);
+      --mustard-yellow: #FFC400;
+      --mustard-yellow-glow: rgba(255, 196, 0, 0.4);
+      --neon-white: #FFFFFF;
+      --neon-white-glow: rgba(255, 255, 255, 0.4);
+      --ivory-white: #FFFFF0;
+      --ivory-white-glow: rgba(255, 255, 240, 0.4);
+      --cream-white: #FFFACD;
+      --cream-white-glow: rgba(255, 250, 205, 0.4);
+      --pearl-white: #F8F8FF;
+      --pearl-white-glow: rgba(248, 248, 255, 0.4);
+      --snow-white: #FFFAFA;
+      --snow-white-glow: rgba(255, 250, 250, 0.4);
+      --crimson-red: #DC143C;
+      --crimson-red-glow: rgba(220, 20, 60, 0.4);
+      --fire-red: #B22222;
+      --fire-red-glow: rgba(178, 34, 34, 0.4);
+      --dark-bg: #000000;
+      --darker-bg: #050505;
+      --charcoal-bg: #121212;
+      --grid-color: rgba(255, 215, 0, 0.1);
       --transition: all 0.3s ease;
+      
+      /* Color Classes for Different Items */
+      --color-1: #1a535c;
+      --color-2: #4ecdc4;
+      --color-3: #bfd7ea;
+      --color-4: #ff6b6b;
+      --color-5: #ffe66d;
     }
     
     body {
-      background-color: var(--dark);
-      color: var(--light);
+      background-color: var(--dark-bg);
+      color: var(--ivory-white);
       overflow-x: hidden;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -135,7 +156,7 @@
     }
 
     .nav-link.btn {
-      background: rgba(255, 204, 0, 0.2);
+      background: rgba(255, 215, 0, 0.2);
       padding: 8px 20px;
       border-radius: 30px;
       border: 1px solid var(--neon-yellow);
@@ -143,7 +164,7 @@
     }
 
     .nav-link.btn:hover {
-      background: rgba(255, 204, 0, 0.3);
+      background: rgba(255, 215, 0, 0.3);
       box-shadow: 0 0 10px var(--neon-yellow-glow);
     }
 
@@ -190,7 +211,7 @@
       border-radius: 1rem;
       flex: none;
       filter: sepia(0.5) hue-rotate(-10deg) saturate(1.5);
-      box-shadow: 0 0 3px rgba(255, 204, 0, 0.2);
+      box-shadow: 0 0 3px rgba(255, 215, 0, 0.2);
     }
 
     @keyframes scroll {
@@ -224,7 +245,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(ellipse at center, rgba(255, 204, 0, 0.1) 0%, transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
       z-index: -1;
     }
     
@@ -232,7 +253,7 @@
       font-size: 4.5rem;
       margin-bottom: 20px;
       color: var(--light);
-      text-shadow: var(--neon-text-glow);
+      text-shadow: 0 0 5px var(--neon-yellow-glow);
       letter-spacing: 3px;
       font-weight: 800;
       text-transform: uppercase;
@@ -256,8 +277,8 @@
       font-size: 1.5rem;
       max-width: 700px;
       margin: 40px auto 30px;
-      color: rgba(240, 240, 240, 0.9);
-      text-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
+      color: rgba(255, 255, 240, 0.9);
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
       line-height: 1.6;
     }
     
@@ -272,10 +293,10 @@
     
     .tab {
       padding: 18px 35px;
-      background: rgba(255, 204, 0, 0.1);
-      border: 1px solid rgba(255, 204, 0, 0.2);
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
       border-radius: 50px;
-      color: var(--light);
+      color: var(--ivory-white);
       cursor: pointer;
       transition: all 0.4s ease;
       font-weight: 600;
@@ -305,42 +326,189 @@
     }
     
     .tab:hover {
-      background: rgba(255, 204, 0, 0.15);
+      background: rgba(255, 215, 0, 0.15);
       transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(255, 204, 0, 0.2), var(--neon-glow-light);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2), 0 0 5px rgba(255, 215, 0, 0.3);
     }
     
     .tab.active {
-      background: var(--primary);
-      color: var(--dark);
-      box-shadow: var(--neon-glow-light);
+      background: var(--neon-yellow);
+      color: var(--dark-bg);
+      box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
       transform: translateY(-3px);
     }
     
-    /* Gallery Grid */
+    /* Gallery Grid - NEW SQUARE SIZE + RECTANGLES */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 25px;
-      margin: 40px 0;
+      grid-gap: 4px;
+      grid-auto-rows: 300px; /* base square size */
+      grid-auto-flow: dense;
+      position: relative;
+      z-index: 2;
     }
     
+    /* span-1: square (1x1)
+       span-2: wide rectangle (2x1)
+       span-3: tall rectangle (1x2)
+    */
+    .span-1 {
+      grid-column-end: span 1;
+      grid-row-end: span 1;
+      min-height: 300px;
+    }
+    
+    .span-2 {
+      grid-column-end: span 2;
+      grid-row-end: span 1;
+      min-height: 300px;
+    }
+    
+    .span-3 {
+      grid-column-end: span 1;
+      grid-row-end: span 2;
+      min-height: 600px;
+    }
+    
+    /* Gallery Item with 3D glow, border trail, animation */
     .gallery-item {
       position: relative;
-      border-radius: 15px;
+      border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      aspect-ratio: 4/3;
-      background-color: #111;
-      border: 3px solid rgba(255, 204, 0, 0.5);
+      background-color: var(--charcoal-bg);
+      border: 2px solid rgba(255, 215, 0, 0.5);
       cursor: pointer;
+      transform-style: preserve-3d;
+      background-size: cover;
+      background-position: 50% 50%;
+      animation: frameGlow 3s ease-in-out infinite alternate;
     }
     
+    @keyframes frameGlow {
+      0% {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 
+                    0 0 5px rgba(255, 215, 0, 0.3),
+                    inset 0 0 5px rgba(255, 215, 0, 0.1);
+        border-color: rgba(255, 215, 0, 0.5);
+      }
+      50% {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 
+                    0 0 15px rgba(255, 215, 0, 0.6),
+                    inset 0 0 10px rgba(255, 215, 0, 0.2);
+        border-color: rgba(255, 215, 0, 0.8);
+      }
+      100% {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 
+                    0 0 8px rgba(220, 20, 60, 0.5),
+                    inset 0 0 8px rgba(220, 20, 60, 0.15);
+        border-color: rgba(220, 20, 60, 0.6);
+      }
+    }
+    
+    /* Border for Trail Animation */
+    .gallery-item .border {
+      position: absolute;
+      inset: -8px;
+      border-radius: 12px;
+      background: transparent;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    /* Trail Animation */
+    .gallery-item .trail {
+      width: 20px;
+      height: 3px;
+      position: absolute;
+      background: linear-gradient(90deg, 
+        transparent,
+        var(--crimson-red),
+        var(--neon-yellow),
+        var(--crimson-red),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 15;
+      filter: blur(1px);
+      box-shadow: 0 0 10px var(--crimson-red-glow);
+    }
+    
+    .gallery-item:hover .trail {
+      opacity: 1;
+    }
+    
+    .trail-top {
+      top: -8px;
+      left: 0;
+      width: 100%;
+      animation: moveHorizontal 2s linear infinite;
+    }
+    
+    .trail-right {
+      top: 0;
+      right: -8px;
+      height: 100%;
+      width: 3px;
+      animation: moveVertical 2s linear infinite;
+      animation-delay: 0.5s;
+    }
+    
+    .trail-bottom {
+      bottom: -8px;
+      right: 0;
+      width: 100%;
+      animation: moveHorizontalReverse 2s linear infinite;
+      animation-delay: 1s;
+    }
+    
+    .trail-left {
+      top: 0;
+      left: -8px;
+      height: 100%;
+      width: 3px;
+      animation: moveVerticalReverse 2s linear infinite;
+      animation-delay: 1.5s;
+    }
+    
+    @keyframes moveHorizontal {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    @keyframes moveHorizontalReverse {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    @keyframes moveVertical {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    
+    @keyframes moveVerticalReverse {
+      0% { transform: translateY(100%); }
+      100% { transform: translateY(-100%); }
+    }
+    
+    /* Color Classes */
+    .c-1 { background-color: var(--color-1); color: #ddd; }
+    .c-2 { background-color: var(--color-2); }
+    .c-3 { background-color: var(--color-3); }
+    .c-4 { background-color: var(--color-4); }
+    .c-5 { background-color: var(--color-5); }
+    
     .gallery-item:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), var(--item-glow);
-      border-color: rgba(255, 204, 0, 0.8);
+      transform: translateY(-8px) scale(1.02) rotateX(3deg) rotateY(-3deg);
+      z-index: 10;
+      animation-play-state: paused;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 
+                  0 0 25px rgba(255, 215, 0, 0.8),
+                  inset 0 0 15px rgba(255, 215, 0, 0.3);
+      border-color: rgba(255, 215, 0, 1);
     }
     
     .gallery-item img,
@@ -364,21 +532,21 @@
       transform: translate(-50%, -50%);
       width: 70px;
       height: 70px;
-      background: rgba(255, 204, 0, 0.9);
+      background: rgba(255, 215, 0, 0.9);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       transition: all 0.4s ease;
-      box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
+      box-shadow: 0 0 20px var(--neon-yellow-glow);
     }
     
     .video-icon::after {
       content: '';
       width: 0;
       height: 0;
-      border-left: 18px solid var(--dark);
+      border-left: 18px solid var(--dark-bg);
       border-top: 12px solid transparent;
       border-bottom: 12px solid transparent;
       margin-left: 6px;
@@ -396,7 +564,7 @@
       left: 0;
       width: 100%;
       background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-      color: var(--light);
+      color: var(--ivory-white);
       padding: 20px 15px 15px;
       transform: translateY(100%);
       transition: var(--transition);
@@ -410,7 +578,7 @@
       opacity: 1;
     }
     
-    /* NEW: Image Preview Container */
+    /* Image Preview Container */
     .image-preview-container {
       position: fixed;
       top: 50%;
@@ -421,7 +589,7 @@
       max-height: 85vh;
       background: rgba(20, 20, 20, 0.95);
       border-radius: 15px;
-      box-shadow: 0 0 40px rgba(255, 204, 0, 0.5);
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
       z-index: 2000;
       opacity: 0;
       visibility: hidden;
@@ -444,7 +612,7 @@
       align-items: center;
       padding: 15px 20px;
       background: rgba(0, 0, 0, 0.7);
-      border-bottom: 1px solid rgba(255, 204, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
     }
     
     .preview-title {
@@ -455,8 +623,8 @@
     }
     
     .close-preview {
-      background: rgba(255, 204, 0, 0.9);
-      color: var(--dark);
+      background: rgba(255, 215, 0, 0.9);
+      color: var(--dark-bg);
       width: 35px;
       height: 35px;
       border-radius: 50%;
@@ -466,7 +634,7 @@
       font-size: 1.2rem;
       cursor: pointer;
       transition: var(--transition);
-      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+      box-shadow: 0 0 10px var(--neon-yellow-glow);
       border: none;
     }
     
@@ -478,6 +646,7 @@
     .preview-content {
       flex: 1;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 20px;
@@ -487,19 +656,36 @@
     
     .preview-image {
       max-width: 100%;
-      max-height: 100%;
+      max-height: 60vh;
       object-fit: contain;
       border-radius: 8px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
       transition: transform 0.3s ease;
     }
     
+    .preview-description {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 8px;
+      color: var(--ivory-white);
+      text-align: center;
+      font-size: 1.2rem;
+      max-width: 90%;
+      line-height: 1.5;
+      border-left: 4px solid var(--neon-yellow);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
     .nav-preview {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(255, 204, 0, 0.8);
-      color: var(--dark);
+      background: rgba(255, 215, 0, 0.8);
+      color: var(--dark-bg);
       width: 50px;
       height: 50px;
       border-radius: 50%;
@@ -509,7 +695,7 @@
       font-size: 1.5rem;
       cursor: pointer;
       transition: var(--transition);
-      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+      box-shadow: 0 0 10px var(--neon-yellow-glow);
       z-index: 10;
       border: none;
     }
@@ -533,11 +719,11 @@
       align-items: center;
       padding: 15px 20px;
       background: rgba(0, 0, 0, 0.7);
-      border-top: 1px solid rgba(255, 204, 0, 0.3);
+      border-top: 1px solid rgba(255, 215, 0, 0.3);
     }
     
     .image-counter {
-      color: var(--light);
+      color: var(--ivory-white);
       font-size: 1rem;
       text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
     }
@@ -548,8 +734,8 @@
     }
     
     .zoom-btn {
-      background: rgba(255, 204, 0, 0.8);
-      color: var(--dark);
+      background: rgba(255, 215, 0, 0.8);
+      color: var(--dark-bg);
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -559,7 +745,7 @@
       font-size: 1rem;
       cursor: pointer;
       transition: var(--transition);
-      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+      box-shadow: 0 0 10px var(--neon-yellow-glow);
       border: none;
       outline: none;
     }
@@ -570,11 +756,11 @@
     }
     
     .reset-zoom {
-      background: rgba(255, 100, 0, 0.8);
+      background: rgba(220, 20, 60, 0.8);
     }
     
     .reset-zoom:hover {
-      background: #ff6600;
+      background: var(--crimson-red);
     }
     
     /* Image Preview Overlay Background */
@@ -601,7 +787,7 @@
       text-align: center;
       padding: 50px 20px;
       margin-top: 80px;
-      border-top: 1px solid rgba(255, 204, 0, 0.2);
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
       background: rgba(0, 0, 0, 0.3);
       border-radius: 20px;
       box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
@@ -618,7 +804,7 @@
       display: inline-block;
       width: 50px;
       height: 50px;
-      border: 3px solid rgba(255, 204, 0, 0.3);
+      border: 3px solid rgba(255, 215, 0, 0.3);
       border-radius: 50%;
       border-top-color: var(--neon-yellow);
       animation: spin 1s ease-in-out infinite;
@@ -631,8 +817,21 @@
     /* Responsive Styles */
     @media (max-width: 1024px) {
       .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        grid-gap: 3px;
+        grid-auto-rows: 220px;
+      }
+      
+      .span-1 {
+        min-height: 220px;
+      }
+      
+      .span-2 {
+        min-height: 220px;
+      }
+      
+      .span-3 {
+        min-height: 440px;
       }
       
       .image-preview-container {
@@ -707,8 +906,21 @@
       }
       
       .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        grid-gap: 2px;
+        grid-auto-rows: 180px;
+      }
+      
+      .span-1 {
+        min-height: 180px;
+      }
+      
+      .span-2 {
+        min-height: 180px;
+      }
+      
+      .span-3 {
+        min-height: 360px;
       }
       
       .image-preview-container {
@@ -745,6 +957,11 @@
         font-size: 0.8rem;
         padding: 15px 12px 10px;
       }
+      
+      .preview-description {
+        font-size: 1.1rem;
+        padding: 12px;
+      }
     }
     
     @media (max-width: 576px) {
@@ -777,13 +994,25 @@
       }
       
       .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-gap: 2px;
+        grid-auto-rows: 150px;
+      }
+      
+      .span-1 {
+        min-height: 150px;
+      }
+      
+      .span-2 {
+        min-height: 150px;
+      }
+      
+      .span-3 {
+        min-height: 300px;
       }
       
       .gallery-item {
-        border-radius: 12px;
-        border-width: 2px;
+        border-radius: 8px;
       }
       
       .image-preview-container {
@@ -825,6 +1054,11 @@
         font-size: 0.75rem;
         padding: 12px 10px 8px;
       }
+      
+      .preview-description {
+        font-size: 1rem;
+        padding: 10px;
+      }
     }
   </style>
 </head>
@@ -836,12 +1070,11 @@
         <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
       </div>
         <ul class="nav-menu">
-            <!-- UPDATED LINKS -->
             <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
             <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
             <li class="nav-item"><a href="index.html#reboot-explanation" class="nav-link">REBOOT 40</a></li>
             <li class="nav-item"><a href="memories.php" class="nav-link ">Memories</a></li>
-            <li class="nav-item"><a href="galleryhtml" class="nav-link active">Gallery</a></li>
+            <li class="nav-item"><a href="gallery.html" class="nav-link active">Gallery</a></li>
             <li class="nav-item"><a href="index.html#schedule" class="nav-link">Schedule</a></li>
             <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
             <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
@@ -852,64 +1085,52 @@
     </div>
   </nav>
 
-  <!-- Parallax Background -->
+  <!-- Parallax Background (mixed images) -->
   <div class="wrapper-images">
-    <!-- Background images - using your 13 images duplicated -->
     <div class="images-line">
       <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C1.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t1.jpg')"></div>
       <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C2.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t2.jpg')"></div>
       <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C3.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t3.jpg')"></div>
       <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C4.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t5.jpg')"></div>
     </div>
 
     <div class="images-line">
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C5.jpeg')"></div>
       <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t6.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C7.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E6.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C8.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t2.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E7.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C9.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E8.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C10.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t1.jpg')"></div>
     </div>
     
     <div class="images-line">
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t3.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C11.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E9.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/16-19.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t7.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E10.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C13.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C15.jpg')"></div>
       <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C17.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t6.jpg')"></div>
     </div>
-	
-
   </div>
     
   <!-- Content Container -->
@@ -925,163 +1146,34 @@
     <!-- Section Tabs -->
     <div class="container">
       <div class="section-tabs">
-        <div class="tab active" data-section="events">Events</div>
-        <div class="tab" data-section="celebrations">Celebrations</div>
+        <div class="tab active" data-section="celebrations">Alumni Groups</div>
+        <div class="tab" data-section="events">Events</div>
         <div class="tab" data-section="talks">Talks</div>
       </div>
     </div>
 
     <!-- Gallery Grid -->
     <div class="container">
-      <!-- Events Section -->
-      <div class="gallery-section" id="events">
-        <div class="gallery-grid">
-          <!-- Images with descriptions -->
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E5.jpg" alt="Event Image 5">
-            <div class="image-description">Inauguration ceremony of REBOOT 40 with distinguished guests and alumni</div>
+      <!-- Celebrations Section (Now Alumni Groups) -->
+      <div class="gallery-section" id="celebrations">
+        <div class="collage-container">
+          <div class="gallery-grid" id="celebrations-grid">
           </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E6.jpg" alt="Event Image 4">
-            <div class="image-description">Cultural performance showcasing traditional dance during the alumni meet</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E1.jpg" alt="Event Image 1">
-            <div class="image-description">Keynote address by prominent alumni in the main auditorium</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E2.jpg" alt="Event Image 2">
-            <div class="image-description">Networking session where alumni reconnect after decades</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E7.jpg" alt="Event Image 5">
-            <div class="image-description">Award ceremony honoring outstanding alumni achievements</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E8.jpg" alt="Event Image 6">
-            <div class="image-description">Interactive workshop on emerging technologies</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E3.jpg" alt="Event Image 3">
-            <div class="image-description">Campus tour showcasing new infrastructure developments</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E4.jpg" alt="Event Image 4">
-            <div class="image-description">Panel discussion on industry-academia collaboration</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E9.jpg" alt="Event Image 6">
-            <div class="image-description">Student-alumni interaction session sharing career guidance</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/EVENTS/E10.jpg" alt="Event Image 6">
-            <div class="image-description">Grand finale with cultural performances and dinner</div>
-          </div>
-		  
         </div>
       </div>
 
-      <!-- Celebrations Section -->
-      <div class="gallery-section" id="celebrations" style="display: none;">
-        <div class="gallery-grid">
-          <!-- Images with descriptions -->
-          <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C1.jpeg" alt="Celebration Image 1">
-            <div class="image-description">Cutting the anniversary cake with college dignitaries</div>
+      <!-- Events Section -->
+      <div class="gallery-section" id="events" style="display: none;">
+        <div class="collage-container">
+          <div class="gallery-grid" id="events-grid">
           </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C2.jpeg" alt="Celebration Image 1">
-            <div class="image-description">Traditional lamp lighting ceremony to mark the occasion</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C3.jpeg" alt="Celebration Image 1">
-            <div class="image-description">Alumni sharing nostalgic memories from their college days</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C4.jpeg" alt="Celebration Image 1">
-            <div class="image-description">Cultural fest performances by current students</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C5.jpeg" alt="Celebration Image 1">
-            <div class="image-description">Felicitation of senior alumni with lifetime achievement awards</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/16-19.jpg" alt="Celebration Image 1">
-            <div class="image-description">Heartfelt reunion of old classmates cherishing golden memories</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C7.jpg" alt="Celebration Image 1">
-            <div class="image-description">Sharing cherished stories from the early days of the institution</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C8.jpg" alt="Celebration Image 1">
-            <div class="image-description">Honoring beloved retired professors for their timeless guidances</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C9.jpg" alt="Celebration Image 1">
-            <div class="image-description">A walk down memory lane through a vintage photo exhibition</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C10.jpg" alt="Celebration Image 1">
-            <div class="image-description">Screening of archival college videos capturing unforgettable moments</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C11.jpg" alt="Celebration Image 1">
-            <div class="image-description">Alumni sharing emotional testimonies of their journey since graduation</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C12.jpg" alt="Celebration Image 1">
-            <div class="image-description">Reunion dinner filled with laughter, stories, and timeless friendships</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C13.jpg" alt="Celebration Image 1">
-            <div class="image-description">Group photo recreation of iconic old college pictures</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C15.jpg" alt="Celebration Image 1">
-            <div class="image-description">Campus tour reminding alumni of the places that shaped their dreams</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C14.jpg" alt="Celebration Image 1">
-            <div class="image-description">Infinity performances reviving classic college anthems and melodies</div>
-          </div>
-		  
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/CELEBRATION/C17.jpg" alt="Celebration Image 1">
-            <div class="image-description">Emotional farewell ceremony celebrating the bond that time could never fade</div>
-          </div>
-		  
         </div>
       </div>
 
       <!-- Talks Section -->
       <div class="gallery-section" id="talks" style="display: none;">
-        <div class="gallery-grid">
-          <!-- Images with descriptions -->
-          <div class="gallery-item">
-            <img src="assets/images/gallery/TALK/t1.jpg" alt="TALK Image 1">
-            <div class="image-description">Industry expert discussing future of artificial intelligence</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/TALK/t2.jpg" alt="Talk Image 2">
-            <div class="image-description">Alumni entrepreneur sharing startup journey and insights</div>
-          </div>
-          <div class="gallery-item">
-            <img src="assets/images/gallery/TALK/T3.jpg" alt="Talk Image 3">
-            <div class="image-description">Technical symposium on sustainable engineering solutions</div>
-          </div>
-          
-          <div class="gallery-item">
-            <img src="assets/images/gallery/TALK/T5.jpg" alt="Talk Image 5">
-            <div class="image-description">Research presentation by faculty and student collaborations</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/TALK/t6.jpg" alt="Talk Image 5">
-            <div class="image-description">Research presentation by faculty and student collaborations</div>
-          </div>
-		  <div class="gallery-item">
-            <img src="assets/images/gallery/TALK/t7.jpg" alt="Talk Image 5">
-            <div class="image-description">Research presentation by faculty and student collaborations</div>
+        <div class="collage-container">
+          <div class="gallery-grid" id="talks-grid">
           </div>
         </div>
       </div>
@@ -1095,7 +1187,7 @@
     </footer>
   </div>
 
-  <!-- NEW: Image Preview Container (Hidden by default) -->
+  <!-- Image Preview Container (Hidden by default) -->
   <div class="image-preview-overlay"></div>
   <div class="image-preview-container">
     <div class="preview-header">
@@ -1106,6 +1198,7 @@
     </div>
     <div class="preview-content">
       <img class="preview-image" src="" alt="Preview Image">
+      <div class="preview-description"></div>
       <button class="nav-preview prev">
         <i class="fas fa-chevron-left"></i>
       </button>
@@ -1130,22 +1223,150 @@
   </div>
 
   <script>
-    // Tab functionality
+    // Weighted random function
+    var weightedRand = function(spec) {
+      var i, sum = 0, r = Math.random();
+      for (i in spec) {
+        sum += spec[i];
+        if (r <= sum) return i;
+      }
+    };
+    
+    // Image data for each section
+    const imageData = {
+      celebrations: [
+        { src: 'assets/images/gallery/CELEBRATION/C1.jpeg', alt: 'Alumni Group 1', description: 'Batch of 1995 reunion after 25 years' },
+        { src: 'assets/images/gallery/CELEBRATION/C2.jpeg', alt: 'Alumni Group 2', description: 'Department of Computer Science alumni gathering' },
+        { src: 'assets/images/gallery/CELEBRATION/C3.jpeg', alt: 'Alumni Group 3', description: 'Women alumni association annual meet' },
+        { src: 'assets/images/gallery/CELEBRATION/C4.jpeg', alt: 'Alumni Group 4', description: 'Golden jubilee batch reunion celebration' },
+        { src: 'assets/images/gallery/CELEBRATION/C5.jpeg', alt: 'Alumni Group 5', description: 'International alumni chapter meet' },
+        { src: 'assets/images/gallery/CELEBRATION/16-19.jpg', alt: 'Alumni Group 6', description: '2016-19 batch reunion at campus' },
+        { src: 'assets/images/gallery/CELEBRATION/C7.jpg', alt: 'Alumni Group 7', description: 'Alumni entrepreneurs networking event' },
+        { src: 'assets/images/gallery/CELEBRATION/C8.jpg', alt: 'Alumni Group 8', description: 'Alumni faculty members reunion' },
+        { src: 'assets/images/gallery/CELEBRATION/C9.jpg', alt: 'Alumni Group 9', description: 'Mechanical engineering alumni gathering' },
+        { src: 'assets/images/gallery/CELEBRATION/C10.jpg', alt: 'Alumni Group 10', description: 'Alumni sports meet participants' },
+        { src: 'assets/images/gallery/CELEBRATION/C11.jpg', alt: 'Alumni Group 11', description: 'Alumni cultural performers group' },
+        { src: 'assets/images/gallery/CELEBRATION/C12.jpg', alt: 'Alumni Group 12', description: 'Alumni association committee members' },
+        { src: 'assets/images/gallery/CELEBRATION/C13.jpg', alt: 'Alumni Group 13', description: 'Silver jubilee batch reunion group' },
+        { src: 'assets/images/gallery/CELEBRATION/C15.jpg', alt: 'Alumni Group 14', description: 'Alumni mentorship program participants' },
+        { src: 'assets/images/gallery/CELEBRATION/C14.jpg', alt: 'Alumni Group 15', description: 'Alumni innovation challenge winners' },
+        { src: 'assets/images/gallery/CELEBRATION/C17.jpg', alt: 'Alumni Group 16', description: 'Alumni global summit attendees' }
+      ],
+      events: [
+        { src: 'assets/images/gallery/EVENTS/E5.jpg', alt: 'Event Image 5', description: 'Inauguration ceremony of REBOOT 40 with distinguished guests and alumni' },
+        { src: 'assets/images/gallery/EVENTS/E6.jpg', alt: 'Event Image 4', description: 'Cultural performance showcasing traditional dance during the alumni meet' },
+        { src: 'assets/images/gallery/EVENTS/E1.jpg', alt: 'Event Image 1', description: 'Keynote address by prominent alumni in the main auditorium' },
+        { src: 'assets/images/gallery/EVENTS/E2.jpg', alt: 'Event Image 2', description: 'Networking session where alumni reconnect after decades' },
+        { src: 'assets/images/gallery/EVENTS/E7.jpg', alt: 'Event Image 5', description: 'Award ceremony honoring outstanding alumni achievements' },
+        { src: 'assets/videos/gallery/event-video-1.mp4', alt: 'Event Video 1', description: 'Highlights from the alumni cultural festival', isVideo: true },
+        { src: 'assets/images/gallery/EVENTS/E8.jpg', alt: 'Event Image 6', description: 'Interactive workshop on emerging technologies' },
+        { src: 'assets/images/gallery/EVENTS/E3.jpg', alt: 'Event Image 3', description: 'Campus tour showcasing new infrastructure developments' },
+        { src: 'assets/images/gallery/EVENTS/E4.jpg', alt: 'Event Image 4', description: 'Panel discussion on industry-academia collaboration' },
+        { src: 'assets/videos/gallery/event-video-2.mp4', alt: 'Event Video 2', description: 'REBOOT 40 closing ceremony moments', isVideo: true },
+        { src: 'assets/images/gallery/EVENTS/E9.jpg', alt: 'Event Image 6', description: 'Student-alumni interaction session sharing career guidance' },
+        { src: 'assets/images/gallery/EVENTS/E10.jpg', alt: 'Event Image 6', description: 'Grand finale with cultural performances and dinner' }
+      ],
+      talks: [
+        { src: 'assets/images/gallery/TALK/t1.jpg', alt: 'Talk Image 1', description: 'Industry expert discussing future of artificial intelligence' },
+        { src: 'assets/images/gallery/TALK/t2.jpg', alt: 'Talk Image 2', description: 'Alumni entrepreneur sharing startup journey and insights' },
+        { src: 'assets/images/gallery/TALK/T3.jpg', alt: 'Talk Image 3', description: 'Technical symposium on sustainable engineering solutions' },
+        { src: 'assets/images/gallery/TALK/T5.jpg', alt: 'Talk Image 5', description: 'Research presentation by faculty and student collaborations' },
+        { src: 'assets/images/gallery/TALK/t6.jpg', alt: 'Talk Image 6', description: 'Innovation forum featuring alumni thought leaders' },
+        { src: 'assets/images/gallery/TALK/t7.jpg', alt: 'Talk Image 7', description: 'Career development workshop for current students' }
+      ]
+    };
+    
+    // Generate gallery items dynamically WITHOUT duplicates
+    function generateGalleryItems(sectionId) {
+      const grid = document.getElementById(`${sectionId}-grid`);
+      const originalData = imageData[sectionId];
+      
+      grid.innerHTML = '';
+      
+      // create shuffled list of indices so each image used exactly once
+      const indices = originalData.map((_, i) => i);
+      indices.sort(() => Math.random() - 0.5);
+      
+      indices.forEach(idx => {
+        const itemData = originalData[idx];
+        
+        // 1 = square, 2 = wide rectangle, 3 = tall rectangle
+        const span = weightedRand({1:0.7, 2:0.15, 3:0.15});
+        const colorClass = 'c-' + weightedRand({1:0.2, 2:0.2, 3:0.2, 4:0.2, 5:0.2});
+        
+        const item = document.createElement('div');
+        item.className = `gallery-item span-${span} ${colorClass}`;
+        
+        // border + trails
+        const border = document.createElement('div');
+        border.className = 'border';
+        item.appendChild(border);
+        
+        ['top','right','bottom','left'].forEach(side => {
+          const trail = document.createElement('div');
+          trail.className = `trail trail-${side}`;
+          item.appendChild(trail);
+        });
+        
+        // media
+        if (itemData.isVideo) {
+          const video = document.createElement('video');
+          video.src = itemData.src;
+          video.alt = itemData.alt;
+          video.muted = true;
+          video.loop = true;
+          item.classList.add('video');
+          item.appendChild(video);
+          
+          const videoIcon = document.createElement('div');
+          videoIcon.className = 'video-icon';
+          item.appendChild(videoIcon);
+          
+          item.addEventListener('mouseenter', () => video.play());
+          item.addEventListener('mouseleave', () => {
+            video.pause();
+            video.currentTime = 0;
+          });
+        } else {
+          const img = document.createElement('img');
+          img.src = itemData.src;
+          img.alt = itemData.alt;
+          item.appendChild(img);
+        }
+        
+        // description
+        const description = document.createElement('div');
+        description.className = 'image-description';
+        description.textContent = itemData.description;
+        item.appendChild(description);
+        
+        // click preview
+        item.addEventListener('click', function() {
+          openPreview(sectionId, idx);
+        });
+        
+        grid.appendChild(item);
+      });
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
+      // initial gallery
+      generateGalleryItems('celebrations');
+      
       const tabs = document.querySelectorAll('.tab');
       const sections = document.querySelectorAll('.gallery-section');
       
       tabs.forEach(tab => {
         tab.addEventListener('click', function() {
-          // Update active tab
           tabs.forEach(t => t.classList.remove('active'));
           this.classList.add('active');
           
-          // Show selected section
           const sectionId = this.getAttribute('data-section');
           sections.forEach(section => {
             section.style.display = section.id === sectionId ? 'block' : 'none';
           });
+          
+          generateGalleryItems(sectionId);
         });
       });
       
@@ -1160,7 +1381,6 @@
           : '<i class="fas fa-bars"></i>';
       });
       
-      // Close mobile menu when clicking on a link
       const navLinks = document.querySelectorAll('.nav-link');
       navLinks.forEach(link => {
         link.addEventListener('click', function() {
@@ -1180,10 +1400,10 @@
       });
       
       // Image Preview Functionality
-      const galleryItems = document.querySelectorAll('.gallery-item');
       const previewOverlay = document.querySelector('.image-preview-overlay');
       const previewContainer = document.querySelector('.image-preview-container');
       const previewImage = previewContainer.querySelector('.preview-image');
+      const previewDescription = previewContainer.querySelector('.preview-description');
       const closePreview = previewContainer.querySelector('.close-preview');
       const prevButton = previewContainer.querySelector('.prev');
       const nextButton = previewContainer.querySelector('.next');
@@ -1192,87 +1412,62 @@
       const zoomOutBtn = previewContainer.querySelector('.zoom-out');
       const resetZoomBtn = previewContainer.querySelector('.reset-zoom');
       
-      let currentImages = [];
+      let currentSection = 'celebrations';
       let currentIndex = 0;
       let currentScale = 1;
       const minScale = 0.5;
       const maxScale = 3;
       const scaleStep = 0.25;
       
-      // Add click event to all gallery items
-      galleryItems.forEach(item => {
-        item.addEventListener('click', function() {
-          const section = this.closest('.gallery-section');
-          const sectionImages = section.querySelectorAll('.gallery-item img');
-          
-          // Get all images in current section
-          currentImages = Array.from(sectionImages).map(img => ({
-            src: img.src,
-            alt: img.alt
-          }));
-          
-          // Find clicked image index
-          const clickedImage = this.querySelector('img');
-          currentIndex = Array.from(sectionImages).indexOf(clickedImage);
-          
-          // Reset zoom when opening new image
-          currentScale = 1;
-          
-          // Show preview
-          showPreview();
-        });
-      });
-      
-      // Show preview with current image
-      function showPreview() {
-        if (currentImages.length > 0) {
-          // Create a temporary image to get dimensions
-          const tempImg = new Image();
-          tempImg.src = currentImages[currentIndex].src;
-          
-          tempImg.onload = function() {
-            // Set the image source
-            previewImage.src = currentImages[currentIndex].src;
-            previewImage.alt = currentImages[currentIndex].alt;
-            
-            // Apply initial scale
-            previewImage.style.transform = `scale(${currentScale})`;
-            imageCounter.textContent = `${currentIndex + 1} / ${currentImages.length}`;
-            
-            // Show preview container and overlay
-            previewContainer.classList.add('active');
-            previewOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-          };
-        }
-      }
+      // expose to global
+      window.openPreview = function(sectionId, index) {
+        currentSection = sectionId;
+        currentIndex = index;
+        currentScale = 1;
+        
+        const sectionData = imageData[sectionId];
+        const itemData = sectionData[index];
+        
+        previewImage.src = itemData.src;
+        previewImage.alt = itemData.alt;
+        
+        previewDescription.textContent = itemData.description;
+        previewDescription.style.display = 'block';
+        previewDescription.style.visibility = 'visible';
+        previewDescription.style.opacity = '1';
+        
+        previewImage.style.transform = `scale(${currentScale})`;
+        imageCounter.textContent = `${index + 1} / ${sectionData.length}`;
+        
+        previewContainer.classList.add('active');
+        previewOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
       
       // Close preview
       closePreview.addEventListener('click', function() {
         previewContainer.classList.remove('active');
         previewOverlay.classList.remove('active');
-        document.body.style.overflow = ''; // Re-enable scrolling
+        document.body.style.overflow = '';
       });
       
-      // Navigate to previous image
+      // Navigate prev
       prevButton.addEventListener('click', function() {
-        if (currentImages.length > 0) {
-          currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-          currentScale = 1; // Reset zoom when changing image
-          showPreview();
-        }
+        const sectionData = imageData[currentSection];
+        currentIndex = (currentIndex - 1 + sectionData.length) % sectionData.length;
+        currentScale = 1;
+        openPreview(currentSection, currentIndex);
       });
       
-      // Navigate to next image
+      // Navigate next
       nextButton.addEventListener('click', function() {
-        if (currentImages.length > 0) {
-          currentIndex = (currentIndex + 1) % currentImages.length;
-          currentScale = 1; // Reset zoom when changing image
-          showPreview();
-        }
+        const sectionData = imageData[currentSection];
+        currentIndex = (currentIndex + 1) % sectionData.length;
+        currentScale = 1;
+        openPreview(currentSection, currentIndex);
       });
       
-      // Zoom in functionality
+      // Zoom in
       zoomInBtn.addEventListener('click', function() {
         if (currentScale < maxScale) {
           currentScale += scaleStep;
@@ -1280,7 +1475,7 @@
         }
       });
       
-      // Zoom out functionality
+      // Zoom out
       zoomOutBtn.addEventListener('click', function() {
         if (currentScale > minScale) {
           currentScale -= scaleStep;
@@ -1288,17 +1483,17 @@
         }
       });
       
-      // Reset zoom functionality
+      // Reset zoom
       resetZoomBtn.addEventListener('click', function() {
         currentScale = 1;
         previewImage.style.transform = `scale(${currentScale})`;
       });
       
-      // Close preview on overlay click (outside image)
+      // Close on overlay click
       previewOverlay.addEventListener('click', function() {
         previewContainer.classList.remove('active');
         previewOverlay.classList.remove('active');
-        document.body.style.overflow = ''; // Re-enable scrolling
+        document.body.style.overflow = '';
       });
       
       // Keyboard navigation
