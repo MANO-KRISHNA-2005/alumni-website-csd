@@ -13,6 +13,10 @@
       padding: 0;
       box-sizing: border-box;
     }
+
+    html, body {
+      scroll-behavior: smooth;
+    }
     
     :root {
       --neon-yellow: #FFD700;
@@ -59,6 +63,7 @@
       overflow-x: hidden;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-overflow-scrolling: touch;
     }
     
     .container {
@@ -177,7 +182,7 @@
       text-shadow: 0 0 4px var(--neon-yellow-glow);
     }
 
-    /* Parallax Background */
+    /* Parallax Background (updated to use your real files) */
     .wrapper-images {
       position: fixed;
       top: 50%;
@@ -252,7 +257,7 @@
     .gallery-hero h1 {
       font-size: 4.5rem;
       margin-bottom: 20px;
-      color: var(--light);
+      color: var(--neon-white);
       text-shadow: 0 0 5px var(--neon-yellow-glow);
       letter-spacing: 3px;
       font-weight: 800;
@@ -338,21 +343,18 @@
       transform: translateY(-3px);
     }
     
-    /* Gallery Grid - NEW SQUARE SIZE + RECTANGLES */
+    /* Gallery Grid - SQUARE + RECTANGLES */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       grid-gap: 4px;
-      grid-auto-rows: 300px; /* base square size */
+      grid-auto-rows: 300px;
       grid-auto-flow: dense;
       position: relative;
       z-index: 2;
+      margin-bottom: 60px;
     }
     
-    /* span-1: square (1x1)
-       span-2: wide rectangle (2x1)
-       span-3: tall rectangle (1x2)
-    */
     .span-1 {
       grid-column-end: span 1;
       grid-row-end: span 1;
@@ -408,7 +410,6 @@
       }
     }
     
-    /* Border for Trail Animation */
     .gallery-item .border {
       position: absolute;
       inset: -8px;
@@ -418,7 +419,6 @@
       pointer-events: none;
     }
     
-    /* Trail Animation */
     .gallery-item .trail {
       width: 20px;
       height: 3px;
@@ -557,7 +557,7 @@
       transform: translate(-50%, -50%) scale(1.1);
     }
     
-    /* Image Description Overlay */
+    /* Image Description Overlay (hover) */
     .image-description {
       position: absolute;
       bottom: 0;
@@ -653,14 +653,24 @@
       overflow: hidden;
       position: relative;
     }
-    
-    .preview-image {
+
+    .preview-media {
+      max-width: 100%;
+      max-height: 60vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .preview-media img,
+    .preview-media video {
       max-width: 100%;
       max-height: 60vh;
       object-fit: contain;
       border-radius: 8px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
       transition: transform 0.3s ease;
+      display: block;
     }
     
     .preview-description {
@@ -799,7 +809,7 @@
       letter-spacing: 1px;
     }
     
-    /* Loading Animation */
+    /* Loading Animation (if you ever need it) */
     .loading {
       display: inline-block;
       width: 50px;
@@ -962,6 +972,14 @@
         font-size: 1.1rem;
         padding: 12px;
       }
+
+      /* lighter on mobile for smoother scroll */
+      .gallery-item {
+        animation: none;
+      }
+      .gallery-item .trail {
+        display: none;
+      }
     }
     
     @media (max-width: 576px) {
@@ -1060,6 +1078,42 @@
         padding: 10px;
       }
     }
+
+    /* TRUE FULLSCREEN PREVIEW FOR MOBILE (OVERRIDE) */
+    @media (max-width: 768px) {
+      .image-preview-container.active {
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        border: none !important;
+      }
+
+      .preview-content {
+        padding: 0 !important;
+      }
+
+      .preview-media img,
+      .preview-media video {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: contain !important;
+      }
+
+      .preview-description {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 0;
+      }
+
+      .nav-preview {
+        opacity: 0.85;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1069,67 +1123,67 @@
       <div class="logo">
         <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
       </div>
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-            <li class="nav-item"><a href="index.html#reboot-explanation" class="nav-link">REBOOT 40</a></li>
-            <li class="nav-item"><a href="memories.php" class="nav-link ">Memories</a></li>
-            <li class="nav-item"><a href="gallery.html" class="nav-link active">Gallery</a></li>
-            <li class="nav-item"><a href="index.html#schedule" class="nav-link">Schedule</a></li>
-            <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
-            <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
-        </ul>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="index.html#reboot-explanation" class="nav-link">REBOOT 40</a></li>
+        <li class="nav-item"><a href="memories.php" class="nav-link">Memories</a></li>
+        <li class="nav-item"><a href="gallery.html" class="nav-link active">Gallery</a></li>
+        <li class="nav-item"><a href="index.html#schedule" class="nav-link">Schedule</a></li>
+        <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
+        <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
+      </ul>
       <div class="hamburger">
         <i class="fas fa-bars"></i>
       </div>
     </div>
   </nav>
 
-  <!-- Parallax Background (mixed images) -->
+  <!-- Parallax Background -->
   <div class="wrapper-images">
     <div class="images-line">
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C1.jpeg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C2.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/2-5.png')"></div>
       <div class="line" style="background-image:url('assets/images/gallery/TALK/t2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C3.jpeg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C4.jpeg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E2.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/16-19.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/T3.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E3.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/17-20.png')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t4.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E4.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/19-21.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/T5.JPG')"></div>
     </div>
 
     <div class="images-line">
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C5.jpeg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/21-24.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E5.JPG')"></div>
       <div class="line" style="background-image:url('assets/images/gallery/TALK/t6.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C7.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E6.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C8.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t2.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E7.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C9.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E8.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C10.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t1.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/22-25.png')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E6.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/23-26.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/t7.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E7.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/pongal.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E8.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/infinity (2).jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/uma.JPG')"></div>
     </div>
     
     <div class="images-line">
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t3.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C11.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E9.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/16-19.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t7.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E10.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C13.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t5.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C15.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E1.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/C17.jpg')"></div>
-      <div class="line" style="background-image:url('assets/images/gallery/TALK/t6.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/alumni talk.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E9.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/16-19.jpeg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/alumni.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/E10.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/infinity (1).JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/CELEBRATION/23-26.jpg')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/TALK/pc.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/infinity (3).JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/infinity (4).JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/ayudha poojai.JPG')"></div>
+      <div class="line" style="background-image:url('assets/images/gallery/EVENTS/hackathon.jpeg')"></div>
     </div>
   </div>
     
@@ -1146,35 +1200,32 @@
     <!-- Section Tabs -->
     <div class="container">
       <div class="section-tabs">
-        <div class="tab active" data-section="celebrations">Alumni Groups</div>
+        <div class="tab active" data-section="celebrations">Celebrations</div>
         <div class="tab" data-section="events">Events</div>
         <div class="tab" data-section="talks">Talks</div>
       </div>
     </div>
 
-    <!-- Gallery Grid -->
+    <!-- Gallery Sections -->
     <div class="container">
-      <!-- Celebrations Section (Now Alumni Groups) -->
-      <div class="gallery-section" id="celebrations">
+      <!-- Celebrations Section (default visible) -->
+      <div class="gallery-section" id="celebrations" style="display: block;">
         <div class="collage-container">
-          <div class="gallery-grid" id="celebrations-grid">
-          </div>
+          <div class="gallery-grid" id="celebrations-grid"></div>
         </div>
       </div>
 
       <!-- Events Section -->
       <div class="gallery-section" id="events" style="display: none;">
         <div class="collage-container">
-          <div class="gallery-grid" id="events-grid">
-          </div>
+          <div class="gallery-grid" id="events-grid"></div>
         </div>
       </div>
 
       <!-- Talks Section -->
       <div class="gallery-section" id="talks" style="display: none;">
         <div class="collage-container">
-          <div class="gallery-grid" id="talks-grid">
-          </div>
+          <div class="gallery-grid" id="talks-grid"></div>
         </div>
       </div>
     </div>
@@ -1187,7 +1238,7 @@
     </footer>
   </div>
 
-  <!-- Image Preview Container (Hidden by default) -->
+  <!-- Image Preview Container -->
   <div class="image-preview-overlay"></div>
   <div class="image-preview-container">
     <div class="preview-header">
@@ -1197,7 +1248,7 @@
       </button>
     </div>
     <div class="preview-content">
-      <img class="preview-image" src="" alt="Preview Image">
+      <div class="preview-media"></div>
       <div class="preview-description"></div>
       <button class="nav-preview prev">
         <i class="fas fa-chevron-left"></i>
@@ -1223,105 +1274,184 @@
   </div>
 
   <script>
-    // Weighted random function
-    var weightedRand = function(spec) {
+    // Weighted random for span shapes & colors
+    function weightedRand(spec) {
       var i, sum = 0, r = Math.random();
       for (i in spec) {
         sum += spec[i];
         if (r <= sum) return i;
       }
-    };
+    }
     
-    // Image data for each section
+    // REAL image/video data using your file list
     const imageData = {
       celebrations: [
-        { src: 'assets/images/gallery/CELEBRATION/C1.jpeg', alt: 'Alumni Group 1', description: 'Batch of 1995 reunion after 25 years' },
-        { src: 'assets/images/gallery/CELEBRATION/C2.jpeg', alt: 'Alumni Group 2', description: 'Department of Computer Science alumni gathering' },
-        { src: 'assets/images/gallery/CELEBRATION/C3.jpeg', alt: 'Alumni Group 3', description: 'Women alumni association annual meet' },
-        { src: 'assets/images/gallery/CELEBRATION/C4.jpeg', alt: 'Alumni Group 4', description: 'Golden jubilee batch reunion celebration' },
-        { src: 'assets/images/gallery/CELEBRATION/C5.jpeg', alt: 'Alumni Group 5', description: 'International alumni chapter meet' },
-        { src: 'assets/images/gallery/CELEBRATION/16-19.jpg', alt: 'Alumni Group 6', description: '2016-19 batch reunion at campus' },
-        { src: 'assets/images/gallery/CELEBRATION/C7.jpg', alt: 'Alumni Group 7', description: 'Alumni entrepreneurs networking event' },
-        { src: 'assets/images/gallery/CELEBRATION/C8.jpg', alt: 'Alumni Group 8', description: 'Alumni faculty members reunion' },
-        { src: 'assets/images/gallery/CELEBRATION/C9.jpg', alt: 'Alumni Group 9', description: 'Mechanical engineering alumni gathering' },
-        { src: 'assets/images/gallery/CELEBRATION/C10.jpg', alt: 'Alumni Group 10', description: 'Alumni sports meet participants' },
-        { src: 'assets/images/gallery/CELEBRATION/C11.jpg', alt: 'Alumni Group 11', description: 'Alumni cultural performers group' },
-        { src: 'assets/images/gallery/CELEBRATION/C12.jpg', alt: 'Alumni Group 12', description: 'Alumni association committee members' },
-        { src: 'assets/images/gallery/CELEBRATION/C13.jpg', alt: 'Alumni Group 13', description: 'Silver jubilee batch reunion group' },
-        { src: 'assets/images/gallery/CELEBRATION/C15.jpg', alt: 'Alumni Group 14', description: 'Alumni mentorship program participants' },
-        { src: 'assets/images/gallery/CELEBRATION/C14.jpg', alt: 'Alumni Group 15', description: 'Alumni innovation challenge winners' },
-        { src: 'assets/images/gallery/CELEBRATION/C17.jpg', alt: 'Alumni Group 16', description: 'Alumni global summit attendees' }
+        {
+          src: 'assets/images/gallery/CELEBRATION/2-5.png',
+          alt: 'Batch of 2002–2005 celebration',
+          description: 'Batch of 2002–2005 • Nostalgic reunion of the early 2000s PSG Tech family.'
+        },
+        {
+          src: 'assets/images/gallery/CELEBRATION/16-19.jpeg',
+          alt: 'Batch of 2016–2019 celebration',
+          description: 'Batch of 2016–2019 • Laughs, inside jokes, and campus stories reborn.'
+        },
+        {
+          src: 'assets/images/gallery/CELEBRATION/17-20.png',
+          alt: 'Batch of 2017–2020 celebration',
+          description: 'Batch of 2017–2020 • A fun-filled gathering that felt just like college days again.'
+        },
+        {
+          src: 'assets/images/gallery/CELEBRATION/19-21.jpeg',
+          alt: 'Batch of 2019–2021 celebration',
+          description: 'Batch of 2019–2021 • Reunion filled with warmth, hugs, and shared memories.'
+        },
+        {
+          src: 'assets/images/gallery/CELEBRATION/21-24.jpg',
+          alt: 'Batch of 2021–2024 celebration',
+          description: 'Batch of 2021–2024 • Joyful celebration with smiles that lit up the campus.'
+        },
+        {
+          src: 'assets/images/gallery/CELEBRATION/22-25.png',
+          alt: 'Batch of 2022–2025 celebration',
+          description: 'Batch of 2022–2025 • Fun, laughter, and a colourful wave of reunion energy.'
+        },
+        {
+          src: 'assets/images/gallery/CELEBRATION/23-26.jpg',
+          alt: 'Batch of 2023–2026 celebration',
+          description: 'Batch of 2023–2026 • Young alumni reliving fresh memories with pure excitement.'
+        }
       ],
+
       events: [
-        { src: 'assets/images/gallery/EVENTS/E5.jpg', alt: 'Event Image 5', description: 'Inauguration ceremony of REBOOT 40 with distinguished guests and alumni' },
-        { src: 'assets/images/gallery/EVENTS/E6.jpg', alt: 'Event Image 4', description: 'Cultural performance showcasing traditional dance during the alumni meet' },
-        { src: 'assets/images/gallery/EVENTS/E1.jpg', alt: 'Event Image 1', description: 'Keynote address by prominent alumni in the main auditorium' },
-        { src: 'assets/images/gallery/EVENTS/E2.jpg', alt: 'Event Image 2', description: 'Networking session where alumni reconnect after decades' },
-        { src: 'assets/images/gallery/EVENTS/E7.jpg', alt: 'Event Image 5', description: 'Award ceremony honoring outstanding alumni achievements' },
-        { src: 'assets/videos/gallery/event-video-1.mp4', alt: 'Event Video 1', description: 'Highlights from the alumni cultural festival', isVideo: true },
-        { src: 'assets/images/gallery/EVENTS/E8.jpg', alt: 'Event Image 6', description: 'Interactive workshop on emerging technologies' },
-        { src: 'assets/images/gallery/EVENTS/E3.jpg', alt: 'Event Image 3', description: 'Campus tour showcasing new infrastructure developments' },
-        { src: 'assets/images/gallery/EVENTS/E4.jpg', alt: 'Event Image 4', description: 'Panel discussion on industry-academia collaboration' },
-        { src: 'assets/videos/gallery/event-video-2.mp4', alt: 'Event Video 2', description: 'REBOOT 40 closing ceremony moments', isVideo: true },
-        { src: 'assets/images/gallery/EVENTS/E9.jpg', alt: 'Event Image 6', description: 'Student-alumni interaction session sharing career guidance' },
-        { src: 'assets/images/gallery/EVENTS/E10.jpg', alt: 'Event Image 6', description: 'Grand finale with cultural performances and dinner' }
+        { src: 'assets/images/gallery/EVENTS/2V.mp4', isVideo: true, alt: 'Event highlights video', description: 'Event highlights • A fast-paced look at the most vibrant alumni moments.' },
+        { src: 'assets/images/gallery/EVENTS/ayudha poojai 2.JPG', alt: 'Ayudha Poojai ceremony view 2', description: 'Ayudha Poojai • Traditional prayers and blessings in the department.' },
+        { src: 'assets/images/gallery/EVENTS/ayudha poojai 3.JPG', alt: 'Ayudha Poojai ceremony view 3', description: 'Ayudha Poojai • Faculty and students coming together in devotion.' },
+        { src: 'assets/images/gallery/EVENTS/ayudha poojai.JPG', alt: 'Ayudha Poojai main ritual', description: 'Ayudha Poojai • A serene festive moment captured at PSG Tech.' },
+        { src: 'assets/images/gallery/EVENTS/c14.jpg', alt: 'Event candid moment', description: 'Alumni event • Casual candid moments that capture real happiness.' },
+        { src: 'assets/images/gallery/EVENTS/E1.JPG', alt: 'Auditorium event session', description: 'Auditorium session • A formal gathering filled with inspiring talks.' },
+        { src: 'assets/images/gallery/EVENTS/E2.JPG', alt: 'Panel or speaker session', description: 'Guest session • Alumni sharing experiences and life lessons.' },
+        { src: 'assets/images/gallery/EVENTS/E3.JPG', alt: 'Event stage address', description: 'Stage address • Keynote moments that set the tone for the event.' },
+        { src: 'assets/images/gallery/EVENTS/E4.JPG', alt: 'Interactive event session', description: 'Interactive event • Engaging discussions between alumni and students.' },
+        { src: 'assets/images/gallery/EVENTS/E5.JPG', alt: 'Award / memento ceremony', description: 'Recognition • Honouring contributions and celebrating achievements.' },
+        { src: 'assets/images/gallery/EVENTS/E6.JPG', alt: 'Group interaction event', description: 'Networking • Alumni reconnecting, bonding, and building new bridges.' },
+        { src: 'assets/images/gallery/EVENTS/E7.JPG', alt: 'Stage performance or event moment', description: 'Celebration • A lively moment on stage with cheers all around.' },
+        { src: 'assets/images/gallery/EVENTS/E8.JPG', alt: 'Audience and event ambience', description: 'Event ambience • A hall full of energy, chatter, and excitement.' },
+        { src: 'assets/images/gallery/EVENTS/E9.JPG', alt: 'Experience-sharing session', description: 'Experience sharing • Alumni guiding juniors with real-world stories.' },
+        { src: 'assets/images/gallery/EVENTS/E10.JPG', alt: 'Closing or group event shot', description: 'Closing ceremony • Smiles, applause, and a feeling of togetherness.' },
+        { src: 'assets/images/gallery/EVENTS/hackathon 2.HEIC', alt: 'Hackathon coding floor', description: 'Hackathon • Intense focus, code, and creative problem solving.' },
+        { src: 'assets/images/gallery/EVENTS/hackathon.jpeg', alt: 'Hackathon prize distribution', description: 'Hackathon winners • Celebrating innovation and hard work.' },
+        { src: 'assets/images/gallery/EVENTS/hod.JPG', alt: 'HOD address', description: 'HOD address • Words of wisdom that inspired everyone present.' },
+        { src: 'assets/images/gallery/EVENTS/infinity (1).JPG', alt: 'Infinity event outdoor', description: 'Infinity event • Outdoor fun and vibrant alumni-student bonding.' },
+        { src: 'assets/images/gallery/EVENTS/infinity (2).jpg', alt: 'Infinity activities', description: 'Infinity activities • Creative stalls, fun games, and buzzing energy.' },
+        { src: 'assets/images/gallery/EVENTS/infinity (3).JPG', alt: 'Infinity indoor event', description: 'Infinity cultural • Performances that lit up the evening.' },
+        { src: 'assets/images/gallery/EVENTS/infinity (4).JPG', alt: 'Infinity event art / display', description: 'Infinity showcase • Art, design, and imagination on display.' },
+        { src: 'assets/images/gallery/EVENTS/oientation 25-26.JPG', alt: 'Orientation 25–26 informal', description: 'Orientation 25–26 • Welcoming the new batch with warmth and guidance.' },
+        { src: 'assets/images/gallery/EVENTS/orientation 25-26.JPG', alt: 'Orientation 25–26 official', description: 'Orientation 25–26 • Official address, expectations, and inspiration.' },
+        { src: 'assets/images/gallery/EVENTS/pongal.JPG', alt: 'Pongal celebration', description: 'Pongal fest • Traditional celebrations with smiles and sweet memories.' },
+        { src: 'assets/images/gallery/EVENTS/Publicity team.MOV', isVideo: true, alt: 'Publicity team video', description: 'Publicity team • Behind-the-scenes fun and creative hustle.' },
+        { src: 'assets/images/gallery/EVENTS/V1.mp4', isVideo: true, alt: 'V1 event video', description: 'Event video • A joyful recap of performances and special moments.' }
       ],
       talks: [
-        { src: 'assets/images/gallery/TALK/t1.jpg', alt: 'Talk Image 1', description: 'Industry expert discussing future of artificial intelligence' },
-        { src: 'assets/images/gallery/TALK/t2.jpg', alt: 'Talk Image 2', description: 'Alumni entrepreneur sharing startup journey and insights' },
-        { src: 'assets/images/gallery/TALK/T3.jpg', alt: 'Talk Image 3', description: 'Technical symposium on sustainable engineering solutions' },
-        { src: 'assets/images/gallery/TALK/T5.jpg', alt: 'Talk Image 5', description: 'Research presentation by faculty and student collaborations' },
-        { src: 'assets/images/gallery/TALK/t6.jpg', alt: 'Talk Image 6', description: 'Innovation forum featuring alumni thought leaders' },
-        { src: 'assets/images/gallery/TALK/t7.jpg', alt: 'Talk Image 7', description: 'Career development workshop for current students' }
+        {
+          src: 'assets/images/gallery/TALK/alagappan.DNG',
+          alt: 'Alagappan alumni talk',
+          description: 'Alagappan • An inspiring alumni talk sharing a powerful journey.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/alumni talk.jpeg',
+          alt: 'General alumni talk session',
+          description: 'Alumni Talk • Heart-to-heart conversation about life after PSG Tech.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/alumni.JPG',
+          alt: 'Alumni interaction session',
+          description: 'Interactive session • Alumni answering questions and guiding juniors.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/pc.JPG',
+          alt: 'Formal talk session',
+          description: 'Technical session • Deep insights into trends and technology.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/t2.jpg',
+          alt: 'Guest speech on career',
+          description: 'Career talk • Practical advice on careers, skills, and growth.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/T3.JPG',
+          alt: 'Talk session T3',
+          description: 'Knowledge sharing • Alumni speaking about real-world challenges.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/t4.jpg',
+          alt: 'Talk session t4',
+          description: 'Motivational talk • Encouraging students to dream and execute.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/T5.JPG',
+          alt: 'Talk session T5',
+          description: 'Research and innovation • Discussions on exploring new ideas.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/t6.jpg',
+          alt: 'Talk session t6',
+          description: 'Guidance session • Alumni sharing personal lessons and tips.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/t7.jpg',
+          alt: 'Talk session t7',
+          description: 'Future-focused talk • Preparing the next generation for what\'s ahead.'
+        },
+        {
+          src: 'assets/images/gallery/TALK/uma.JPG',
+          alt: 'Uma alumni talk',
+          description: 'Uma • A heartfelt talk encouraging students to chase big ambitions.'
+        }
       ]
     };
-    
-    // Generate gallery items dynamically WITHOUT duplicates
+
+    // Generate gallery items with NO repetition
     function generateGalleryItems(sectionId) {
-      const grid = document.getElementById(`${sectionId}-grid`);
-      const originalData = imageData[sectionId];
-      
+      const grid = document.getElementById(sectionId + '-grid');
+      const data = imageData[sectionId];
+
       grid.innerHTML = '';
-      
-      // create shuffled list of indices so each image used exactly once
-      const indices = originalData.map((_, i) => i);
-      indices.sort(() => Math.random() - 0.5);
-      
-      indices.forEach(idx => {
-        const itemData = originalData[idx];
-        
-        // 1 = square, 2 = wide rectangle, 3 = tall rectangle
-        const span = weightedRand({1:0.7, 2:0.15, 3:0.15});
+
+      // Shuffle once so each item appears exactly once
+      const shuffled = [...data].sort(() => Math.random() - 0.5);
+
+      shuffled.forEach(itemData => {
+        const span = weightedRand({1: 0.65, 2: 0.2, 3: 0.15}); // layout shape
         const colorClass = 'c-' + weightedRand({1:0.2, 2:0.2, 3:0.2, 4:0.2, 5:0.2});
-        
         const item = document.createElement('div');
         item.className = `gallery-item span-${span} ${colorClass}`;
-        
-        // border + trails
+
+        // border + running trails
         const border = document.createElement('div');
         border.className = 'border';
         item.appendChild(border);
-        
-        ['top','right','bottom','left'].forEach(side => {
+
+        ['top', 'right', 'bottom', 'left'].forEach(side => {
           const trail = document.createElement('div');
           trail.className = `trail trail-${side}`;
           item.appendChild(trail);
         });
-        
-        // media
+
+        // media (image or video)
         if (itemData.isVideo) {
           const video = document.createElement('video');
           video.src = itemData.src;
-          video.alt = itemData.alt;
           video.muted = true;
           video.loop = true;
+          video.playsInline = true;
           item.classList.add('video');
           item.appendChild(video);
-          
+
           const videoIcon = document.createElement('div');
           videoIcon.className = 'video-icon';
           item.appendChild(videoIcon);
-          
+
           item.addEventListener('mouseenter', () => video.play());
           item.addEventListener('mouseleave', () => {
             video.pause();
@@ -1330,27 +1460,29 @@
         } else {
           const img = document.createElement('img');
           img.src = itemData.src;
-          img.alt = itemData.alt;
+          img.alt = itemData.alt || '';
+          img.loading = 'lazy';
           item.appendChild(img);
         }
-        
-        // description
+
+        // description overlay on hover
         const description = document.createElement('div');
         description.className = 'image-description';
-        description.textContent = itemData.description;
+        description.textContent = itemData.description || '';
         item.appendChild(description);
-        
-        // click preview
+
+        // click -> open preview (using index in original data array)
         item.addEventListener('click', function() {
-          openPreview(sectionId, idx);
+          const indexInData = imageData[sectionId].indexOf(itemData);
+          openPreview(sectionId, indexInData);
         });
-        
+
         grid.appendChild(item);
       });
     }
     
     document.addEventListener('DOMContentLoaded', function() {
-      // initial gallery
+      // Initial gallery: Celebrations first
       generateGalleryItems('celebrations');
       
       const tabs = document.querySelectorAll('.tab');
@@ -1363,7 +1495,7 @@
           
           const sectionId = this.getAttribute('data-section');
           sections.forEach(section => {
-            section.style.display = section.id === sectionId ? 'block' : 'none';
+            section.style.display = (section.id === sectionId) ? 'block' : 'none';
           });
           
           generateGalleryItems(sectionId);
@@ -1402,7 +1534,8 @@
       // Image Preview Functionality
       const previewOverlay = document.querySelector('.image-preview-overlay');
       const previewContainer = document.querySelector('.image-preview-container');
-      const previewImage = previewContainer.querySelector('.preview-image');
+      const previewTitle = previewContainer.querySelector('.preview-title');
+      const previewMedia = previewContainer.querySelector('.preview-media');
       const previewDescription = previewContainer.querySelector('.preview-description');
       const closePreview = previewContainer.querySelector('.close-preview');
       const prevButton = previewContainer.querySelector('.prev');
@@ -1418,8 +1551,9 @@
       const minScale = 0.5;
       const maxScale = 3;
       const scaleStep = 0.25;
+      let currentMediaElement = null;
       
-      // expose to global
+      // Open preview (global)
       window.openPreview = function(sectionId, index) {
         currentSection = sectionId;
         currentIndex = index;
@@ -1427,17 +1561,45 @@
         
         const sectionData = imageData[sectionId];
         const itemData = sectionData[index];
-        
-        previewImage.src = itemData.src;
-        previewImage.alt = itemData.alt;
-        
-        previewDescription.textContent = itemData.description;
-        previewDescription.style.display = 'block';
-        previewDescription.style.visibility = 'visible';
-        previewDescription.style.opacity = '1';
-        
-        previewImage.style.transform = `scale(${currentScale})`;
-        imageCounter.textContent = `${index + 1} / ${sectionData.length}`;
+
+        // clear old media
+        previewMedia.innerHTML = '';
+        currentMediaElement = null;
+
+        // create img or video
+        if (itemData.isVideo) {
+          const video = document.createElement('video');
+          video.src = itemData.src;
+          video.controls = true;
+          video.autoplay = true;
+          video.muted = true;           // autoplay friendly
+          video.playsInline = true;
+          video.setAttribute('playsinline', '');
+          currentMediaElement = video;
+          // auto-next after video ends
+          video.onended = () => {
+            const data = imageData[currentSection];
+            currentIndex = (currentIndex + 1) % data.length;
+            openPreview(currentSection, currentIndex);
+          };
+          previewMedia.appendChild(video);
+        } else {
+          const img = document.createElement('img');
+          img.src = itemData.src;
+          img.alt = itemData.alt || '';
+          currentMediaElement = img;
+          previewMedia.appendChild(img);
+        }
+
+        // Title + description
+        previewTitle.textContent = itemData.alt || '';
+        previewDescription.textContent = itemData.description || '';
+
+        if (currentMediaElement) {
+          currentMediaElement.style.transform = `scale(${currentScale})`;
+        }
+
+        imageCounter.textContent = (index + 1) + ' / ' + sectionData.length;
         
         previewContainer.classList.add('active');
         previewOverlay.classList.add('active');
@@ -1445,11 +1607,17 @@
       };
       
       // Close preview
-      closePreview.addEventListener('click', function() {
+      function closePreviewModal() {
         previewContainer.classList.remove('active');
         previewOverlay.classList.remove('active');
         document.body.style.overflow = '';
-      });
+        if (currentMediaElement && currentMediaElement.tagName === 'VIDEO') {
+          currentMediaElement.pause();
+        }
+      }
+
+      closePreview.addEventListener('click', closePreviewModal);
+      previewOverlay.addEventListener('click', closePreviewModal);
       
       // Navigate prev
       prevButton.addEventListener('click', function() {
@@ -1469,40 +1637,65 @@
       
       // Zoom in
       zoomInBtn.addEventListener('click', function() {
-        if (currentScale < maxScale) {
+        if (currentMediaElement && currentScale < maxScale) {
           currentScale += scaleStep;
-          previewImage.style.transform = `scale(${currentScale})`;
+          currentMediaElement.style.transform = `scale(${currentScale})`;
         }
       });
       
       // Zoom out
       zoomOutBtn.addEventListener('click', function() {
-        if (currentScale > minScale) {
+        if (currentMediaElement && currentScale > minScale) {
           currentScale -= scaleStep;
-          previewImage.style.transform = `scale(${currentScale})`;
+          currentMediaElement.style.transform = `scale(${currentScale})`;
         }
       });
       
       // Reset zoom
       resetZoomBtn.addEventListener('click', function() {
-        currentScale = 1;
-        previewImage.style.transform = `scale(${currentScale})`;
+        if (currentMediaElement) {
+          currentScale = 1;
+          currentMediaElement.style.transform = `scale(${currentScale})`;
+        }
       });
-      
-      // Close on overlay click
-      previewOverlay.addEventListener('click', function() {
-        previewContainer.classList.remove('active');
-        previewOverlay.classList.remove('active');
-        document.body.style.overflow = '';
+
+      // SWIPE NAVIGATION (mobile)
+      let touchStartX = 0;
+      previewContainer.addEventListener('touchstart', (e) => {
+        if (e.changedTouches && e.changedTouches.length > 0) {
+          touchStartX = e.changedTouches[0].screenX;
+        }
+      });
+
+      previewContainer.addEventListener('touchend', (e) => {
+        if (!previewContainer.classList.contains('active')) return;
+        if (e.changedTouches && e.changedTouches.length > 0) {
+          const touchEndX = e.changedTouches[0].screenX;
+          if (touchEndX < touchStartX - 50) {
+            nextButton.click();
+          } else if (touchEndX > touchStartX + 50) {
+            prevButton.click();
+          }
+        }
+      });
+
+      // DOUBLE TAP TO TOGGLE ZOOM
+      let lastTap = 0;
+      previewMedia.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          if (!currentMediaElement) return;
+          currentScale = (currentScale === 1) ? 2 : 1;
+          currentMediaElement.style.transform = `scale(${currentScale})`;
+        }
+        lastTap = now;
       });
       
       // Keyboard navigation
       document.addEventListener('keydown', function(e) {
         if (previewContainer.classList.contains('active')) {
           if (e.key === 'Escape') {
-            previewContainer.classList.remove('active');
-            previewOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+            closePreviewModal();
           } else if (e.key === 'ArrowLeft') {
             prevButton.click();
           } else if (e.key === 'ArrowRight') {
