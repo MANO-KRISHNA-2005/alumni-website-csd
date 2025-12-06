@@ -1,28 +1,54 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('=== DOM CONTENT LOADED ===');
-    
-    // Initialize all components
+
+    // Main initialization order
     initPreloader();
     initCountdown();
     initStatsCounter();
-    initAlumniSliderWithFallback(); // This now includes typing effect
-    initNavbar();
+
+    // Alumni Slider + Typing
+    initAlumniSliderWithFallback();
+    setTimeout(() => {
+        initAlumniTypingEffect();
+    }, 500);
+
+    // Core Website Components
+initNavbarScrollEffects(); // NEW: Enhanced navbar scroll effects
+    initMobileMenu();
     initScheduleTimeline();
     initGalleryCarousel();
-    initMobileMenu();
     initMapFix();
     initLogoSliders();
     initRebootAnimations();
     initCompaniesSection();
     initRebootTextAnimation();
     initAlumniMeetTypingEffect();
-    
-    // Initialize the typing effect for alumni section
-    initAlumniTypingEffect();
-    
-    console.log('REBOOT 40 Alumni Website initialized successfully');
+
+    // Utility Components
+    initScrollReveal?.();
+    initParallax?.();
+    initImageLoading?.();
+    initResizeHandler?.();
+    initMobileOptimizations?.();
+    initLazyLoading?.();
+    initPageTransitions?.();
+
+    // Scroll to Top Button
+    const button = document.querySelector('#go-to-top-btn');
+    const heroSection = document.querySelector('#home');
+    if (button && heroSection) {
+        button.addEventListener('click', () => {
+            heroSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    }
+
+    console.log('REBOOT Alumni website initialized successfully');
 });
-// Preloader functionality
+
+// Preloader functionality - UPDATED
 function initPreloader() {
     const splash = document.getElementById('splash');
     const mainContent = document.getElementById('main-content');
@@ -36,7 +62,44 @@ function initPreloader() {
         
         // Trigger page load animation
         document.body.classList.add('loaded');
+
+        // FIX: Refresh map safely after content is visible
+        const mapIframe = document.querySelector('.contact-map iframe');
+        if (mapIframe) {
+            // Store the original src
+            const originalSrc = mapIframe.src;
+            
+            // Force a clean reload without setting src to empty first
+            mapIframe.src = originalSrc;
+        }
     }, 3000);
+}
+
+// Fix for map loading issues - SIMPLIFIED VERSION
+function initMapFix() {
+    const mapIframe = document.querySelector('.contact-map iframe');
+    if (mapIframe) {
+        // ERROR FIX: Removed code that set src='' 
+        // That code was causing the "mini website" effect.
+        
+        // Add error handling just in case
+        mapIframe.addEventListener('error', function() {
+            console.error('Map failed to load');
+            const mapContainer = document.querySelector('.contact-map');
+            if (mapContainer) {
+                mapContainer.innerHTML = '<div class="map-error" style="color:white; display:flex; justify-content:center; align-items:center; height:100%;">Map could not be loaded. Please check your connection.</div>';
+            }
+        });
+        
+        // Add loading attribute for better performance
+        mapIframe.setAttribute('loading', 'lazy');
+        
+        // Add some additional attributes to help with mobile rendering
+        mapIframe.setAttribute('frameborder', '0');
+        mapIframe.setAttribute('scrolling', 'no');
+        mapIframe.setAttribute('marginheight', '0');
+        mapIframe.setAttribute('marginwidth', '0');
+    }
 }
 
 // Enhanced mobile menu functionality
@@ -103,157 +166,20 @@ function initMobileMenu() {
 }
 
 // Navigation functionality
-function initNavbar() {
+function initNavbarScrollEffects() {
     const navbar = document.querySelector('.navbar');
-    const navLinks = document.querySelectorAll('.nav-link');
     
-    console.log('Initializing navigation...');
+    if (!navbar) return;
     
-    // Smooth scrolling for anchor links with enhanced error handling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            console.log('Navigation clicked:', targetId);
-            
-            if (targetId === '#') return;
-            
-            // Remove # from the beginning
-            const cleanTargetId = targetId.substring(1);
-            
-            // Try multiple methods to find the target element
-            let targetElement = null;
-            
-            // Method 1: Direct ID selector
-            targetElement = document.querySelector(targetId);
-            
-            // Method 2: ID selector with #
-            if (!targetElement) {
-                targetElement = document.querySelector(`#${cleanTargetId}`);
-            }
-            
-            // Method 3: Class selector
-            if (!targetElement) {
-                targetElement = document.querySelector(`.${cleanTargetId}`);
-            }
-            
-            // Method 4: Data attribute
-            if (!targetElement) {
-                targetElement = document.querySelector(`[data-section="${cleanTargetId}"]`);
-            }
-            
-            // Method 5: Find section with matching ID
-            if (!targetElement) {
-                const sections = document.querySelectorAll('section');
-                sections.forEach(section => {
-                    if (section.id === cleanTargetId) {
-                        targetElement = section;
-                    }
-                });
-            }
-            
-            if (targetElement) {
-                console.log('Target found:', targetElement);
-                
-                // Get navbar height
-                const navbarHeight = navbar ? navbar.offsetHeight : 80;
-                
-                // Calculate target position with better accuracy
-                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
-                
-                // Scroll to target with multiple fallbacks
-                try {
-                    // Method 1: Modern smooth scroll
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                } catch (error) {
-                    // Method 2: Fallback for older browsers
-                    window.scrollTo(0, targetPosition);
-                }
-                
-                // Method 3: Element scrollIntoView as final fallback
-                setTimeout(() => {
-                    if (window.pageYOffset !== targetPosition) {
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                }, 500);
-                
-                // Update active nav link
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                // Close mobile menu if open
-                const navMenu = document.querySelector('.nav-menu');
-                const hamburger = document.querySelector('.hamburger');
-                if (navMenu && navMenu.classList.contains('active')) {
-                    navMenu.classList.remove('active');
-                    document.body.style.overflow = '';
-                    if (hamburger) {
-                        const icon = hamburger.querySelector('i');
-                        if (icon) {
-                            icon.className = 'fas fa-bars';
-                        }
-                    }
-                }
-                
-            } else {
-                console.error('Target element not found for:', targetId);
-                console.log('Available sections:', Array.from(document.querySelectorAll('section[id]')).map(s => s.id));
-                
-                // Debug all possible selectors
-                console.log('Tried selectors:', {
-                    original: targetId,
-                    id: `#${cleanTargetId}`,
-                    class: `.${cleanTargetId}`,
-                    data: `[data-section="${cleanTargetId}"]`
-                });
-            }
-        });
-    });
-    
-    // Update active nav link on scroll
-    function updateActiveNavLink() {
-        const sections = document.querySelectorAll('section[id]');
-        const scrollPosition = window.pageYOffset + 100;
-        
-        let currentSection = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
-            
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                currentSection = sectionId;
-            }
-        });
-        
-        if (currentSection) {
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${currentSection}`) {
-                    link.classList.add('active');
-                }
-            });
+    // Only handle the background color transparency
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
         }
-    }
-    
-    // Update active link on scroll
-    window.addEventListener('scroll', updateActiveNavLink);
-    
-    // Initial update
-    setTimeout(updateActiveNavLink, 100);
-    
-    console.log('Navigation initialized successfully');
+    });
 }
-
 // Countdown timer
 function initCountdown() {
     const countdownElement = document.getElementById('countdown');
@@ -787,43 +713,7 @@ function initAlumniSliderWithFallback() {
     return initAlumniSlider();
 }
 
-// CLEAN Main Initialization
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('=== CLEAN DOM INIT ===');
-    
-    // Initialize components in order
-    initPreloader();
-    initCountdown();
-    initStatsCounter();
-    
-    // Initialize slider first
-    initAlumniSliderWithFallback();
-    
-    // Then initialize typing
-    setTimeout(() => {
-        initAlumniTypingEffect();
-    }, 500);
-    
-    // Other components
-    initNavbar();
-    initScheduleTimeline();
-    initGalleryCarousel();
-    initMobileMenu();
-    initMapFix();
-    initLogoSliders();
-    initRebootAnimations();
-    initCompaniesSection();
-    initRebootTextAnimation();
-    initAlumniMeetTypingEffect();
-    
-    console.log('All components initialized');
-});
 
-// NEW: Schedule Timeline functionality
-// NEW: Schedule Timeline functionality - AUTO-SCROLL WITH STRAIGHT TIME
-document.addEventListener('DOMContentLoaded', function() {
-    initScheduleTimeline();
-});
 
 function initScheduleTimeline() {
     console.log('=== INITIALIZING SCHEDULE TIMELINE ===');
@@ -964,10 +854,7 @@ function initScheduleTimeline() {
     startAutoScroll();
     console.log('Schedule timeline initialized successfully');
 }
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initScheduleTimeline();
-});
+
 
 // Gallery 3D Carousel functionality
 function initGalleryCarousel() {
@@ -1148,30 +1035,37 @@ function initPageTransitions() {
 initPageTransitions();
 
 // Fix for map loading issues on mobile
+// Fix for map loading issues - CORRECTED VERSION
 function initMapFix() {
     const mapIframe = document.querySelector('.contact-map iframe');
-    if (mapIframe) {
-        // Force reload map on mobile devices
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            const originalSrc = mapIframe.src;
-            mapIframe.src = '';
-            setTimeout(() => {
-                mapIframe.src = originalSrc;
-            }, 1000);
-        }
-        
-        // Add error handling
-        mapIframe.addEventListener('error', function() {
-            console.error('Map failed to load');
-            // You can add fallback map or error message here
-            const mapContainer = document.querySelector('.contact-map');
-            if (mapContainer) {
-                mapContainer.innerHTML = '<div class="map-error">Map could not be loaded. Please check your connection.</div>';
-            }
-        });
-        
-        // Add loading attribute for better performance
-        mapIframe.setAttribute('loading', 'lazy');
+    const mapContainer = document.querySelector('.contact-map');
+    
+    if (!mapIframe || !mapContainer) return;
+    
+    // ERROR FIX: REMOVED the line that sets src=''
+    // OLD CODE (CAUSING PROBLEM): mapIframe.src = '';
+    // This was causing mobile browsers to load current page in iframe
+    
+    // Add error handling
+    mapIframe.addEventListener('error', function() {
+        console.error('Map failed to load');
+        mapContainer.innerHTML = '<div class="map-error" style="color:white; display:flex; justify-content:center; align-items:center; height:100%; font-family: Rajdhani, sans-serif;">Map could not be loaded. Please check your connection.</div>';
+    });
+    
+    // Add loading attribute for better performance
+    mapIframe.setAttribute('loading', 'lazy');
+    
+    // Add attributes to help with mobile rendering
+    mapIframe.setAttribute('frameborder', '0');
+    mapIframe.setAttribute('scrolling', 'no');
+    mapIframe.setAttribute('marginheight', '0');
+    mapIframe.setAttribute('marginwidth', '0');
+    
+    // For mobile: ensure proper dimensions
+    if (window.innerWidth <= 768) {
+        mapIframe.style.width = '100%';
+        mapIframe.style.height = '100%';
+        mapIframe.style.minHeight = '250px';
     }
 }
 
@@ -1375,21 +1269,7 @@ function initPerformanceMonitoring() {
 initPerformanceMonitoring();
 // CORRECTED BACK TO TOP BUTTON - ONLY RIGHT & BOTTOM
 // Go to Top Section functionality using scrollIntoView
-document.addEventListener('DOMContentLoaded', () => {
-    const button = document.querySelector('#go-to-top-btn');
-    const heroSection = document.querySelector('#home');
 
-    if (button && heroSection) {
-        button.addEventListener('click', () => {
-            heroSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        });
-    } else {
-        console.warn("Scroll to top functionality: Button (#go-to-top-btn) or Hero section (#home) not found. Please ensure both elements exist.");
-    }
-});
 // Text Animation for REBOOT section
 // Text Animation for REBOOT section - Fixed version
 function initRebootTextAnimation() {
@@ -1430,9 +1310,7 @@ function initRebootTextAnimation() {
 }
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initRebootTextAnimation();
-});
+
 // Typing effect for Alumni Meet title
 function initAlumniMeetTypingEffect() {
     const alumniTitle = document.querySelector('.alumni-meet-title');
@@ -1540,9 +1418,3 @@ function initAlumniNamesTypingEffect() {
         }, index * 300); // Each name starts 300ms after the previous one
     });
 }
-
-// Add this to your main initialization function
-document.addEventListener('DOMContentLoaded', function() {
-    // ... other initialization code ...
-    // ... more initialization code ...
-});

@@ -54,112 +54,111 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="page" id="main-content" style="display: none;">
-        <!-- Navigation Bar -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="logo">
-                    <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
-                </div>
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="#home" class="nav-link active">Home</a></li>
-                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="#reboot-explanation" class="nav-link">REBOOT 40</a></li>
-                    <li class="nav-item"><a href="memories.php" class="nav-link">Memories</a></li>
-                    <li class="nav-item"><a href="Gallery.html" class="nav-link">Gallery</a></li>
-                    <li class="nav-item"><a href="#schedule" class="nav-link">Schedule</a></li>
-                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
-                    <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
-                </ul>
-                <div class="hamburger">
-                    <i class="fas fa-bars"></i>
-                </div>
+    <!-- FIXED: NAVIGATION BAR OUTSIDE .page -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
             </div>
-        </nav>
-
-        <!-- Hero Section -->
-<!-- Hero Section -->
-<section class="hero" id="home">
-    <video class="hero-bg-video" autoplay muted loop playsinline>
-        <source src="assets/videos/hero.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    
-    <div class="hero-container">
-        <!-- Main Content -->
-        <div class="hero-content">
-            <!-- College Info -->
-            <div class="college-info">
-                <h1 class="college-name">PSG College of Technology</h1>
-                <h2 class="department-name">Department of Applied Mathematics and Computational Sciences</h2>
-                <h3 class="course-name">B Sc Computer Systems and Design (erstwhile Computer Technology)</h3>
-            </div>
-
-            <!-- Logos after course name -->
-            <div class="logo-row">
-                <img src="assets/logo/csa.png" alt="75 Years Logo" class="small-logo">
-                <img src="assets/logo/75.png" alt="75 Years Logo" class="small-logo">
-                <img src="assets/logo/100.png" alt="100 Years Logo" class="small-logo">
-            </div>
-
-            <!-- Event Presentation -->
-            <div class="event-presentation">
-                <div class="presents-text">presents</div>
-                <video class="event-logo" autoplay muted loop playsinline>
-                    <source src="assets/videos/logo.webm" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-
-            <!-- NEW: Alumni Meet Text Before Venue -->
-            <div class="alumni-meet-announcement">
-                <h2 class="alumni-meet-title">ALUMNI MEET (1985 - 2025)</h2>
-            </div>
-
-            <!-- Date and Venue - Updated for mobile -->
-            <div class="event-details">
-                <div class="event-date">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>January 3, 2026</span>
-                </div>
-                <div class="event-venue">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>PSG College of Technology, Coimbatore</span>
-                </div>
-            </div>
-
-            <!-- Countdown Section -->
-            <div class="countdown-section">
-                <!-- REMOVED: Alumni meet text from here -->
-                <div class="countdown" id="countdown">
-                    <div class="countdown-item">
-                        <span class="countdown-number" id="days">00</span>
-                        <span class="countdown-label"><br>Days</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="countdown-number" id="hours">00</span>
-                        <span class="countdown-label"><br>Hours</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="countdown-number" id="minutes">00</span>
-                        <span class="countdown-label"><br>Minutes</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="countdown-number" id="seconds">00</span>
-                        <span class="countdown-label"><br>Seconds</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Buttons - Updated for mobile -->
-            <div class="hero-btns">
-                <a href="register.php" class="btn">Register Now</a>
-                <a href="#about" class="btn btn-secondary">Learn More</a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#home" class="nav-link active">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="#reboot-explanation" class="nav-link">REBOOT 40</a></li>
+                <li class="nav-item"><a href="memories.php" class="nav-link">Memories</a></li>
+                <li class="nav-item"><a href="Gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="#schedule" class="nav-link">Schedule</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
             </div>
         </div>
-    </div>
-</section>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="page" id="main-content" style="display: none;">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <video class="hero-bg-video" autoplay muted loop playsinline>
+                <source src="assets/videos/hero.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <div class="hero-container">
+                <!-- Main Content -->
+                <div class="hero-content">
+                    <!-- College Info -->
+                    <div class="college-info">
+                        <h1 class="college-name">PSG College of Technology</h1>
+                        <h2 class="department-name">Department of Applied Mathematics and Computational Sciences</h2>
+                        <h3 class="course-name">B Sc Computer Systems and Design (erstwhile Computer Technology)</h3>
+                    </div>
+
+                    <!-- Logos after course name -->
+                    <div class="logo-row">
+                        <img src="assets/logo/csa.png" alt="75 Years Logo" class="small-logo">
+                        <img src="assets/logo/75.png" alt="75 Years Logo" class="small-logo">
+                        <img src="assets/logo/100.png" alt="100 Years Logo" class="small-logo">
+                    </div>
+
+                    <!-- Event Presentation -->
+                    <div class="event-presentation">
+                        <div class="presents-text">presents</div>
+                        <video class="event-logo" autoplay muted loop playsinline>
+                            <source src="assets/videos/logo.webm" type="video/webm">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <!-- NEW: Alumni Meet Text Before Venue -->
+                    <div class="alumni-meet-announcement">
+                        <h2 class="alumni-meet-title">ALUMNI MEET (1985 - 2025)</h2>
+                    </div>
+
+                    <!-- Date and Venue - Updated for mobile -->
+                    <div class="event-details">
+                        <div class="event-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>January 3, 2026</span>
+                        </div>
+                        <div class="event-venue">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>PSG College of Technology, Coimbatore</span>
+                        </div>
+                    </div>
+
+                    <!-- Countdown Section -->
+                    <div class="countdown-section">
+                        <!-- REMOVED: Alumni meet text from here -->
+                        <div class="countdown" id="countdown">
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="days">00</span>
+                                <span class="countdown-label"><br>Days</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="hours">00</span>
+                                <span class="countdown-label"><br>Hours</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="minutes">00</span>
+                                <span class="countdown-label"><br>Minutes</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="seconds">00</span>
+                                <span class="countdown-label"><br>Seconds</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons - Updated for mobile -->
+                    <div class="hero-btns">
+                        <a href="register.php" class="btn">Register Now</a>
+                        <a href="#about" class="btn btn-secondary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- About Section -->
         <section class="about" id="about">
@@ -634,7 +633,29 @@
                             </div>
                         </div>
                     </div>
-                    
+                    <!-- 2010 - Vignesh Mitsume -->
+<div class="swiper-slide">
+    <div class="alumni-card">
+        <div class="alumni-image">
+            <div class="image-wrapper">
+                <div class="image-frame profile-frame">
+                    <img src="assets/alumni/vignesh.jpeg" alt="Vignesh Mitsume">
+                    <div class="left-line"></div>
+                </div>
+            </div>
+        </div>
+        <div class="alumni-info">
+            <h3 class="alumni-name">Mr. Vignesh Mitsume</h3>
+            <div class="alumni-details">
+                <div class="alumni-position">Senior Product Manager</div>
+                <div class="alumni-company">Microsoft Japan</div>
+                <div class="alumni-expertise">Microsoft 365 Endpoint Management & Security Product Management</div>
+                <div class="alumni-experience">Passed Out: 2010</div>
+            </div>
+            <p class="alumni-desc">Leading product strategy for Microsoft 365 Endpoint Management and Security at Microsoft Japan, translating customer needs into critical security features.</p>
+        </div>
+    </div>
+</div>
                     <!-- 2014 - Aiswarya M -->
                     <div class="swiper-slide">
                         <div class="alumni-card">
@@ -1025,15 +1046,15 @@
                 </div>
                 <div class="gallery-carousel">
                     <ul class='slider'>
-                        <li class='item' style="background-image: url('assets/images/gallery/profile1.JPG')">
+                        <li class='item' style="background-image: url('assets/images/gallery/profile23.JPG')">
                         </li>
-                        <li class='item' style="background-image: url('assets/images/gallery/profile2.JPG')">
+                        <li class='item' style="background-image: url('assets/images/gallery/profile29.JPG')">
                         </li>
-                        <li class='item' style="background-image: url('assets/images/gallery/profile3.JPG')">
+                        <li class='item' style="background-image: url('assets/images/gallery/EVENTS/E6.JPGs')">
                         </li>
-                        <li class='item' style="background-image: url('assets/images/gallery/profile4.JPG')">
+                        <li class='item' style="background-image: url('assets/images/gallery/TALK/T3.JPG')">
                         </li>
-                        <li class='item' style="background-image: url('assets/images/gallery/profile5.JPG')">
+                        <li class='item' style="background-image: url('assets/images/gallery/EVENTS/E8.JPG')">
                         </li>
                     </ul>
                     <nav class='nav'>
@@ -1042,7 +1063,7 @@
                     </nav>
                 </div>
                 <div class="text-center" style="margin-top: 20px;">
-                    <a href="gallery.html" class="btn btn-explore">Explore Full Gallery</a>
+                    <a href="Gallery.html" class="btn btn-explore">Explore Full Gallery</a>
                 </div>
             </div>
         </section>
@@ -1109,7 +1130,8 @@
                         <div class="time-badge">11:15 AM - 12:30 PM</div>
                         <h3>Panel Discussion</h3>
                         <p class="subtitle">Alumni Discussing Key Topics with Students</p>
-                        <div class="location"><i class="fas fa-map-marker-alt"></i> Assembly Hall</div>
+                        <div class="location"><i class="fas fa-map-marker-alt"></i> D - GF Hall / F - Block Assembly Hall
+                        </div>
                         <div class="progress-container"><div class="progress-bar"></div></div>
                     </div>
 
@@ -1123,14 +1145,14 @@
                     <div class="event-card" data-index="4">
                         <div class="time-badge">2:00 PM - 3:30 PM</div>
                         <h3>Games Event</h3>
-                        <div class="location"><i class="fas fa-map-marker-alt"></i> Sports Ground</div>
+                        <div class="location"><i class="fas fa-map-marker-alt"></i>  D - GF Hall / F - Block Assembly Hall</div>
                         <div class="progress-container"><div class="progress-bar"></div></div>
                     </div>
 
                     <div class="event-card" data-index="5">
                         <div class="time-badge">3:30 PM - 4:30 PM</div>
-                        <h3>Networking</h3>
-                        <div class="location"><i class="fas fa-map-marker-alt"></i> D - GF Hall</div>
+                        <h3>Alumni Networking - Interacting with Students</h3>
+                        <div class="location"><i class="fas fa-map-marker-alt"></i>  D - GF Hall / F - Block Assembly Hall</div>
                         <div class="progress-container"><div class="progress-bar"></div></div>
                     </div>
 
@@ -1144,7 +1166,9 @@
                     <div class="event-card" data-index="7">
                         <div class="time-badge">5:00 PM - 7:30 PM</div>
                         <h3>Cultural Celebration</h3>
-                        <div class="location"><i class="fas fa-map-marker-alt"></i> Auditorium</div>
+                        <p class="subtitle">Entertainment & Cultural Celebration</p>
+
+                        <div class="location"><i class="fas fa-map-marker-alt"></i>A - Block Centenary Auditorium </div>
                         <div class="progress-container"><div class="progress-bar"></div></div>
                     </div>
 
@@ -1199,14 +1223,28 @@
         </p>
     </div>
 </div>
-                        <div class="contact-item">
-                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                            <div class="contact-info"><h3>Email</h3><p>ct.Reboot40.csd@gmail.com</p></div>
-                        </div>
+<div class="contact-item">
+    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+    <div class="contact-info">
+        <h3>Email</h3>
+        <p>
+            <a href="mailto:ct.Reboot40.csd@gmail.com" style="color: inherit; text-decoration: none;">
+                ct.Reboot40.csd@gmail.com
+            </a>
+        </p>
+    </div>
+</div>
                     </div>
                     <div class="contact-map">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.191429396024!2d77.00024787317358!3d11.024259654577271!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8582f1435fa59%3A0x137d95bfd8909293!2sPSG%20College%20Of%20Technology!5e0!3m2!1sen!2sin!4v1761543936625!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
+<iframe 
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.191429396024!2d77.00024787317358!3d11.016842269148834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8582f1435fa59%3A0x137d95bfd8909293!2sPSG%20College%20of%20Technology!5e0!3m2!1sen!2sin!4v1738268388890!5m2!1sen!2sin" 
+    width="100%" 
+    height="100%" 
+    style="border:0;" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="no-referrer-when-downgrade">
+</iframe>                    </div>
                 </div>
             </div>
         </section>

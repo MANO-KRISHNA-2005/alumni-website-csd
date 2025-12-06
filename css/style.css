@@ -64,8 +64,6 @@ body {
     overflow-x: hidden;
     line-height: 1.6;
     position: relative;
-    opacity: 0;
-    animation: pageLoad 1.5s ease forwards;
     width: 100%;
 }
 
@@ -94,6 +92,9 @@ body {
     background-color: rgba(0, 0, 0, 0.45);
     width: 100%;
     overflow-x: hidden;
+    /* ADD these lines: */
+    opacity: 0;
+    animation: pageLoad 1.5s ease forwards;
 }
 
 /* ===== PRELOADER ===== */
