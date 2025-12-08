@@ -1904,13 +1904,14 @@
         <ul class="nav-menu">
             <!-- UPDATED LINKS -->
             <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-            <li class="nav-item"><a href="index.html#reboot-explanation" class="nav-link">REBOOT 40</a></li>
-            <li class="nav-item"><a href="memories.php" class="nav-link active">Memories</a></li>
-            <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
-            <li class="nav-item"><a href="index.html#schedule" class="nav-link">Schedule</a></li>
-            <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
-            <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
+    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+    <li class="nav-item"><a href="javascript:void(0);" onclick="goToIndexSection('reboot-explanation')" class="nav-link">REBOOT 40</a></li>
+    <li class="nav-item"><a href="memories.php" class="nav-link active">Memories</a></li>
+    <li class="nav-item"><a href="Gallery.html" class="nav-link">Gallery</a></li>
+    <li class="nav-item"><a href="javascript:void(0);" onclick="goToIndexSection('schedule')" class="nav-link">Schedule</a></li>
+    <li class="nav-item"><a href="javascript:void(0);" onclick="goToIndexSection('contact')" class="nav-link">Contact</a></li>
+    <li class="nav-item"><a href="register.php" class="nav-link btn">Register</a></li>
+
         </ul>
             <button class="hamburger" id="hamburger">
                 <span></span>
@@ -2940,5 +2941,16 @@
         // Start the application
         init();
     </script>
+    <script>
+// Universal function to navigate to any section in index.html without preloader
+function goToIndexSection(sectionId) {
+    // Set flags to control behavior in index.html
+    sessionStorage.setItem('skipPreloader', 'true');
+    sessionStorage.setItem('targetSection', sectionId);
+    
+    // Navigate to index.html
+    window.location.href = 'index.html';
+}
+</script>
 </body>
 </html>

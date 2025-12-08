@@ -49,30 +49,68 @@ initNavbarScrollEffects(); // NEW: Enhanced navbar scroll effects
 });
 
 // Preloader functionality - UPDATED
+// Universal Preloader functionality - Works for all sections
 function initPreloader() {
     const splash = document.getElementById('splash');
     const mainContent = document.getElementById('main-content');
     
     if (!splash || !mainContent) return;
     
-    // After the splash animation completes, show the main content
-    setTimeout(() => {
+    // Check if we are coming from gallery.html to skip preloader and scroll to a specific section
+    if (sessionStorage.getItem('skipPreloader') === 'true') {
+        // Get the target section from sessionStorage
+        const targetSectionId = sessionStorage.getItem('targetSection');
+        
+        // Hide preloader immediately
         splash.style.display = 'none';
         mainContent.style.display = 'block';
-        
-        // Trigger page load animation
         document.body.classList.add('loaded');
-
-        // FIX: Refresh map safely after content is visible
-        const mapIframe = document.querySelector('.contact-map iframe');
-        if (mapIframe) {
-            // Store the original src
-            const originalSrc = mapIframe.src;
+        
+        // Scroll to the target section after a tiny delay to ensure DOM is fully rendered
+        setTimeout(() => {
+            if (targetSectionId) {
+                const targetSection = document.getElementById(targetSectionId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
             
-            // Force a clean reload without setting src to empty first
-            mapIframe.src = originalSrc;
-        }
-    }, 3000);
+            // Clear the flags
+            sessionStorage.removeItem('skipPreloader');
+            sessionStorage.removeItem('targetSection');
+        }, 100);
+    } else {
+        // Normal preloader behavior
+        setTimeout(() => {
+            splash.style.display = 'none';
+            mainContent.style.display = 'block';
+            
+            // Trigger page load animation
+            document.body.classList.add('loaded');
+
+            // Check if there is a hash in the URL and scroll to that section
+            // This handles direct links like index.html#contact
+            if (window.location.hash) {
+                const hash = window.location.hash.substring(1); // Remove the #
+                setTimeout(() => {
+                    const targetSection = document.getElementById(hash);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 100);
+            }
+
+            // FIX: Refresh map safely after content is visible
+            const mapIframe = document.querySelector('.contact-map iframe');
+            if (mapIframe) {
+                // Store the original src
+                const originalSrc = mapIframe.src;
+                
+                // Force a clean reload without setting src to empty first
+                mapIframe.src = originalSrc;
+            }
+        }, 3000);
+    }
 }
 
 // Fix for map loading issues - SIMPLIFIED VERSION

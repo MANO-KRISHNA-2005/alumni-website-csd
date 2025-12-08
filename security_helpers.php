@@ -7,17 +7,23 @@
 function generate_csrf_token() {
     // Ensure session is started
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        if (!headers_sent()) {
+            session_start();
+        }
     }
     
     // Generate a new token if one doesn't exist or is expired
     if (!isset($_SESSION['csrf_token']) || !isset($_SESSION['csrf_token_time']) || 
         (time() - $_SESSION['csrf_token_time']) > 3600) {
+        
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         $_SESSION['csrf_token_time'] = time();
+        
+        // For debugging: Log token generation
+        error_log("CSRF Token Generated: " . $_SESSION['csrf_token'] . " for session: " . session_id());
     }
     
-    return $_SESSION['csrf_token'];
+    return $_SESSION['csrf_token'] ?? '';
 }
 
 /**
@@ -29,34 +35,41 @@ function generate_csrf_token() {
 function validate_csrf_token($token, $max_age = 3600) {
     // Ensure session is started
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        if (!headers_sent()) {
+            session_start();
+        }
     }
+
+    // For debugging: Log what we are comparing
+    $session_token = $_SESSION['csrf_token'] ?? 'NOT_SET';
+    $session_time = $_SESSION['csrf_token_time'] ?? 'NOT_SET';
+    $submitted_token = $token ?? 'NOT_SUBMITTED';
     
+    error_log("CSRF Validation Attempt: Submitted=" . $submitted_token . ", Session=" . $session_token . ", SessionID=" . session_id());
+
     // Check if token exists in session
     if (!isset($_SESSION['csrf_token']) || !isset($_SESSION['csrf_token_time'])) {
+        error_log("CSRF Fail: Token not set in session.");
         return false;
     }
     
     // Check if token matches
     if (!hash_equals($_SESSION['csrf_token'], $token)) {
+        error_log("CSRF Fail: Token mismatch.");
         return false;
     }
     
     // Check if token has expired
     if (time() - $_SESSION['csrf_token_time'] > $max_age) {
+        error_log("CSRF Fail: Token expired. Age: " . (time() - $_SESSION['csrf_token_time']) . " seconds.");
+        // Clear expired token
         unset($_SESSION['csrf_token']);
         unset($_SESSION['csrf_token_time']);
         return false;
     }
     
+    error_log("CSRF Success: Token is valid.");
     return true;
-}
-
-/**
- * Get the current CSRF token
- */
-function get_csrf_token() {
-    return generate_csrf_token();
 }
 
 /**
@@ -64,12 +77,16 @@ function get_csrf_token() {
  */
 function clear_csrf_token() {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        if (!headers_sent()) {
+            session_start();
+        }
     }
     unset($_SESSION['csrf_token']);
     unset($_SESSION['csrf_token_time']);
+    error_log("CSRF Token cleared for session: " . session_id());
 }
 
+// ... (rest of the security_helpers.php file remains the same) ...
 /**
  * Store form data in session for persistence after errors
  * @param array $data The form data to store
@@ -212,19 +229,6 @@ function redirect_with_success($message = 'Registration successful!') {
     
     $query = http_build_query($params);
     header("Location: register.php" . ($query ? "?$query" : ""));
-    exit;
-}
-
-/**
- * Redirect to homepage with success message
- * @param string $message The success message
- */
-function redirect_to_homepage($message = 'Registration successful!') {
-    // Clear any stored form data on success
-    clear_stored_form_data();
-    
-    // Redirect to homepage with success message
-    header("Location: index.html" . urlencode($message));
     exit;
 }
 ?>

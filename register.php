@@ -32,7 +32,7 @@ if (isset($_GET['error'])) {
             $error_message = 'Error: Please select a valid graduation year.';
             break;
         case 'invalid_phone':
-            $error_message = 'Error: Please enter a valid phone number (include country code if outside India).';
+            $error_message = 'Error: Please enter a valid phone number.';
             break;
         case 'invalid_expertise':
             $error_message = 'Error: Please select your years of expertise.';
@@ -77,6 +77,8 @@ function get_form_value($field, $default = '') {
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Russo+One&family=Bebas+Neue&family=Righteous&family=Monoton&family=Iceberg&family=Changa+One&family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- International Telephone Input CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/css/intlTelInput.css">
   <style>
     /* --- ALL YOUR EXISTING CSS GOES HERE --- */
     :root {
@@ -170,18 +172,17 @@ function get_form_value($field, $default = '') {
     }
 
     /* ===== NAVIGATION BAR ===== */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 12px 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(15px);
-      border-bottom: 2px solid var(--neon-yellow);
-      z-index: 1000;
-      box-shadow: 0 0 10px var(--neon-yellow-glow);
-    }
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid var(--neon-yellow);
+  z-index: 1000;
+  box-shadow: 0 0 10px var(--neon-yellow-glow);
+}
 
     .nav-container {
       display: flex;
@@ -225,7 +226,6 @@ function get_form_value($field, $default = '') {
       font-family: 'Oxanium', sans-serif;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      padding: 8px 0;
     }
 
     .nav-link:after {
@@ -307,8 +307,10 @@ function get_form_value($field, $default = '') {
       z-index: -2;
     }
 
+    /* Frame Border Effects for Container */
     .container {
-      width: 850px;
+      width: 100%;
+      max-width: 1200px;
       background: var(--card-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -317,6 +319,44 @@ function get_form_value($field, $default = '') {
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.15);
       transition: transform 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background-size: 400% 400%;
+      border-radius: 17px;
+      z-index: -1;
+      animation: borderGlow 8s ease infinite;
+      opacity: 0.7;
+      filter: blur(5px);
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: inherit;
+      border-radius: 15px;
+      z-index: -1;
+    }
+
+    @keyframes borderGlow {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
     }
 
     .container:hover {
@@ -342,9 +382,6 @@ function get_form_value($field, $default = '') {
       left: 0;
       right: 0;
       bottom: 0;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(0, 168, 255, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(255, 0, 85, 0.15) 0%, transparent 50%);
       z-index: 0;
     }
 
@@ -384,7 +421,6 @@ function get_form_value($field, $default = '') {
       left: 10%;
       width: 80%;
       height: 3px;
-      background: linear-gradient(90deg, transparent, var(--text-color), transparent);
       border-radius: 3px;
     }
 
@@ -452,26 +488,59 @@ function get_form_value($field, $default = '') {
 
     .col-33 {
       flex: 1 1 30%;
+      min-width: 280px;
     }
 
     .col-50 {
       flex: 1 1 48%;
+      min-width: 280px;
       box-sizing: border-box;
     }
 
     .col-66 {
       flex: 1 1 65%;
+      min-width: 280px;
     }
 
     .col-100 {
       flex: 1 1 100%;
+      min-width: 280px;
     }
-    
 
     .form-group {
       display: flex;
       flex-direction: column;
       flex: 1;
+      position: relative;
+    }
+
+    /* Individual field frame effects */
+    .form-group::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 10px;
+      background-size: 300% 300%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .form-group:focus-within::after {
+      opacity: 0.4;
+      animation: fieldGlow 3s ease infinite;
+    }
+
+    @keyframes fieldGlow {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
     }
 
     form label {
@@ -506,6 +575,18 @@ function get_form_value($field, $default = '') {
       appearance: none;
     }
 
+    @keyframes borderPulse {
+      0% {
+        box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.3), 0 0 20px rgba(0, 168, 255, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1), 0 0 30px rgba(0, 168, 255, 0.3);
+      }
+      100% {
+        box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.3), 0 0 20px rgba(0, 168, 255, 0.2);
+      }
+    }
+
     /* Custom select styling to avoid default browser colors */
     form select {
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffcc00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -513,12 +594,6 @@ function get_form_value($field, $default = '') {
       background-position: right 10px center;
       background-size: 20px;
       padding-right: 40px;
-    }
-
-    form input:focus, form select:focus, form textarea:focus {
-      border-color: var(--focus-color);
-      box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.3);
-      background: var(--hover-bg);
     }
 
     /* Remove default checkbox and radio styling */
@@ -579,26 +654,127 @@ function get_form_value($field, $default = '') {
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
+      position: relative;
+      overflow: hidden;
     }
 
+    /* Enhanced Ghost Animation for Submit Button */
     .btn-primary {
-      background: var(--button-bg);
+      background: linear-gradient(135deg, 
+        var(--button-bg) 0%,
+        #ffdd33 50%,
+        var(--button-bg) 100%);
       color: var(--button-text);
-      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+      box-shadow: 
+        0 4px 15px rgba(255, 204, 0, 0.4),
+        0 0 20px rgba(255, 215, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+      border: 2px solid transparent;
     }
 
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 204, 0, 0.5);
-      background: #ffdd33;
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent);
+      transition: left 0.7s ease;
     }
 
-    .btn:active {
-      transform: translateY(-1px);
+    .btn-primary:hover::before {
+      left: 100%;
     }
 
-    .btn:focus {
-      box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.5);
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+        #FFD700, #FFC107, #FFB300, #FFEB3B, #FFD700);
+      background-size: 400% 400%;
+      border-radius: 10px;
+      z-index: -1;
+      opacity: 0;
+      animation: ghostGlow 2s linear infinite;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-primary:hover::after {
+      opacity: 1;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 
+        0 8px 25px rgba(255, 204, 0, 0.6),
+        0 0 30px rgba(255, 215, 0, 0.5);
+      animation: pulse 1.5s infinite;
+    }
+
+    .btn-primary:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    @keyframes ghostGlow {
+      0% {
+        background-position: 0% 50%;
+        filter: brightness(1);
+      }
+      25% {
+        background-position: 100% 50%;
+        filter: brightness(1.2);
+      }
+      50% {
+        background-position: 0% 50%;
+        filter: brightness(1.5);
+      }
+      75% {
+        background-position: 100% 50%;
+        filter: brightness(1.2);
+      }
+      100% {
+        background-position: 0% 50%;
+        filter: brightness(1);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 
+          0 8px 25px rgba(255, 204, 0, 0.6),
+          0 0 30px rgba(255, 215, 0, 0.5);
+      }
+      50% {
+        box-shadow: 
+          0 8px 30px rgba(255, 204, 0, 0.8),
+          0 0 40px rgba(255, 215, 0, 0.7);
+      }
+      100% {
+        box-shadow: 
+          0 8px 25px rgba(255, 204, 0, 0.6),
+          0 0 30px rgba(255, 215, 0, 0.5);
+      }
     }
 
     .button-group {
@@ -760,35 +936,14 @@ function get_form_value($field, $default = '') {
       cursor: pointer;
     }
 
-    /* Phone input group */
+    /* Phone input group with international format - FIXED FOR RESPONSIVE DESIGN */
     .phone-input-group {
-      display: flex;
-      gap: 10px;
+      position: relative;
+      width: 100%;
     }
-
-    .phone-input-group .country-code {
-      flex: 0 0 120px;
-    }
-
-    .phone-input-group .phone-number {
-      flex: 1;
-    }
-
-    /* Family count inline styling */
-    .family-count-inline {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .family-count-inline label {
-      margin-bottom: 0;
-      white-space: nowrap;
-    }
-
-    .family-count-inline input {
-      width: 80px;
+    
+    .iti {
+      width: 100%;
     }
 
     /* Captcha styling */
@@ -838,94 +993,6 @@ function get_form_value($field, $default = '') {
       padding: 14px;
       border-radius: 8px;
       width: 100%;
-    }
-
-    /* Desktop layout */
-    @media (min-width: 768px) {
-      form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-      }
-      
-      .full-width {
-        grid-column: span 2;
-      }
-      
-      .button-group {
-        grid-column: span 2;
-      }
-    }
-
-    /* Mobile layout */
-    @media (max-width: 768px) {
-      .container {
-        width: 95%;
-      }
-      
-      .row {
-        flex-direction: column;
-      }
-      
-      .button-group {
-        flex-direction: column;
-      }
-      
-      .header h1 {
-        font-size: 2.2rem;
-      }
-      
-      .hamburger {
-        display: block;
-      }
-      
-      .nav-menu {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 280px;
-        height: 100vh;
-        background: rgba(5, 5, 16, 0.98);
-        backdrop-filter: blur(12px);
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        padding-top: 70px;
-        transition: var(--transition);
-        z-index: 999;
-        border-left: 2px solid rgba(255, 215, 0, 0.4);
-        gap: 0;
-      }
-
-      .nav-menu.active {
-        right: 0;
-      }
-
-      .nav-item {
-        margin: 0;
-        width: 100%;
-      }
-
-      .nav-link {
-        display: block;
-        padding: 10px 18px;
-        width: 100%;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 0.9rem;
-      }
-
-      .phone-input-group {
-        flex-direction: column;
-      }
-
-      .phone-input-group .country-code {
-        flex: 1;
-      }
-
-      .family-count-inline {
-        flex-direction: column;
-        align-items: flex-start;
-      }
     }
 
     /* Notification styling */
@@ -1012,6 +1079,68 @@ function get_form_value($field, $default = '') {
       color: var(--text-color);
       margin-top: 20px;
     }
+
+    /* Mobile layout */
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+      }
+      
+      .row {
+        flex-direction: column;
+      }
+      
+      .col-33, .col-50, .col-66 {
+        flex: 1 1 100%;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .hamburger {
+        display: block;
+      }
+      
+      .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: rgba(5, 5, 16, 0.98);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding-top: 70px;
+        transition: var(--transition);
+        z-index: 999;
+        border-left: 2px solid rgba(255, 215, 0, 0.4);
+        gap: 0;
+      }
+
+      .nav-menu.active {
+        right: 0;
+      }
+
+      .nav-item {
+        margin: 0;
+        width: 100%;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 10px 18px;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1019,19 +1148,18 @@ function get_form_value($field, $default = '') {
   <nav class="navbar">
     <div class="nav-container">
       <div class="logo">
-                    <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
+        <img src="assets/images/logo.png" alt="PSG Tech Logo" class="logo-img">
       </div>
-        <ul class="nav-menu">
-            <!-- UPDATED LINKS -->
-            <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-            <li class="nav-item"><a href="index.html#reboot-explanation" class="nav-link">REBOOT 40</a></li>
-            <li class="nav-item"><a href="memories.php" class="nav-link">Memories</a></li>
-            <li class="nav-item"><a href="galleryhtml" class="nav-link">Gallery</a></li>
-            <li class="nav-item"><a href="index.html#schedule" class="nav-link">Schedule</a></li>
-            <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
-            <li class="nav-item"><a href="register.php" class="nav-link active btn">Register</a></li>
-        </ul>
+<ul class="nav-menu">
+    <li class="nav-item"><a href="javascript:void(0);" onclick="goToIndexSection('home')" class="nav-link">Home</a></li>
+    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+    <li class="nav-item"><a href="javascript:void(0);" onclick="goToIndexSection('reboot-explanation')" class="nav-link">REBOOT 40</a></li>
+    <li class="nav-item"><a href="memories.php" class="nav-link ">Memories</a></li>
+    <li class="nav-item"><a href="Gallery.html" class="nav-link">Gallery</a></li>
+    <li class="nav-item"><a href="javascript:void(0);" onclick="goToIndexSection('schedule')" class="nav-link">Schedule</a></li>
+    <li class="nav-item"><a href="javascript:void(0);" onclick="goToIndexSection('contact')" class="nav-link">Contact</a></li>
+    <li class="nav-item"><a href="register.php" class="nav-link btn active">Register</a></li>
+</ul>
       <div class="hamburger">
         <i class="fas fa-bars"></i>
       </div>
@@ -1076,6 +1204,8 @@ function get_form_value($field, $default = '') {
       <h3 class="form-title">Alumni Registration</h3>
       <form id="alumniForm" action="register_process.php" method="POST">
         <input type="hidden" name="csrf_token" id="csrf_token" value="<?php echo $csrf_token; ?>">
+        <!-- CAPTCHA FIX: Add a hidden field to store the generated CAPTCHA text -->
+        <input type="hidden" name="captcha_text" id="captcha_text" value="">
         
         <!-- 1st Row: Name, Gender, DOB -->
         <div class="row">
@@ -1140,227 +1270,36 @@ function get_form_value($field, $default = '') {
           </div>
         </div>
 
-        <!-- 3rd Row: Contact Number, WhatsApp Number with checkbox -->
+        <!-- 3rd Row: Contact Number, WhatsApp Number -->
         <div class="row">
           <div class="col-50">
             <div class="form-group">
               <label for="phone">Contact Number <span class="required">*</span></label>
               <div class="phone-input-group">
-                <select id="phone-country" name="phone_country" class="country-code">
-                  <option value="">Select</option>
-                  <!-- Africa -->
-                  <optgroup label="Africa">
-                    <option value="+213" <?php echo get_form_value('phone_country') === '+213' ? 'selected' : ''; ?>>+213 Algeria</option>
-                    <option value="+244" <?php echo get_form_value('phone_country') === '+244' ? 'selected' : ''; ?>>+244 Angola</option>
-                    <option value="+229" <?php echo get_form_value('phone_country') === '+229' ? 'selected' : ''; ?>>+229 Benin</option>
-                    <option value="+267" <?php echo get_form_value('phone_country') === '+267' ? 'selected' : ''; ?>>+267 Botswana</option>
-                    <option value="+226" <?php echo get_form_value('phone_country') === '+226' ? 'selected' : ''; ?>>+226 Burkina Faso</option>
-                    <option value="+257" <?php echo get_form_value('phone_country') === '+257' ? 'selected' : ''; ?>>+257 Burundi</option>
-                    <option value="+237" <?php echo get_form_value('phone_country') === '+237' ? 'selected' : ''; ?>>+237 Cameroon</option>
-                    <option value="+238" <?php echo get_form_value('phone_country') === '+238' ? 'selected' : ''; ?>>+238 Cape Verde</option>
-                    <option value="+235" <?php echo get_form_value('phone_country') === '+235' ? 'selected' : ''; ?>>+235 Chad</option>
-                    <option value="+269" <?php echo get_form_value('phone_country') === '+269' ? 'selected' : ''; ?>>+269 Comoros</option>
-                    <option value="+242" <?php echo get_form_value('phone_country') === '+242' ? 'selected' : ''; ?>>+242 Congo (Republic)</option>
-                    <option value="+243" <?php echo get_form_value('phone_country') === '+243' ? 'selected' : ''; ?>>+243 Congo (DRC)</option>
-                    <option value="+253" <?php echo get_form_value('phone_country') === '+253' ? 'selected' : ''; ?>>+253 Djibouti</option>
-                    <option value="+20" <?php echo get_form_value('phone_country') === '+20' ? 'selected' : ''; ?>>+20 Egypt</option>
-                    <option value="+291" <?php echo get_form_value('phone_country') === '+291' ? 'selected' : ''; ?>>+291 Eritrea</option>
-                    <option value="+251" <?php echo get_form_value('phone_country') === '+251' ? 'selected' : ''; ?>>+251 Ethiopia</option>
-                    <option value="+220" <?php echo get_form_value('phone_country') === '+220' ? 'selected' : ''; ?>>+220 Gambia</option>
-                    <option value="+233" <?php echo get_form_value('phone_country') === '+233' ? 'selected' : ''; ?>>+233 Ghana</option>
-                    <option value="+224" <?php echo get_form_value('phone_country') === '+224' ? 'selected' : ''; ?>>+224 Guinea</option>
-                    <option value="+245" <?php echo get_form_value('phone_country') === '+245' ? 'selected' : ''; ?>>+245 Guinea-Bissau</option>
-                    <option value="+225" <?php echo get_form_value('phone_country') === '+225' ? 'selected' : ''; ?>>+225 Ivory Coast</option>
-                    <option value="+254" <?php echo get_form_value('phone_country') === '+254' ? 'selected' : ''; ?>>+254 Kenya</option>
-                    <option value="+266" <?php echo get_form_value('phone_country') === '+266' ? 'selected' : ''; ?>>+266 Lesotho</option>
-                    <option value="+231" <?php echo get_form_value('phone_country') === '+231' ? 'selected' : ''; ?>>+231 Liberia</option>
-                    <option value="+218" <?php echo get_form_value('phone_country') === '+218' ? 'selected' : ''; ?>>+218 Libya</option>
-                    <option value="+261" <?php echo get_form_value('phone_country') === '+261' ? 'selected' : ''; ?>>+261 Madagascar</option>
-                    <option value="+265" <?php echo get_form_value('phone_country') === '+265' ? 'selected' : ''; ?>>+265 Malawi</option>
-                    <option value="+223" <?php echo get_form_value('phone_country') === '+223' ? 'selected' : ''; ?>>+223 Mali</option>
-                    <option value="+222" <?php echo get_form_value('phone_country') === '+222' ? 'selected' : ''; ?>>+222 Mauritania</option>
-                    <option value="+230" <?php echo get_form_value('phone_country') === '+230' ? 'selected' : ''; ?>>+230 Mauritius</option>
-                    <option value="+212" <?php echo get_form_value('phone_country') === '+212' ? 'selected' : ''; ?>>+212 Morocco</option>
-                    <option value="+258" <?php echo get_form_value('phone_country') === '+258' ? 'selected' : ''; ?>>+258 Mozambique</option>
-                    <option value="+264" <?php echo get_form_value('phone_country') === '+264' ? 'selected' : ''; ?>>+264 Namibia</option>
-                    <option value="+227" <?php echo get_form_value('phone_country') === '+227' ? 'selected' : ''; ?>>+227 Niger</option>
-                    <option value="+234" <?php echo get_form_value('phone_country') === '+234' ? 'selected' : ''; ?>>+234 Nigeria</option>
-                    <option value="+250" <?php echo get_form_value('phone_country') === '+250' ? 'selected' : ''; ?>>+250 Rwanda</option>
-                    <option value="+221" <?php echo get_form_value('phone_country') === '+221' ? 'selected' : ''; ?>>+221 Senegal</option>
-                    <option value="+248" <?php echo get_form_value('phone_country') === '+248' ? 'selected' : ''; ?>>+248 Seychelles</option>
-                    <option value="+232" <?php echo get_form_value('phone_country') === '+232' ? 'selected' : ''; ?>>+232 Sierra Leone</option>
-                    <option value="+252" <?php echo get_form_value('phone_country') === '+252' ? 'selected' : ''; ?>>+252 Somalia</option>
-                    <option value="+27" <?php echo get_form_value('phone_country') === '+27' ? 'selected' : ''; ?>>+27 South Africa</option>
-                    <option value="+211" <?php echo get_form_value('phone_country') === '+211' ? 'selected' : ''; ?>>+211 South Sudan</option>
-                    <option value="+249" <?php echo get_form_value('phone_country') === '+249' ? 'selected' : ''; ?>>+249 Sudan</option>
-                    <option value="+255" <?php echo get_form_value('phone_country') === '+255' ? 'selected' : ''; ?>>+255 Tanzania</option>
-                    <option value="+228" <?php echo get_form_value('phone_country') === '+228' ? 'selected' : ''; ?>>+228 Togo</option>
-                    <option value="+216" <?php echo get_form_value('phone_country') === '+216' ? 'selected' : ''; ?>>+216 Tunisia</option>
-                    <option value="+256" <?php echo get_form_value('phone_country') === '+256' ? 'selected' : ''; ?>>+256 Uganda</option>
-                    <option value="+260" <?php echo get_form_value('phone_country') === '+260' ? 'selected' : ''; ?>>+260 Zambia</option>
-                    <option value="+263" <?php echo get_form_value('phone_country') === '+263' ? 'selected' : ''; ?>>+263 Zimbabwe</option>
-                  </optgroup>
-                  <!-- Asia -->
-                  <optgroup label="Asia">
-                    <option value="+93" <?php echo get_form_value('phone_country') === '+93' ? 'selected' : ''; ?>>+93 Afghanistan</option>
-                    <option value="+374" <?php echo get_form_value('phone_country') === '+374' ? 'selected' : ''; ?>>+374 Armenia</option>
-                    <option value="+994" <?php echo get_form_value('phone_country') === '+994' ? 'selected' : ''; ?>>+994 Azerbaijan</option>
-                    <option value="+973" <?php echo get_form_value('phone_country') === '+973' ? 'selected' : ''; ?>>+973 Bahrain</option>
-                    <option value="+880" <?php echo get_form_value('phone_country') === '+880' ? 'selected' : ''; ?>>+880 Bangladesh</option>
-                    <option value="+975" <?php echo get_form_value('phone_country') === '+975' ? 'selected' : ''; ?>>+975 Bhutan</option>
-                    <option value="+673" <?php echo get_form_value('phone_country') === '+673' ? 'selected' : ''; ?>>+673 Brunei</option>
-                    <option value="+855" <?php echo get_form_value('phone_country') === '+855' ? 'selected' : ''; ?>>+855 Cambodia</option>
-                    <option value="+86" <?php echo get_form_value('phone_country') === '+86' ? 'selected' : ''; ?>>+86 China</option>
-                    <option value="+357" <?php echo get_form_value('phone_country') === '+357' ? 'selected' : ''; ?>>+357 Cyprus</option>
-                    <option value="+995" <?php echo get_form_value('phone_country') === '+995' ? 'selected' : ''; ?>>+995 Georgia</option>
-                    <option value="+852" <?php echo get_form_value('phone_country') === '+852' ? 'selected' : ''; ?>>+852 Hong Kong</option>
-                    <option value="+91" <?php echo get_form_value('phone_country') === '+91' ? 'selected' : ''; ?>>+91 India</option>
-                    <option value="+62" <?php echo get_form_value('phone_country') === '+62' ? 'selected' : ''; ?>>+62 Indonesia</option>
-                    <option value="+98" <?php echo get_form_value('phone_country') === '+98' ? 'selected' : ''; ?>>+98 Iran</option>
-                    <option value="+964" <?php echo get_form_value('phone_country') === '+964' ? 'selected' : ''; ?>>+964 Iraq</option>
-                    <option value="+972" <?php echo get_form_value('phone_country') === '+972' ? 'selected' : ''; ?>>+972 Israel</option>
-                    <option value="+81" <?php echo get_form_value('phone_country') === '+81' ? 'selected' : ''; ?>>+81 Japan</option>
-                    <option value="+962" <?php echo get_form_value('phone_country') === '+962' ? 'selected' : ''; ?>>+962 Jordan</option>
-                    <option value="+7" <?php echo get_form_value('phone_country') === '+7' ? 'selected' : ''; ?>>+7 Kazakhstan</option>
-                    <option value="+965" <?php echo get_form_value('phone_country') === '+965' ? 'selected' : ''; ?>>+965 Kuwait</option>
-                    <option value="+996" <?php echo get_form_value('phone_country') === '+996' ? 'selected' : ''; ?>>+996 Kyrgyzstan</option>
-                    <option value="+856" <?php echo get_form_value('phone_country') === '+856' ? 'selected' : ''; ?>>+856 Laos</option>
-                    <option value="+961" <?php echo get_form_value('phone_country') === '+961' ? 'selected' : ''; ?>>+961 Lebanon</option>
-                    <option value="+853" <?php echo get_form_value('phone_country') === '+853' ? 'selected' : ''; ?>>+853 Macau</option>
-                    <option value="+60" <?php echo get_form_value('phone_country') === '+60' ? 'selected' : ''; ?>>+60 Malaysia</option>
-                    <option value="+960" <?php echo get_form_value('phone_country') === '+960' ? 'selected' : ''; ?>>+960 Maldives</option>
-                    <option value="+976" <?php echo get_form_value('phone_country') === '+976' ? 'selected' : ''; ?>>+976 Mongolia</option>
-                    <option value="+95" <?php echo get_form_value('phone_country') === '+95' ? 'selected' : ''; ?>>+95 Myanmar</option>
-                    <option value="+977" <?php echo get_form_value('phone_country') === '+977' ? 'selected' : ''; ?>>+977 Nepal</option>
-                    <option value="+850" <?php echo get_form_value('phone_country') === '+850' ? 'selected' : ''; ?>>+850 North Korea</option>
-                    <option value="+968" <?php echo get_form_value('phone_country') === '+968' ? 'selected' : ''; ?>>+968 Oman</option>
-                    <option value="+92" <?php echo get_form_value('phone_country') === '+92' ? 'selected' : ''; ?>>+92 Pakistan</option>
-                    <option value="+63" <?php echo get_form_value('phone_country') === '+63' ? 'selected' : ''; ?>>+63 Philippines</option>
-                    <option value="+974" <?php echo get_form_value('phone_country') === '+974' ? 'selected' : ''; ?>>+974 Qatar</option>
-                    <option value="+966" <?php echo get_form_value('phone_country') === '+966' ? 'selected' : ''; ?>>+966 Saudi Arabia</option>
-                    <option value="+65" <?php echo get_form_value('phone_country') === '+65' ? 'selected' : ''; ?>>+65 Singapore</option>
-                    <option value="+82" <?php echo get_form_value('phone_country') === '+82' ? 'selected' : ''; ?>>+82 South Korea</option>
-                    <option value="+94" <?php echo get_form_value('phone_country') === '+94' ? 'selected' : ''; ?>>+94 Sri Lanka</option>
-                    <option value="+963" <?php echo get_form_value('phone_country') === '+963' ? 'selected' : ''; ?>>+963 Syria</option>
-                    <option value="+886" <?php echo get_form_value('phone_country') === '+886' ? 'selected' : ''; ?>>+886 Taiwan</option>
-                    <option value="+992" <?php echo get_form_value('phone_country') === '+992' ? 'selected' : ''; ?>>+992 Tajikistan</option>
-                    <option value="+66" <?php echo get_form_value('phone_country') === '+66' ? 'selected' : ''; ?>>+66 Thailand</option>
-                    <option value="+90" <?php echo get_form_value('phone_country') === '+90' ? 'selected' : ''; ?>>+90 Turkey</option>
-                    <option value="+993" <?php echo get_form_value('phone_country') === '+993' ? 'selected' : ''; ?>>+993 Turkmenistan</option>
-                    <option value="+971" <?php echo get_form_value('phone_country') === '+971' ? 'selected' : ''; ?>>+971 UAE</option>
-                    <option value="+998" <?php echo get_form_value('phone_country') === '+998' ? 'selected' : ''; ?>>+998 Uzbekistan</option>
-                    <option value="+84" <?php echo get_form_value('phone_country') === '+84' ? 'selected' : ''; ?>>+84 Vietnam</option>
-                    <option value="+967" <?php echo get_form_value('phone_country') === '+967' ? 'selected' : ''; ?>>+967 Yemen</option>
-                  </optgroup>
-                  <!-- Europe -->
-                  <optgroup label="Europe">
-                    <option value="+355" <?php echo get_form_value('phone_country') === '+355' ? 'selected' : ''; ?>>+355 Albania</option>
-                    <option value="+376" <?php echo get_form_value('phone_country') === '+376' ? 'selected' : ''; ?>>+376 Andorra</option>
-                    <option value="+43" <?php echo get_form_value('phone_country') === '+43' ? 'selected' : ''; ?>>+43 Austria</option>
-                    <option value="+375" <?php echo get_form_value('phone_country') === '+375' ? 'selected' : ''; ?>>+375 Belarus</option>
-                    <option value="+32" <?php echo get_form_value('phone_country') === '+32' ? 'selected' : ''; ?>>+32 Belgium</option>
-                    <option value="+387" <?php echo get_form_value('phone_country') === '+387' ? 'selected' : ''; ?>>+387 Bosnia & Herzegovina</option>
-                    <option value="+359" <?php echo get_form_value('phone_country') === '+359' ? 'selected' : ''; ?>>+359 Bulgaria</option>
-                    <option value="+385" <?php echo get_form_value('phone_country') === '+385' ? 'selected' : ''; ?>>+385 Croatia</option>
-                    <option value="+420" <?php echo get_form_value('phone_country') === '+420' ? 'selected' : ''; ?>>+420 Czech Republic</option>
-                    <option value="+45" <?php echo get_form_value('phone_country') === '+45' ? 'selected' : ''; ?>>+45 Denmark</option>
-                    <option value="+372" <?php echo get_form_value('phone_country') === '+372' ? 'selected' : ''; ?>>+372 Estonia</option>
-                    <option value="+358" <?php echo get_form_value('phone_country') === '+358' ? 'selected' : ''; ?>>+358 Finland</option>
-                    <option value="+33" <?php echo get_form_value('phone_country') === '+33' ? 'selected' : ''; ?>>+33 France</option>
-                    <option value="+49" <?php echo get_form_value('phone_country') === '+49' ? 'selected' : ''; ?>>+49 Germany</option>
-                    <option value="+30" <?php echo get_form_value('phone_country') === '+30' ? 'selected' : ''; ?>>+30 Greece</option>
-                    <option value="+36" <?php echo get_form_value('phone_country') === '+36' ? 'selected' : ''; ?>>+36 Hungary</option>
-                    <option value="+354" <?php echo get_form_value('phone_country') === '+354' ? 'selected' : ''; ?>>+354 Iceland</option>
-                    <option value="+353" <?php echo get_form_value('phone_country') === '+353' ? 'selected' : ''; ?>>+353 Ireland</option>
-                    <option value="+39" <?php echo get_form_value('phone_country') === '+39' ? 'selected' : ''; ?>>+39 Italy</option>
-                    <option value="+383" <?php echo get_form_value('phone_country') === '+383' ? 'selected' : ''; ?>>+383 Kosovo</option>
-                    <option value="+371" <?php echo get_form_value('phone_country') === '+371' ? 'selected' : ''; ?>>+371 Latvia</option>
-                    <option value="+423" <?php echo get_form_value('phone_country') === '+423' ? 'selected' : ''; ?>>+423 Liechtenstein</option>
-                    <option value="+370" <?php echo get_form_value('phone_country') === '+370' ? 'selected' : ''; ?>>+370 Lithuania</option>
-                    <option value="+352" <?php echo get_form_value('phone_country') === '+352' ? 'selected' : ''; ?>>+352 Luxembourg</option>
-                    <option value="+356" <?php echo get_form_value('phone_country') === '+356' ? 'selected' : ''; ?>>+356 Malta</option>
-                    <option value="+373" <?php echo get_form_value('phone_country') === '+373' ? 'selected' : ''; ?>>+373 Moldova</option>
-                    <option value="+377" <?php echo get_form_value('phone_country') === '+377' ? 'selected' : ''; ?>>+377 Monaco</option>
-                    <option value="+382" <?php echo get_form_value('phone_country') === '+382' ? 'selected' : ''; ?>>+382 Montenegro</option>
-                    <option value="+31" <?php echo get_form_value('phone_country') === '+31' ? 'selected' : ''; ?>>+31 Netherlands</option>
-                    <option value="+389" <?php echo get_form_value('phone_country') === '+389' ? 'selected' : ''; ?>>+389 North Macedonia</option>
-                    <option value="+47" <?php echo get_form_value('phone_country') === '+47' ? 'selected' : ''; ?>>+47 Norway</option>
-                    <option value="+48" <?php echo get_form_value('phone_country') === '+48' ? 'selected' : ''; ?>>+48 Poland</option>
-                    <option value="+351" <?php echo get_form_value('phone_country') === '+351' ? 'selected' : ''; ?>>+351 Portugal</option>
-                    <option value="+40" <?php echo get_form_value('phone_country') === '+40' ? 'selected' : ''; ?>>+40 Romania</option>
-                    <option value="+7" <?php echo get_form_value('phone_country') === '+7' ? 'selected' : ''; ?>>+7 Russia</option>
-                    <option value="+378" <?php echo get_form_value('phone_country') === '+378' ? 'selected' : ''; ?>>+378 San Marino</option>
-                    <option value="+381" <?php echo get_form_value('phone_country') === '+381' ? 'selected' : ''; ?>>+381 Serbia</option>
-                    <option value="+421" <?php echo get_form_value('phone_country') === '+421' ? 'selected' : ''; ?>>+421 Slovakia</option>
-                    <option value="+386" <?php echo get_form_value('phone_country') === '+386' ? 'selected' : ''; ?>>+386 Slovenia</option>
-                    <option value="+34" <?php echo get_form_value('phone_country') === '+34' ? 'selected' : ''; ?>>+34 Spain</option>
-                    <option value="+46" <?php echo get_form_value('phone_country') === '+46' ? 'selected' : ''; ?>>+46 Sweden</option>
-                    <option value="+41" <?php echo get_form_value('phone_country') === '+41' ? 'selected' : ''; ?>>+41 Switzerland</option>
-                    <option value="+380" <?php echo get_form_value('phone_country') === '+380' ? 'selected' : ''; ?>>+380 Ukraine</option>
-                    <option value="+44" <?php echo get_form_value('phone_country') === '+44' ? 'selected' : ''; ?>>+44 United Kingdom</option>
-                    <option value="+379" <?php echo get_form_value('phone_country') === '+379' ? 'selected' : ''; ?>>+379 Vatican City</option>
-                  </optgroup>
-                  <!-- North America & Caribbean -->
-                  <optgroup label="North America & Caribbean">
-                    <option value="+1" <?php echo get_form_value('phone_country') === '+1' ? 'selected' : ''; ?>>+1 USA/Canada</option>
-                    <option value="+52" <?php echo get_form_value('phone_country') === '+52' ? 'selected' : ''; ?>>+52 Mexico</option>
-                    <option value="+1-242" <?php echo get_form_value('phone_country') === '+1-242' ? 'selected' : ''; ?>>+1-242 Bahamas</option>
-                    <option value="+1-246" <?php echo get_form_value('phone_country') === '+1-246' ? 'selected' : ''; ?>>+1-246 Barbados</option>
-                    <option value="+501" <?php echo get_form_value('phone_country') === '+501' ? 'selected' : ''; ?>>+501 Belize</option>
-                    <option value="+1-441" <?php echo get_form_value('phone_country') === '+1-441' ? 'selected' : ''; ?>>+1-441 Bermuda</option>
-                    <option value="+506" <?php echo get_form_value('phone_country') === '+506' ? 'selected' : ''; ?>>+506 Costa Rica</option>
-                    <option value="+53" <?php echo get_form_value('phone_country') === '+53' ? 'selected' : ''; ?>>+53 Cuba</option>
-                    <option value="+1-809" <?php echo get_form_value('phone_country') === '+1-809' ? 'selected' : ''; ?>>+1-809 Dominican Republic</option>
-                    <option value="+1-829" <?php echo get_form_value('phone_country') === '+1-829' ? 'selected' : ''; ?>>+1-829 Dominican Republic</option>
-                    <option value="+503" <?php echo get_form_value('phone_country') === '+503' ? 'selected' : ''; ?>>+503 El Salvador</option>
-                    <option value="+502" <?php echo get_form_value('phone_country') === '+502' ? 'selected' : ''; ?>>+502 Guatemala</option>
-                    <option value="+509" <?php echo get_form_value('phone_country') === '+509' ? 'selected' : ''; ?>>+509 Haiti</option>
-                    <option value="+504" <?php echo get_form_value('phone_country') === '+504' ? 'selected' : ''; ?>>+504 Honduras</option>
-                    <option value="+1-876" <?php echo get_form_value('phone_country') === '+1-876' ? 'selected' : ''; ?>>+1-876 Jamaica</option>
-                    <option value="+505" <?php echo get_form_value('phone_country') === '+505' ? 'selected' : ''; ?>>+505 Nicaragua</option>
-                    <option value="+507" <?php echo get_form_value('phone_country') === '+507' ? 'selected' : ''; ?>>+507 Panama</option>
-                    <option value="+1-787" <?php echo get_form_value('phone_country') === '+1-787' ? 'selected' : ''; ?>>+1-787 Puerto Rico</option>
-                    <option value="+1-868" <?php echo get_form_value('phone_country') === '+1-868' ? 'selected' : ''; ?>>+1-868 Trinidad & Tobago</option>
-                                        <option value="+1-868" <?php echo get_form_value('phone_country') === '+1-868' ? 'selected' : ''; ?>>+1-868 Trinidad & Tobago</option>
-                  </optgroup>
-                  <!-- South America -->
-                  <optgroup label="South America">
-                    <option value="+54" <?php echo get_form_value('phone_country') === '+54' ? 'selected' : ''; ?>>+54 Argentina</option>
-                    <option value="+591" <?php echo get_form_value('phone_country') === '+591' ? 'selected' : ''; ?>>+591 Bolivia</option>
-                    <option value="+55" <?php echo get_form_value('phone_country') === '+55' ? 'selected' : ''; ?>>+55 Brazil</option>
-                    <option value="+56" <?php echo get_form_value('phone_country') === '+56' ? 'selected' : ''; ?>>+56 Chile</option>
-                    <option value="+57" <?php echo get_form_value('phone_country') === '+57' ? 'selected' : ''; ?>>+57 Colombia</option>
-                    <option value="+593" <?php echo get_form_value('phone_country') === '+593' ? 'selected' : ''; ?>>+593 Ecuador</option>
-                    <option value="+592" <?php echo get_form_value('phone_country') === '+592' ? 'selected' : ''; ?>>+592 Guyana</option>
-                    <option value="+595" <?php echo get_form_value('phone_country') === '+595' ? 'selected' : ''; ?>>+595 Paraguay</option>
-                    <option value="+51" <?php echo get_form_value('phone_country') === '+51' ? 'selected' : ''; ?>>+51 Peru</option>
-                    <option value="+597" <?php echo get_form_value('phone_country') === '+597' ? 'selected' : ''; ?>>+597 Suriname</option>
-                    <option value="+598" <?php echo get_form_value('phone_country') === '+598' ? 'selected' : ''; ?>>+598 Uruguay</option>
-                    <option value="+58" <?php echo get_form_value('phone_country') === '+58' ? 'selected' : ''; ?>>+58 Venezuela</option>
-                  </optgroup>
-                  <!-- Oceania -->
-                  <optgroup label="Oceania">
-                    <option value="+61" <?php echo get_form_value('phone_country') === '+61' ? 'selected' : ''; ?>>+61 Australia</option>
-                    <option value="+679" <?php echo get_form_value('phone_country') === '+679' ? 'selected' : ''; ?>>+679 Fiji</option>
-                    <option value="+686" <?php echo get_form_value('phone_country') === '+686' ? 'selected' : ''; ?>>+686 Kiribati</option>
-                    <option value="+692" <?php echo get_form_value('phone_country') === '+692' ? 'selected' : ''; ?>>+692 Marshall Islands</option>
-                    <option value="+691" <?php echo get_form_value('phone_country') === '+691' ? 'selected' : ''; ?>>+691 Micronesia</option>
-                    <option value="+674" <?php echo get_form_value('phone_country') === '+674' ? 'selected' : ''; ?>>+674 Nauru</option>
-                    <option value="+64" <?php echo get_form_value('phone_country') === '+64' ? 'selected' : ''; ?>>+64 New Zealand</option>
-                    <option value="+680" <?php echo get_form_value('phone_country') === '+680' ? 'selected' : ''; ?>>+680 Palau</option>
-                    <option value="+675" <?php echo get_form_value('phone_country') === '+675' ? 'selected' : ''; ?>>+675 Papua New Guinea</option>
-                    <option value="+685" <?php echo get_form_value('phone_country') === '+685' ? 'selected' : ''; ?>>+685 Samoa</option>
-                    <option value="+677" <?php echo get_form_value('phone_country') === '+677' ? 'selected' : ''; ?>>+677 Solomon Islands</option>
-                    <option value="+676" <?php echo get_form_value('phone_country') === '+676' ? 'selected' : ''; ?>>+676 Tonga</option>
-                    <option value="+688" <?php echo get_form_value('phone_country') === '+688' ? 'selected' : ''; ?>>+688 Tuvalu</option>
-                    <option value="+678" <?php echo get_form_value('phone_country') === '+678' ? 'selected' : ''; ?>>+678 Vanuatu</option>
-                  </optgroup>
-                </select>
-                <input type="tel" id="phone" name="phone" class="phone-number" required placeholder="Enter phone number" value="<?php echo htmlspecialchars(get_form_value('phone')); ?>">
+                <input type="tel" id="phone" name="phone" required placeholder="+91 9876543210" value="<?php echo htmlspecialchars(get_form_value('phone')); ?>">
               </div>
               <div class="error-message" id="phone-error">Please enter a valid phone number</div>
             </div>
           </div>
+          <div class="col-50">
+            <div class="form-group">
+              <label for="whatsapp">WhatsApp Number <span class="required">*</span></label>
+              <div class="phone-input-group">
+                <input type="tel" id="whatsapp" name="whatsapp" required placeholder="+91 9876543210" value="<?php echo htmlspecialchars(get_form_value('whatsapp')); ?>">
+              </div>
+              <div class="error-message" id="whatsapp-error">Please enter a valid WhatsApp number</div>
+              
+              <!-- Checkbox to copy contact number to WhatsApp -->
+              <div class="checkbox-group">
+                <input type="checkbox" id="sameAsPhone" name="sameAsPhone" <?php echo get_form_value('sameAsPhone') ? 'checked' : ''; ?>>
+                <label for="sameAsPhone">Same as Contact Number</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4th Row: Years of Expertise, Domain of Expertise -->
+        <div class="row">
           <div class="col-50">
             <div class="form-group">
               <label for="expertise">Years of Expertise <span class="required">*</span></label>
@@ -1373,234 +1312,6 @@ function get_form_value($field, $default = '') {
                 <option value="10+" <?php echo get_form_value('expertise') === '10+' ? 'selected' : ''; ?>>10+ years</option>
               </select>
               <div class="error-message" id="expertise-error">Please select your years of expertise</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4th Row: Years of Expertise, Domain of Expertise -->
-        <div class="row">
-          <div class="col-50">
-            <div class="form-group">
-              <label for="whatsapp">WhatsApp Number <span class="required">*</span></label>
-              <div class="phone-input-group">
-                <select id="whatsapp-country" name="whatsapp_country" class="country-code">
-                  <option value="">Select</option>
-                  <!-- Africa -->
-                  <optgroup label="Africa">
-                    <option value="+213" <?php echo get_form_value('whatsapp_country') === '+213' ? 'selected' : ''; ?>>+213 Algeria</option>
-                    <option value="+244" <?php echo get_form_value('whatsapp_country') === '+244' ? 'selected' : ''; ?>>+244 Angola</option>
-                    <option value="+229" <?php echo get_form_value('whatsapp_country') === '+229' ? 'selected' : ''; ?>>+229 Benin</option>
-                    <option value="+267" <?php echo get_form_value('whatsapp_country') === '+267' ? 'selected' : ''; ?>>+267 Botswana</option>
-                    <option value="+226" <?php echo get_form_value('whatsapp_country') === '+226' ? 'selected' : ''; ?>>+226 Burkina Faso</option>
-                    <option value="+257" <?php echo get_form_value('whatsapp_country') === '+257' ? 'selected' : ''; ?>>+257 Burundi</option>
-                    <option value="+237" <?php echo get_form_value('whatsapp_country') === '+237' ? 'selected' : ''; ?>>+237 Cameroon</option>
-                    <option value="+238" <?php echo get_form_value('whatsapp_country') === '+238' ? 'selected' : ''; ?>>+238 Cape Verde</option>
-                    <option value="+235" <?php echo get_form_value('whatsapp_country') === '+235' ? 'selected' : ''; ?>>+235 Chad</option>
-                    <option value="+269" <?php echo get_form_value('whatsapp_country') === '+269' ? 'selected' : ''; ?>>+269 Comoros</option>
-                    <option value="+242" <?php echo get_form_value('whatsapp_country') === '+242' ? 'selected' : ''; ?>>+242 Congo (Republic)</option>
-                    <option value="+243" <?php echo get_form_value('whatsapp_country') === '+243' ? 'selected' : ''; ?>>+243 Congo (DRC)</option>
-                    <option value="+253" <?php echo get_form_value('whatsapp_country') === '+253' ? 'selected' : ''; ?>>+253 Djibouti</option>
-                    <option value="+20" <?php echo get_form_value('whatsapp_country') === '+20' ? 'selected' : ''; ?>>+20 Egypt</option>
-                    <option value="+291" <?php echo get_form_value('whatsapp_country') === '+291' ? 'selected' : ''; ?>>+291 Eritrea</option>
-                    <option value="+251" <?php echo get_form_value('whatsapp_country') === '+251' ? 'selected' : ''; ?>>+251 Ethiopia</option>
-                    <option value="+220" <?php echo get_form_value('whatsapp_country') === '+220' ? 'selected' : ''; ?>>+220 Gambia</option>
-                    <option value="+233" <?php echo get_form_value('whatsapp_country') === '+233' ? 'selected' : ''; ?>>+233 Ghana</option>
-                    <option value="+224" <?php echo get_form_value('whatsapp_country') === '+224' ? 'selected' : ''; ?>>+224 Guinea</option>
-                    <option value="+245" <?php echo get_form_value('whatsapp_country') === '+245' ? 'selected' : ''; ?>>+245 Guinea-Bissau</option>
-                    <option value="+225" <?php echo get_form_value('whatsapp_country') === '+225' ? 'selected' : ''; ?>>+225 Ivory Coast</option>
-                    <option value="+254" <?php echo get_form_value('whatsapp_country') === '+254' ? 'selected' : ''; ?>>+254 Kenya</option>
-                    <option value="+266" <?php echo get_form_value('whatsapp_country') === '+266' ? 'selected' : ''; ?>>+266 Lesotho</option>
-                    <option value="+231" <?php echo get_form_value('whatsapp_country') === '+231' ? 'selected' : ''; ?>>+231 Liberia</option>
-                    <option value="+218" <?php echo get_form_value('whatsapp_country') === '+218' ? 'selected' : ''; ?>>+218 Libya</option>
-                    <option value="+261" <?php echo get_form_value('whatsapp_country') === '+261' ? 'selected' : ''; ?>>+261 Madagascar</option>
-                    <option value="+265" <?php echo get_form_value('whatsapp_country') === '+265' ? 'selected' : ''; ?>>+265 Malawi</option>
-                    <option value="+223" <?php echo get_form_value('whatsapp_country') === '+223' ? 'selected' : ''; ?>>+223 Mali</option>
-                    <option value="+222" <?php echo get_form_value('whatsapp_country') === '+222' ? 'selected' : ''; ?>>+222 Mauritania</option>
-                    <option value="+230" <?php echo get_form_value('whatsapp_country') === '+230' ? 'selected' : ''; ?>>+230 Mauritius</option>
-                    <option value="+212" <?php echo get_form_value('whatsapp_country') === '+212' ? 'selected' : ''; ?>>+212 Morocco</option>
-                    <option value="+258" <?php echo get_form_value('whatsapp_country') === '+258' ? 'selected' : ''; ?>>+258 Mozambique</option>
-                    <option value="+264" <?php echo get_form_value('whatsapp_country') === '+264' ? 'selected' : ''; ?>>+264 Namibia</option>
-                    <option value="+227" <?php echo get_form_value('whatsapp_country') === '+227' ? 'selected' : ''; ?>>+227 Niger</option>
-                    <option value="+234" <?php echo get_form_value('whatsapp_country') === '+234' ? 'selected' : ''; ?>>+234 Nigeria</option>
-                    <option value="+250" <?php echo get_form_value('whatsapp_country') === '+250' ? 'selected' : ''; ?>>+250 Rwanda</option>
-                    <option value="+221" <?php echo get_form_value('whatsapp_country') === '+221' ? 'selected' : ''; ?>>+221 Senegal</option>
-                    <option value="+248" <?php echo get_form_value('whatsapp_country') === '+248' ? 'selected' : ''; ?>>+248 Seychelles</option>
-                    <option value="+232" <?php echo get_form_value('whatsapp_country') === '+232' ? 'selected' : ''; ?>>+232 Sierra Leone</option>
-                    <option value="+252" <?php echo get_form_value('whatsapp_country') === '+252' ? 'selected' : ''; ?>>+252 Somalia</option>
-                    <option value="+27" <?php echo get_form_value('whatsapp_country') === '+27' ? 'selected' : ''; ?>>+27 South Africa</option>
-                    <option value="+211" <?php echo get_form_value('whatsapp_country') === '+211' ? 'selected' : ''; ?>>+211 South Sudan</option>
-                    <option value="+249" <?php echo get_form_value('whatsapp_country') === '+249' ? 'selected' : ''; ?>>+249 Sudan</option>
-                    <option value="+255" <?php echo get_form_value('whatsapp_country') === '+255' ? 'selected' : ''; ?>>+255 Tanzania</option>
-                    <option value="+228" <?php echo get_form_value('whatsapp_country') === '+228' ? 'selected' : ''; ?>>+228 Togo</option>
-                    <option value="+216" <?php echo get_form_value('whatsapp_country') === '+216' ? 'selected' : ''; ?>>+216 Tunisia</option>
-                    <option value="+256" <?php echo get_form_value('whatsapp_country') === '+256' ? 'selected' : ''; ?>>+256 Uganda</option>
-                    <option value="+260" <?php echo get_form_value('whatsapp_country') === '+260' ? 'selected' : ''; ?>>+260 Zambia</option>
-                    <option value="+263" <?php echo get_form_value('whatsapp_country') === '+263' ? 'selected' : ''; ?>>+263 Zimbabwe</option>
-                  </optgroup>
-                  <!-- Asia -->
-                  <optgroup label="Asia">
-                    <option value="+93" <?php echo get_form_value('whatsapp_country') === '+93' ? 'selected' : ''; ?>>+93 Afghanistan</option>
-                    <option value="+374" <?php echo get_form_value('whatsapp_country') === '+374' ? 'selected' : ''; ?>>+374 Armenia</option>
-                    <option value="+994" <?php echo get_form_value('whatsapp_country') === '+994' ? 'selected' : ''; ?>>+994 Azerbaijan</option>
-                    <option value="+973" <?php echo get_form_value('whatsapp_country') === '+973' ? 'selected' : ''; ?>>+973 Bahrain</option>
-                    <option value="+880" <?php echo get_form_value('whatsapp_country') === '+880' ? 'selected' : ''; ?>>+880 Bangladesh</option>
-                    <option value="+975" <?php echo get_form_value('whatsapp_country') === '+975' ? 'selected' : ''; ?>>+975 Bhutan</option>
-                    <option value="+673" <?php echo get_form_value('whatsapp_country') === '+673' ? 'selected' : ''; ?>>+673 Brunei</option>
-                    <option value="+855" <?php echo get_form_value('whatsapp_country') === '+855' ? 'selected' : ''; ?>>+855 Cambodia</option>
-                    <option value="+86" <?php echo get_form_value('whatsapp_country') === '+86' ? 'selected' : ''; ?>>+86 China</option>
-                    <option value="+357" <?php echo get_form_value('whatsapp_country') === '+357' ? 'selected' : ''; ?>>+357 Cyprus</option>
-                    <option value="+995" <?php echo get_form_value('whatsapp_country') === '+995' ? 'selected' : ''; ?>>+995 Georgia</option>
-                    <option value="+852" <?php echo get_form_value('whatsapp_country') === '+852' ? 'selected' : ''; ?>>+852 Hong Kong</option>
-                    <option value="+91" <?php echo get_form_value('whatsapp_country') === '+91' ? 'selected' : ''; ?>>+91 India</option>
-                    <option value="+62" <?php echo get_form_value('whatsapp_country') === '+62' ? 'selected' : ''; ?>>+62 Indonesia</option>
-                    <option value="+98" <?php echo get_form_value('whatsapp_country') === '+98' ? 'selected' : ''; ?>>+98 Iran</option>
-                    <option value="+964" <?php echo get_form_value('whatsapp_country') === '+964' ? 'selected' : ''; ?>>+964 Iraq</option>
-                    <option value="+972" <?php echo get_form_value('whatsapp_country') === '+972' ? 'selected' : ''; ?>>+972 Israel</option>
-                    <option value="+81" <?php echo get_form_value('whatsapp_country') === '+81' ? 'selected' : ''; ?>>+81 Japan</option>
-                    <option value="+962" <?php echo get_form_value('whatsapp_country') === '+962' ? 'selected' : ''; ?>>+962 Jordan</option>
-                    <option value="+7" <?php echo get_form_value('whatsapp_country') === '+7' ? 'selected' : ''; ?>>+7 Kazakhstan</option>
-                    <option value="+965" <?php echo get_form_value('whatsapp_country') === '+965' ? 'selected' : ''; ?>>+965 Kuwait</option>
-                    <option value="+996" <?php echo get_form_value('whatsapp_country') === '+996' ? 'selected' : ''; ?>>+996 Kyrgyzstan</option>
-                    <option value="+856" <?php echo get_form_value('whatsapp_country') === '+856' ? 'selected' : ''; ?>>+856 Laos</option>
-                    <option value="+961" <?php echo get_form_value('whatsapp_country') === '+961' ? 'selected' : ''; ?>>+961 Lebanon</option>
-                    <option value="+853" <?php echo get_form_value('whatsapp_country') === '+853' ? 'selected' : ''; ?>>+853 Macau</option>
-                    <option value="+60" <?php echo get_form_value('whatsapp_country') === '+60' ? 'selected' : ''; ?>>+60 Malaysia</option>
-                    <option value="+960" <?php echo get_form_value('whatsapp_country') === '+960' ? 'selected' : ''; ?>>+960 Maldives</option>
-                    <option value="+976" <?php echo get_form_value('whatsapp_country') === '+976' ? 'selected' : ''; ?>>+976 Mongolia</option>
-                    <option value="+95" <?php echo get_form_value('whatsapp_country') === '+95' ? 'selected' : ''; ?>>+95 Myanmar</option>
-                    <option value="+977" <?php echo get_form_value('whatsapp_country') === '+977' ? 'selected' : ''; ?>>+977 Nepal</option>
-                    <option value="+850" <?php echo get_form_value('whatsapp_country') === '+850' ? 'selected' : ''; ?>>+850 North Korea</option>
-                    <option value="+968" <?php echo get_form_value('whatsapp_country') === '+968' ? 'selected' : ''; ?>>+968 Oman</option>
-                    <option value="+92" <?php echo get_form_value('whatsapp_country') === '+92' ? 'selected' : ''; ?>>+92 Pakistan</option>
-                    <option value="+63" <?php echo get_form_value('whatsapp_country') === '+63' ? 'selected' : ''; ?>>+63 Philippines</option>
-                    <option value="+974" <?php echo get_form_value('whatsapp_country') === '+974' ? 'selected' : ''; ?>>+974 Qatar</option>
-                    <option value="+966" <?php echo get_form_value('whatsapp_country') === '+966' ? 'selected' : ''; ?>>+966 Saudi Arabia</option>
-                    <option value="+65" <?php echo get_form_value('whatsapp_country') === '+65' ? 'selected' : ''; ?>>+65 Singapore</option>
-                    <option value="+82" <?php echo get_form_value('whatsapp_country') === '+82' ? 'selected' : ''; ?>>+82 South Korea</option>
-                    <option value="+94" <?php echo get_form_value('whatsapp_country') === '+94' ? 'selected' : ''; ?>>+94 Sri Lanka</option>
-                    <option value="+963" <?php echo get_form_value('whatsapp_country') === '+963' ? 'selected' : ''; ?>>+963 Syria</option>
-                    <option value="+886" <?php echo get_form_value('whatsapp_country') === '+886' ? 'selected' : ''; ?>>+886 Taiwan</option>
-                    <option value="+992" <?php echo get_form_value('whatsapp_country') === '+992' ? 'selected' : ''; ?>>+992 Tajikistan</option>
-                    <option value="+66" <?php echo get_form_value('whatsapp_country') === '+66' ? 'selected' : ''; ?>>+66 Thailand</option>
-                    <option value="+90" <?php echo get_form_value('whatsapp_country') === '+90' ? 'selected' : ''; ?>>+90 Turkey</option>
-                    <option value="+993" <?php echo get_form_value('whatsapp_country') === '+993' ? 'selected' : ''; ?>>+993 Turkmenistan</option>
-                    <option value="+971" <?php echo get_form_value('whatsapp_country') === '+971' ? 'selected' : ''; ?>>+971 UAE</option>
-                    <option value="+998" <?php echo get_form_value('whatsapp_country') === '+998' ? 'selected' : ''; ?>>+998 Uzbekistan</option>
-                    <option value="+84" <?php echo get_form_value('whatsapp_country') === '+84' ? 'selected' : ''; ?>>+84 Vietnam</option>
-                    <option value="+967" <?php echo get_form_value('whatsapp_country') === '+967' ? 'selected' : ''; ?>>+967 Yemen</option>
-                  </optgroup>
-                  <!-- Europe -->
-                  <optgroup label="Europe">
-                    <option value="+355" <?php echo get_form_value('whatsapp_country') === '+355' ? 'selected' : ''; ?>>+355 Albania</option>
-                    <option value="+376" <?php echo get_form_value('whatsapp_country') === '+376' ? 'selected' : ''; ?>>+376 Andorra</option>
-                    <option value="+43" <?php echo get_form_value('whatsapp_country') === '+43' ? 'selected' : ''; ?>>+43 Austria</option>
-                    <option value="+375" <?php echo get_form_value('whatsapp_country') === '+375' ? 'selected' : ''; ?>>+375 Belarus</option>
-                    <option value="+32" <?php echo get_form_value('whatsapp_country') === '+32' ? 'selected' : ''; ?>>+32 Belgium</option>
-                    <option value="+387" <?php echo get_form_value('whatsapp_country') === '+387' ? 'selected' : ''; ?>>+387 Bosnia & Herzegovina</option>
-                    <option value="+359" <?php echo get_form_value('whatsapp_country') === '+359' ? 'selected' : ''; ?>>+359 Bulgaria</option>
-                    <option value="+385" <?php echo get_form_value('whatsapp_country') === '+385' ? 'selected' : ''; ?>>+385 Croatia</option>
-                    <option value="+420" <?php echo get_form_value('whatsapp_country') === '+420' ? 'selected' : ''; ?>>+420 Czech Republic</option>
-                    <option value="+45" <?php echo get_form_value('whatsapp_country') === '+45' ? 'selected' : ''; ?>>+45 Denmark</option>
-                    <option value="+372" <?php echo get_form_value('whatsapp_country') === '+372' ? 'selected' : ''; ?>>+372 Estonia</option>
-                    <option value="+358" <?php echo get_form_value('whatsapp_country') === '+358' ? 'selected' : ''; ?>>+358 Finland</option>
-                    <option value="+33" <?php echo get_form_value('whatsapp_country') === '+33' ? 'selected' : ''; ?>>+33 France</option>
-                    <option value="+49" <?php echo get_form_value('whatsapp_country') === '+49' ? 'selected' : ''; ?>>+49 Germany</option>
-                    <option value="+30" <?php echo get_form_value('whatsapp_country') === '+30' ? 'selected' : ''; ?>>+30 Greece</option>
-                    <option value="+36" <?php echo get_form_value('whatsapp_country') === '+36' ? 'selected' : ''; ?>>+36 Hungary</option>
-                    <option value="+354" <?php echo get_form_value('whatsapp_country') === '+354' ? 'selected' : ''; ?>>+354 Iceland</option>
-                    <option value="+353" <?php echo get_form_value('whatsapp_country') === '+353' ? 'selected' : ''; ?>>+353 Ireland</option>
-                    <option value="+39" <?php echo get_form_value('whatsapp_country') === '+39' ? 'selected' : ''; ?>>+39 Italy</option>
-                    <option value="+383" <?php echo get_form_value('whatsapp_country') === '+383' ? 'selected' : ''; ?>>+383 Kosovo</option>
-                    <option value="+371" <?php echo get_form_value('whatsapp_country') === '+371' ? 'selected' : ''; ?>>+371 Latvia</option>
-                    <option value="+423" <?php echo get_form_value('whatsapp_country') === '+423' ? 'selected' : ''; ?>>+423 Liechtenstein</option>
-                    <option value="+370" <?php echo get_form_value('whatsapp_country') === '+370' ? 'selected' : ''; ?>>+370 Lithuania</option>
-                    <option value="+352" <?php echo get_form_value('whatsapp_country') === '+352' ? 'selected' : ''; ?>>+352 Luxembourg</option>
-                    <option value="+356" <?php echo get_form_value('whatsapp_country') === '+356' ? 'selected' : ''; ?>>+356 Malta</option>
-                    <option value="+373" <?php echo get_form_value('whatsapp_country') === '+373' ? 'selected' : ''; ?>>+373 Moldova</option>
-                    <option value="+377" <?php echo get_form_value('whatsapp_country') === '+377' ? 'selected' : ''; ?>>+377 Monaco</option>
-                    <option value="+382" <?php echo get_form_value('whatsapp_country') === '+382' ? 'selected' : ''; ?>>+382 Montenegro</option>
-                    <option value="+31" <?php echo get_form_value('whatsapp_country') === '+31' ? 'selected' : ''; ?>>+31 Netherlands</option>
-                    <option value="+389" <?php echo get_form_value('whatsapp_country') === '+389' ? 'selected' : ''; ?>>+389 North Macedonia</option>
-                    <option value="+47" <?php echo get_form_value('whatsapp_country') === '+47' ? 'selected' : ''; ?>>+47 Norway</option>
-                    <option value="+48" <?php echo get_form_value('whatsapp_country') === '+48' ? 'selected' : ''; ?>>+48 Poland</option>
-                    <option value="+351" <?php echo get_form_value('whatsapp_country') === '+351' ? 'selected' : ''; ?>>+351 Portugal</option>
-                    <option value="+40" <?php echo get_form_value('whatsapp_country') === '+40' ? 'selected' : ''; ?>>+40 Romania</option>
-                    <option value="+7" <?php echo get_form_value('whatsapp_country') === '+7' ? 'selected' : ''; ?>>+7 Russia</option>
-                    <option value="+378" <?php echo get_form_value('whatsapp_country') === '+378' ? 'selected' : ''; ?>>+378 San Marino</option>
-                    <option value="+381" <?php echo get_form_value('whatsapp_country') === '+381' ? 'selected' : ''; ?>>+381 Serbia</option>
-                    <option value="+421" <?php echo get_form_value('whatsapp_country') === '+421' ? 'selected' : ''; ?>>+421 Slovakia</option>
-                    <option value="+386" <?php echo get_form_value('whatsapp_country') === '+386' ? 'selected' : ''; ?>>+386 Slovenia</option>
-                    <option value="+34" <?php echo get_form_value('whatsapp_country') === '+34' ? 'selected' : ''; ?>>+34 Spain</option>
-                    <option value="+46" <?php echo get_form_value('whatsapp_country') === '+46' ? 'selected' : ''; ?>>+46 Sweden</option>
-                    <option value="+41" <?php echo get_form_value('whatsapp_country') === '+41' ? 'selected' : ''; ?>>+41 Switzerland</option>
-                    <option value="+380" <?php echo get_form_value('whatsapp_country') === '+380' ? 'selected' : ''; ?>>+380 Ukraine</option>
-                    <option value="+44" <?php echo get_form_value('whatsapp_country') === '+44' ? 'selected' : ''; ?>>+44 United Kingdom</option>
-                    <option value="+379" <?php echo get_form_value('whatsapp_country') === '+379' ? 'selected' : ''; ?>>+379 Vatican City</option>
-                  </optgroup>
-                  <!-- North America & Caribbean -->
-                  <optgroup label="North America & Caribbean">
-                    <option value="+1" <?php echo get_form_value('whatsapp_country') === '+1' ? 'selected' : ''; ?>>+1 USA/Canada</option>
-                    <option value="+52" <?php echo get_form_value('whatsapp_country') === '+52' ? 'selected' : ''; ?>>+52 Mexico</option>
-                    <option value="+1-242" <?php echo get_form_value('whatsapp_country') === '+1-242' ? 'selected' : ''; ?>>+1-242 Bahamas</option>
-                    <option value="+1-246" <?php echo get_form_value('whatsapp_country') === '+1-246' ? 'selected' : ''; ?>>+1-246 Barbados</option>
-                    <option value="+501" <?php echo get_form_value('whatsapp_country') === '+501' ? 'selected' : ''; ?>>+501 Belize</option>
-                    <option value="+1-441" <?php echo get_form_value('whatsapp_country') === '+1-441' ? 'selected' : ''; ?>>+1-441 Bermuda</option>
-                    <option value="+506" <?php echo get_form_value('whatsapp_country') === '+506' ? 'selected' : ''; ?>>+506 Costa Rica</option>
-                    <option value="+53" <?php echo get_form_value('whatsapp_country') === '+53' ? 'selected' : ''; ?>>+53 Cuba</option>
-                    <option value="+1-809" <?php echo get_form_value('whatsapp_country') === '+1-809' ? 'selected' : ''; ?>>+1-809 Dominican Republic</option>
-                    <option value="+1-829" <?php echo get_form_value('whatsapp_country') === '+1-829' ? 'selected' : ''; ?>>+1-829 Dominican Republic</option>
-                    <option value="+503" <?php echo get_form_value('whatsapp_country') === '+503' ? 'selected' : ''; ?>>+503 El Salvador</option>
-                    <option value="+502" <?php echo get_form_value('whatsapp_country') === '+502' ? 'selected' : ''; ?>>+502 Guatemala</option>
-                    <option value="+509" <?php echo get_form_value('whatsapp_country') === '+509' ? 'selected' : ''; ?>>+509 Haiti</option>
-                    <option value="+504" <?php echo get_form_value('whatsapp_country') === '+504' ? 'selected' : ''; ?>>+504 Honduras</option>
-                    <option value="+1-876" <?php echo get_form_value('whatsapp_country') === '+1-876' ? 'selected' : ''; ?>>+1-876 Jamaica</option>
-                    <option value="+505" <?php echo get_form_value('whatsapp_country') === '+505' ? 'selected' : ''; ?>>+505 Nicaragua</option>
-                    <option value="+507" <?php echo get_form_value('whatsapp_country') === '+507' ? 'selected' : ''; ?>>+507 Panama</option>
-                    <option value="+1-787" <?php echo get_form_value('whatsapp_country') === '+1-787' ? 'selected' : ''; ?>>+1-787 Puerto Rico</option>
-                    <option value="+1-868" <?php echo get_form_value('whatsapp_country') === '+1-868' ? 'selected' : ''; ?>>+1-868 Trinidad & Tobago</option>
-                  </optgroup>
-                  <!-- South America -->
-                  <optgroup label="South America">
-                    <option value="+54" <?php echo get_form_value('whatsapp_country') === '+54' ? 'selected' : ''; ?>>+54 Argentina</option>
-                    <option value="+591" <?php echo get_form_value('whatsapp_country') === '+591' ? 'selected' : ''; ?>>+591 Bolivia</option>
-                    <option value="+55" <?php echo get_form_value('whatsapp_country') === '+55' ? 'selected' : ''; ?>>+55 Brazil</option>
-                    <option value="+56" <?php echo get_form_value('whatsapp_country') === '+56' ? 'selected' : ''; ?>>+56 Chile</option>
-                    <option value="+57" <?php echo get_form_value('whatsapp_country') === '+57' ? 'selected' : ''; ?>>+57 Colombia</option>
-                    <option value="+593" <?php echo get_form_value('whatsapp_country') === '+593' ? 'selected' : ''; ?>>+593 Ecuador</option>
-                    <option value="+592" <?php echo get_form_value('whatsapp_country') === '+592' ? 'selected' : ''; ?>>+592 Guyana</option>
-                    <option value="+595" <?php echo get_form_value('whatsapp_country') === '+595' ? 'selected' : ''; ?>>+595 Paraguay</option>
-                    <option value="+51" <?php echo get_form_value('whatsapp_country') === '+51' ? 'selected' : ''; ?>>+51 Peru</option>
-                    <option value="+597" <?php echo get_form_value('whatsapp_country') === '+597' ? 'selected' : ''; ?>>+597 Suriname</option>
-                    <option value="+598" <?php echo get_form_value('whatsapp_country') === '+598' ? 'selected' : ''; ?>>+598 Uruguay</option>
-                    <option value="+58" <?php echo get_form_value('whatsapp_country') === '+58' ? 'selected' : ''; ?>>+58 Venezuela</option>
-                  </optgroup>
-                  <!-- Oceania -->
-                  <optgroup label="Oceania">
-                    <option value="+61" <?php echo get_form_value('whatsapp_country') === '+61' ? 'selected' : ''; ?>>+61 Australia</option>
-                    <option value="+679" <?php echo get_form_value('whatsapp_country') === '+679' ? 'selected' : ''; ?>>+679 Fiji</option>
-                    <option value="+686" <?php echo get_form_value('whatsapp_country') === '+686' ? 'selected' : ''; ?>>+686 Kiribati</option>
-                    <option value="+692" <?php echo get_form_value('whatsapp_country') === '+692' ? 'selected' : ''; ?>>+692 Marshall Islands</option>
-                    <option value="+691" <?php echo get_form_value('whatsapp_country') === '+691' ? 'selected' : ''; ?>>+691 Micronesia</option>
-                    <option value="+674" <?php echo get_form_value('whatsapp_country') === '+674' ? 'selected' : ''; ?>>+674 Nauru</option>
-                    <option value="+64" <?php echo get_form_value('whatsapp_country') === '+64' ? 'selected' : ''; ?>>+64 New Zealand</option>
-                    <option value="+680" <?php echo get_form_value('whatsapp_country') === '+680' ? 'selected' : ''; ?>>+680 Palau</option>
-                    <option value="+675" <?php echo get_form_value('whatsapp_country') === '+675' ? 'selected' : ''; ?>>+675 Papua New Guinea</option>
-                    <option value="+685" <?php echo get_form_value('whatsapp_country') === '+685' ? 'selected' : ''; ?>>+685 Samoa</option>
-                    <option value="+677" <?php echo get_form_value('whatsapp_country') === '+677' ? 'selected' : ''; ?>>+677 Solomon Islands</option>
-                    <option value="+676" <?php echo get_form_value('whatsapp_country') === '+676' ? 'selected' : ''; ?>>+676 Tonga</option>
-                    <option value="+688" <?php echo get_form_value('whatsapp_country') === '+688' ? 'selected' : ''; ?>>+688 Tuvalu</option>
-                    <option value="+678" <?php echo get_form_value('whatsapp_country') === '+678' ? 'selected' : ''; ?>>+678 Vanuatu</option>
-                  </optgroup>
-                </select>
-                <input type="tel" id="whatsapp" name="whatsapp" class="phone-number" required placeholder="Enter WhatsApp number" value="<?php echo htmlspecialchars(get_form_value('whatsapp')); ?>">
-              </div>
-              <div class="error-message" id="whatsapp-error">Please enter a valid WhatsApp number</div>
-              
-              <!-- Checkbox to copy contact number to WhatsApp -->
-              <div class="checkbox-group">
-                <input type="checkbox" id="sameAsPhone" name="sameAsPhone" <?php echo get_form_value('sameAsPhone') ? 'checked' : ''; ?>>
-                <label for="sameAsPhone">Same as Contact Number</label>
-              </div>
             </div>
           </div>
           <div class="col-50">
@@ -1679,13 +1390,25 @@ function get_form_value($field, $default = '') {
             </div>
           </div>
         </div>
+
+        <!-- 8th Row: Nostalgic Memory about Faculty -->
+        <div class="row">
+          <div class="col-100">
+            <div class="form-group">
+              <label for="nostalgicMemory">Share a nostalgic memory about faculty members you'd like to meet again</label>
+              <textarea id="nostalgicMemory" name="nostalgicMemory" placeholder="Share your memories about teachers or subjects that left a lasting impression..." rows="4"><?php echo htmlspecialchars(get_form_value('nostalgicMemory')); ?></textarea>
+              <div class="error-message" id="nostalgicMemory-error">Please enter valid text</div>
+            </div>
+          </div>
+        </div>
+        
         <div class="row">
         </div>
         <!-- Event Questions - Each in separate rows -->
         <div class="row">
           <div class="col-100">
             <div class="form-group">
-              <label>Are you interested in PERFORMING in the cultural events?</label>
+              <label>Are you interested in PERFORMING in the cultural events?<span class="required">*</span></label>
               <div class="radio-group">
                 <label>
                   <input type="radio" name="cultural" id="cultural-yes" value="Yes" <?php echo get_form_value('cultural') === 'Yes' ? 'checked' : ''; ?>>
@@ -1705,7 +1428,7 @@ function get_form_value($field, $default = '') {
         <div class="row">
           <div class="col-100">
             <div class="form-group">
-              <label>Are you interested in PARTICIPATING in the Gaming events?</label>
+              <label>Are you interested in PARTICIPATING in the Gaming events?<span class="required">*</span></label>
               <div class="radio-group">
                 <label>
                   <input type="radio" name="gaming" id="gaming-yes" value="Yes" <?php echo get_form_value('gaming') === 'Yes' ? 'checked' : ''; ?>>
@@ -1725,7 +1448,7 @@ function get_form_value($field, $default = '') {
         <div class="row">
           <div class="col-100">
             <div class="form-group">
-              <label>Are you interested in PARTICIPATING in the Tech Music events?</label>
+              <label>Are you interested in PARTICIPATING in the Tech Talk events?<span class="required">*</span></label>
               <div class="radio-group">
                 <label>
                   <input type="radio" name="techmusic" id="techmusic-yes" value="Yes" <?php echo get_form_value('techmusic') === 'Yes' ? 'checked' : ''; ?>>
@@ -1756,7 +1479,7 @@ function get_form_value($field, $default = '') {
               <div class="input_field captch_input">
                 <input type="text" id="captcha-input" name="captcha" placeholder="Enter captcha" />
               </div>
-              <div class="error-message" id="captcha-error">Please enter the correct captcha</div>
+              <div class="error-message" id="captcha-error">Please enter correct captcha</div>
             </div>
           </div>
         </div>
@@ -1771,7 +1494,8 @@ function get_form_value($field, $default = '') {
     </div>
   </div>
 
-  <script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/intlTelInput.min.js"></script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
       // Show error or success notifications
       <?php if ($error_message): ?>
@@ -1871,26 +1595,19 @@ function get_form_value($field, $default = '') {
       
       // Handle "Same as Contact Number" checkbox
       const sameAsPhoneCheckbox = document.getElementById('sameAsPhone');
-      const phoneCountrySelect = document.getElementById('phone-country');
       const phoneInput = document.getElementById('phone');
-      const whatsappCountrySelect = document.getElementById('whatsapp-country');
       const whatsappInput = document.getElementById('whatsapp');
 
       sameAsPhoneCheckbox.addEventListener('change', function() {
         if (this.checked) {
           // If checked, copy contact number to WhatsApp and disable the field
-          whatsappCountrySelect.value = phoneCountrySelect.value;
           whatsappInput.value = phoneInput.value;
           whatsappInput.setAttribute('disabled', 'disabled');
           whatsappInput.style.backgroundColor = '#555'; // Visual cue that it's disabled
-          whatsappCountrySelect.setAttribute('disabled', 'disabled');
-          whatsappCountrySelect.style.backgroundColor = '#555';
         } else {
           // If unchecked, enable the field and clear its value
           whatsappInput.removeAttribute('disabled');
           whatsappInput.style.backgroundColor = ''; // Reset to original style
-          whatsappCountrySelect.removeAttribute('disabled');
-          whatsappCountrySelect.style.backgroundColor = '';
           whatsappInput.value = ''; // Clear the value
         }
       });
@@ -1901,65 +1618,139 @@ function get_form_value($field, $default = '') {
           whatsappInput.value = phoneInput.value;
         }
       });
-
-      phoneCountrySelect.addEventListener('change', function() {
+      
+      // Initialize international telephone input
+      const phoneInputField = document.getElementById('phone');
+      const whatsappInputField = document.getElementById('whatsapp');
+      
+      const phoneIti = window.intlTelInput(phoneInputField, {
+        initialCountry: "in",
+        separateDialCode: false,
+        nationalMode: false,
+        autoPlaceholder: "aggressive",
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js"
+      });
+      
+      const whatsappIti = window.intlTelInput(whatsappInputField, {
+        initialCountry: "in",
+        separateDialCode: false,
+        nationalMode: false,
+        autoPlaceholder: "aggressive",
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js"
+      });
+      
+      // Function to normalize phone number format
+      function normalizePhone(iti, input) {
+        let val = input.value.replace(/\s+/g, ""); // remove all spaces temporarily
+        
+        // Extract '+' if exists
+        if (!val.startsWith("+")) val = "+" + val;
+        
+        // Extract possible dial part
+        const match = val.match(/^\+(\d{1,4})/);
+        let dial = iti.getSelectedCountryData().dialCode;
+        
+        if (match) {
+          dial = match[1]; // user typed code
+        }
+        
+        // digits after that
+        let rest = val.replace("+" + dial, "");
+        rest = rest.replace(/\D/g, ""); // only digits
+        
+        input.value = `+${dial}` + (rest ? " " + rest : " ");
+      }
+      
+      // When typing — auto fix spacing
+      phoneInputField.addEventListener('input', function() {
+        normalizePhone(phoneIti, phoneInputField);
         if (sameAsPhoneCheckbox.checked) {
-          whatsappCountrySelect.value = phoneCountrySelect.value;
+          // Update WhatsApp field with country code and number
+          whatsappInputField.value = phoneInputField.value;
+          // Also update the country selection for WhatsApp
+          whatsappIti.setCountry(phoneIti.getSelectedCountryData().iso2);
         }
       });
       
-      // Captcha functionality
-      const captchaTextBox = document.querySelector("#captcha-display");
-      const refreshButton = document.querySelector("#refresh-captcha");
-      const captchaInputBox = document.querySelector("#captcha-input");
-      const captchaErrorMessage = document.querySelector("#captcha-error");
-
-      // Variable to store generated captcha
-      let captchaText = null;
-
-      // Function to generate captcha
-      const generateCaptcha = () => {
-        const randomString = Math.random().toString(36).substring(2, 7);
-        const randomStringArray = randomString.split("");
-        const changeString = randomStringArray.map((char) => (Math.random() > 0.5 ? char.toUpperCase() : char));
-        captchaText = changeString.join("   ");
-        captchaTextBox.value = captchaText;
-        console.log(captchaText);
-      };
-
-      const refreshBtnClick = () => {
-        generateCaptcha();
-        captchaInputBox.value = "";
-        captchaInputBox.classList.remove("input-error");
-        captchaErrorMessage.style.display = "none";
-      };
-
-      // Add event listeners for the refresh button
-      refreshButton.addEventListener("click", refreshBtnClick);
-
-      // Generate a captcha when the page loads
-      generateCaptcha();
+      whatsappInputField.addEventListener('input', function() {
+        normalizePhone(whatsappIti, whatsappInputField);
+      });
       
+      // When selecting a country — auto update prefix but keep numbers typed
+      phoneInputField.addEventListener('countrychange', function() {
+        normalizePhone(phoneIti, phoneInputField);
+        if (sameAsPhoneCheckbox.checked) {
+          // Update WhatsApp field with country code and number
+          whatsappInputField.value = phoneInputField.value;
+          // Also update the country selection for WhatsApp
+          whatsappIti.setCountry(phoneIti.getSelectedCountryData().iso2);
+        }
+      });
+      
+      whatsappInputField.addEventListener('countrychange', function() {
+        normalizePhone(whatsappIti, whatsappInputField);
+      });
+      
+// CAPTCHA FUNCTIONALITY (FIXED)
+const captchaTextBox = document.querySelector("#captcha-display");
+const refreshButton = document.querySelector("#refresh-captcha");
+const captchaInputBox = document.querySelector("#captcha-input");
+const captchaErrorMessage = document.querySelector("#captcha-error");
+
+// Variable to store generated captcha
+let captchaText = null;
+
+// Function to generate captcha
+const generateCaptcha = () => {
+  // Randomly choose character set: 0=uppercase, 1=lowercase, 2=numbers
+  const charSetType = Math.floor(Math.random() * 3);
+  let chars = '';
+  
+  if (charSetType === 0) {
+    // Uppercase letters only
+    chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  } else if (charSetType === 1) {
+    // Lowercase letters only
+    chars = 'abcdefghijklmnopqrstuvwxyz';
+  } else {
+    // Numbers only
+    chars = '0123456789';
+  }
+  
+  let captcha = '';
+  for (let i = 0; i < 6; i++) {
+    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  captchaText = captcha;
+  captchaTextBox.value = captchaText;
+  
+  // CAPTCHA FIX: Store the captcha in the hidden field
+  document.getElementById('captcha_text').value = captchaText;
+  
+  // Debug: Log to console for testing
+  console.log("Generated CAPTCHA:", captchaText);
+};
+
+const refreshBtnClick = () => {
+  generateCaptcha();
+  captchaInputBox.value = "";
+  captchaInputBox.classList.remove("input-error");
+  captchaErrorMessage.style.display = "none";
+};
+
+// Add event listeners for the refresh button
+refreshButton.addEventListener("click", refreshBtnClick);
+
+// Generate a captcha when the page loads
+generateCaptcha();
+
       // Validation functions
       function validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
       }
-
-      function validatePhone(phone) {
-        // Remove all non-digit characters except + at the beginning
-        const cleaned = phone.replace(/[^\d+]/g, '');
-        
-        // Check if it starts with + (international) or has at least 7 digits
-        if (/^\+/.test(cleaned)) {
-          // International number - should have 8-15 digits after +
-          return cleaned.length >= 8 && cleaned.length <= 16;
-        } else {
-          // Local number - should have 7-15 digits
-          return cleaned.length >= 7 && cleaned.length <= 15;
-        }
-      }
-
+      
       function validateYear(year) {
         const yearNum = parseInt(year);
         const currentYear = new Date().getFullYear();
@@ -1988,22 +1779,6 @@ function get_form_value($field, $default = '') {
           showError('email', 'email-error');
         } else {
           hideError('email', 'email-error');
-        }
-      });
-
-      document.getElementById('phone').addEventListener('blur', function() {
-        if (!validatePhone(this.value)) {
-          showError('phone', 'phone-error');
-        } else {
-          hideError('phone', 'phone-error');
-        }
-      });
-
-      document.getElementById('whatsapp').addEventListener('blur', function() {
-        if (!validatePhone(this.value)) {
-          showError('whatsapp', 'whatsapp-error');
-        } else {
-          hideError('whatsapp', 'whatsapp-error');
         }
       });
 
@@ -2065,20 +1840,6 @@ function get_form_value($field, $default = '') {
           showError('pyear', 'pyear-error');
           isValid = false;
           if (!firstErrorField) firstErrorField = 'pyear';
-        }
-        
-        // Phone validation
-        if (!validatePhone(document.getElementById('phone').value)) {
-          showError('phone', 'phone-error');
-          isValid = false;
-          if (!firstErrorField) firstErrorField = 'phone';
-        }
-        
-        // WhatsApp validation
-        if (!validatePhone(document.getElementById('whatsapp').value)) {
-          showError('whatsapp', 'whatsapp-error');
-          isValid = false;
-          if (!firstErrorField) firstErrorField = 'whatsapp';
         }
         
         // Expertise validation
@@ -2143,18 +1904,6 @@ function get_form_value($field, $default = '') {
           }
         }
         
-        // Captcha validation
-        const enteredCaptcha = captchaInputBox.value.replace(/\s+/g, '').toLowerCase();
-        const actualCaptcha = captchaText.replace(/\s+/g, '').toLowerCase();
-
-        if (enteredCaptcha !== actualCaptcha) {
-          showError('captcha-input', 'captcha-error');
-          isValid = false;
-          if (!firstErrorField) firstErrorField = 'captcha-input';
-        } else {
-          hideError('captcha-input', 'captcha-error');
-        }
-        
         // If validation fails, prevent the form from submitting
         if (!isValid) {
           e.preventDefault(); // Stop the form submission
@@ -2168,5 +1917,16 @@ function get_form_value($field, $default = '') {
       });
     });
   </script>
+  <script>
+// Universal function to navigate to any section in index.html without preloader
+function goToIndexSection(sectionId) {
+    // Set flags to control behavior in index.html
+    sessionStorage.setItem('skipPreloader', 'true');
+    sessionStorage.setItem('targetSection', sectionId);
+    
+    // Navigate to index.html
+    window.location.href = 'index.html';
+}
+</script>
 </body>
 </html>

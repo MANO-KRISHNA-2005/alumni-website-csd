@@ -19,59 +19,27 @@ session_start();
 require_once 'db_connect.php';
 
 // Get the database connection using the function from db_connect.php
- $conn = db_connect();
+$conn = db_connect();
 
 // Check if the database connection was successful
 if (!$conn) {
     die("Error: Could not connect to the database. Please check your db_connect.php file.");
 }
 
-// --- IP Restriction ---
-// Add allowed IPs to this array. Include both IPv4 and IPv6.
- $allowed_ips = [
-    '127.0.0.1',       // Localhost IPv4
-    '::1',               // Localhost IPv6
-    '106.192.166.196',  // Your Public IPv4
-    '2401:4900:cad4:57a8:7c7a:4a0e:9f8b:62e6' // Your Public IPv6
-];
-
-/**
- * Checks if the current user's IP is in the list of allowed IPs.
- * @param array $allowed_ips The list of allowed IP addresses.
- * @return bool True if IP is allowed, false otherwise.
- */
-function isAllowedIP($allowed_ips) {
-    // Note: $_SERVER['REMOTE_ADDR'] might not be reliable behind a proxy.
-    // For production, consider checking $_SERVER['HTTP_X_FORWARDED_FOR'] if applicable.
-    if (!in_array($_SERVER['REMOTE_ADDR'], $allowed_ips)) {
-        // Log the unauthorized attempt for security monitoring
-        error_log("Unauthorized access attempt from IP: " . $_SERVER['REMOTE_ADDR']);
-        return false;
-    }
-    return true;
-}
-
-// Check if the user's IP is allowed. If not, deny access.
-if (!isAllowedIP($allowed_ips)) {
-    // Send a 403 Forbidden response and stop the script
-    http_response_code(403);
-    die("<h1>Access Denied</h1><p>You don't have permission to access this page.</p>");
-}
-
 // --- Admin Credentials ---
 // ⚠️ SECURITY WARNING: Using a plain-text password is highly discouraged.
 // This is for temporary development only. Do not use in a production environment.
- $admin_user = "admin";
- $admin_pass = "brmh@reboot";
+$admin_user = "admin";
+$admin_pass = "brmh@reboot";
 
 // --- Login Attempt & Lockout Configuration ---
 // Maximum number of allowed failed login attempts
- $max_login_attempts = 3;
+$max_login_attempts = 3;
 // Duration of the lockout in seconds (e.g., 10 minutes)
- $login_lockout_duration = 10 * 60; // 10 minutes
+$login_lockout_duration = 10 * 60; // 10 minutes
 
 // Check if the user is currently locked out
- $is_locked_out = false;
+$is_locked_out = false;
 if (isset($_SESSION['login_locked_until']) && time() < $_SESSION['login_locked_until']) {
     $remaining_time = ceil(($_SESSION['login_locked_until'] - time()) / 60);
     $error_msg = "Too many failed login attempts. Please try again in $remaining_time minutes.";
@@ -146,11 +114,11 @@ if (isset($_POST['login_btn']) && !$is_locked_out) {
 }
 
 // Check if the user is logged in
- $is_logged_in = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+$is_logged_in = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
 
 // --- Session Timeout Check ---
 // Set the session timeout duration in seconds (e.g., 30 minutes)
- $session_timeout_duration = 30 * 60; // 30 minutes
+$session_timeout_duration = 30 * 60; // 30 minutes
 
 if ($is_logged_in) {
     // Check if the session has expired due to inactivity
@@ -245,43 +213,84 @@ if ($is_logged_in) {
         $export = filter_input(INPUT_GET, 'export', FILTER_SANITIZE_STRING);
         
         // Validate the export parameter
-        if ($export !== 'alumni' && $export !== 'memory_notes') {
+        if ($export !== 'alumni' && $export !== 'memory_notes' && $export !== 'yearwise_stats') {
             die("Invalid export parameter");
         }
         
-        $table = ($export == 'alumni') ? 'alumni' : 'memory_notes';
-        $filename = $table . "_export_" . date('Y-m-d') . ".csv";
-        
-        // Set headers for CSV download
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Pragma: public');
-        
-        $output = fopen('php://output', 'w');
-        
-        // Use prepared statements
-        $stmt = $conn->prepare("SELECT * FROM $table");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows > 0) {
-            // Get column names for headers
-            $field_info = $result->fetch_fields();
-            $headers = array();
-            foreach ($field_info as $field) {
-                $headers[] = $field->name;
-            }
-            fputcsv($output, $headers);
+        if ($export === 'yearwise_stats') {
+            // Export year-wise statistics
+            $filename = "yearwise_alumni_stats_" . date('Y-m-d') . ".csv";
             
-            // Reset result pointer and output data
-            $result->data_seek(0);
+            // Set headers for CSV download
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Pragma: public');
+            
+            $output = fopen('php://output', 'w');
+            
+            // Get year-wise statistics
+            $stmt = $conn->prepare("SELECT graduation_year, COUNT(*) as alumni_count FROM alumni GROUP BY graduation_year ORDER BY graduation_year ASC");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            // Write headers
+            fputcsv($output, ['Graduation Year', 'Alumni Count', 'Percentage']);
+            
+            // Get total alumni count for percentage calculation
+            $total_stmt = $conn->prepare("SELECT COUNT(*) as total FROM alumni");
+            $total_stmt->execute();
+            $total_result = $total_stmt->get_result();
+            $total_row = $total_result->fetch_assoc();
+            $total_alumni = $total_row['total'];
+            
+            // Write data
             while ($row = $result->fetch_assoc()) {
-                fputcsv($output, $row);
+                $percentage = $total_alumni > 0 ? round(($row['alumni_count'] / $total_alumni) * 100, 2) : 0;
+                fputcsv($output, [
+                    $row['graduation_year'],
+                    $row['alumni_count'],
+                    $percentage . '%'
+                ]);
             }
+            
+            fclose($output);
+            exit();
+        } else {
+            $table = ($export == 'alumni') ? 'alumni' : 'memory_notes';
+            $filename = $table . "_export_" . date('Y-m-d') . ".csv";
+            
+            // Set headers for CSV download
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Pragma: public');
+            
+            $output = fopen('php://output', 'w');
+            
+            // Use prepared statements
+            $stmt = $conn->prepare("SELECT * FROM $table");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                // Get column names for headers
+                $field_info = $result->fetch_fields();
+                $headers = array();
+                foreach ($field_info as $field) {
+                    $headers[] = $field->name;
+                }
+                fputcsv($output, $headers);
+                
+                // Reset result pointer and output data
+                $result->data_seek(0);
+                while ($row = $result->fetch_assoc()) {
+                    fputcsv($output, $row);
+                }
+            }
+            fclose($output);
+            exit();
         }
-        fclose($output);
-        exit();
     }
 
     // ==========================================
@@ -306,15 +315,29 @@ if ($is_logged_in) {
     // B. Graduation Year Distribution (For Graph)
     $year_labels = [];
     $year_data = [];
+    $year_stats = []; // For year-wise boxes
     $stmt = $conn->prepare("SELECT graduation_year, COUNT(*) as count FROM alumni GROUP BY graduation_year ORDER BY graduation_year ASC");
     $stmt->execute();
     $result = $stmt->get_result();
     while($row = $result->fetch_assoc()) {
         $year_labels[] = $row['graduation_year'];
         $year_data[] = $row['count'];
+        $year_stats[$row['graduation_year']] = $row['count'];
     }
 
-    // C. Registration Timeline (Day wise) - Requires created_at column
+    // C. Get all years with counts (for detailed view)
+    $all_years = [];
+    $stmt = $conn->prepare("SELECT graduation_year, COUNT(*) as count FROM alumni GROUP BY graduation_year ORDER BY graduation_year DESC");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while($row = $result->fetch_assoc()) {
+        $all_years[] = [
+            'year' => $row['graduation_year'],
+            'count' => $row['count']
+        ];
+    }
+
+    // D. Registration Timeline (Day wise) - Requires created_at column
     $date_labels = [];
     $date_data = [];
     // Check if created_at column exists, otherwise fallback
@@ -403,8 +426,88 @@ if ($is_logged_in) {
             color: #ccc;
         }
 
+        /* Year-wise boxes grid */
+        .yearwise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .year-box {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .year-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+            border-color: var(--neon-gold);
+        }
+        .year-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--neon-gold);
+            opacity: 0.7;
+        }
+        .year-label {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--neon-gold);
+            margin-bottom: 5px;
+        }
+        .year-count {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: white;
+            margin: 5px 0;
+        }
+        .year-text {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .year-percentage {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Export section */
+        .export-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border: 1px solid var(--border);
+        }
+        .export-section h3 {
+            color: var(--neon-gold);
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         @media (max-width: 768px) {
             .charts-grid { grid-template-columns: 1fr; }
+            .yearwise-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .export-buttons { flex-direction: column; }
         }
     </style>
 </head>
@@ -425,7 +528,6 @@ if ($is_logged_in) {
             <div class="security-info">
                 <p><i class="fas fa-shield-alt"></i> For security reasons, this admin panel is protected by:</p>
                 <ul style="text-align: left; margin-top: 10px;">
-                    <li>IP address restriction</li>
                     <li>CSRF token protection</li>
                     <li>Brute-force attack prevention (3 attempts, 10 min lockout)</li>
                     <li>Session timeout after inactivity</li>
@@ -474,6 +576,31 @@ if ($is_logged_in) {
             </div>
         </div>
 
+        <!-- Year-wise Registration Boxes -->
+        <div class="section-header">
+            <h2 style="color:var(--neon-gold);"><i class="fas fa-calendar"></i> Year-wise Alumni Registration</h2>
+        </div>
+        
+        <div class="yearwise-grid">
+            <?php
+            if (!empty($all_years)) {
+                $total_alumni = $stats['total_alumni'];
+                foreach ($all_years as $year_data) {
+                    $percentage = $total_alumni > 0 ? round(($year_data['count'] / $total_alumni) * 100, 1) : 0;
+                    echo '
+                    <div class="year-box">
+                        <div class="year-label">' . htmlspecialchars($year_data['year']) . '</div>
+                        <div class="year-count">' . htmlspecialchars($year_data['count']) . '</div>
+                        <div class="year-text">Alumni</div>
+                        <div class="year-percentage">' . $percentage . '% of total</div>
+                    </div>';
+                }
+            } else {
+                echo '<p style="color:#888; text-align:center; grid-column:1/-1;">No alumni data available</p>';
+            }
+            ?>
+        </div>
+
         <div class="charts-grid">
             <div class="chart-container">
                 <h3><i class="fas fa-calendar-alt"></i> Registration Timeline (Day Wise)</h3>
@@ -485,9 +612,24 @@ if ($is_logged_in) {
             </div>
         </div>
 
+        <!-- Export Section -->
+        <div class="export-section">
+            <h3><i class="fas fa-file-export"></i> Export Data</h3>
+            <div class="export-buttons">
+                <a href="?export=alumni&csrf_token=<?php echo $_SESSION['csrf_token']; ?>" class="btn btn-green">
+                    <i class="fas fa-file-excel"></i> Export All Alumni Data (CSV)
+                </a>
+                <a href="?export=memory_notes&csrf_token=<?php echo $_SESSION['csrf_token']; ?>" class="btn btn-green">
+                    <i class="fas fa-file-excel"></i> Export Memory Wall Data (CSV)
+                </a>
+                <a href="?export=yearwise_stats&csrf_token=<?php echo $_SESSION['csrf_token']; ?>" class="btn btn-gold">
+                    <i class="fas fa-chart-bar"></i> Export Year-wise Statistics (CSV)
+                </a>
+            </div>
+        </div>
+
         <div class="section-header">
             <h2 style="color:var(--neon-gold);">Alumni Database</h2>
-            <a href="?export=alumni&csrf_token=<?php echo $_SESSION['csrf_token']; ?>" class="btn btn-green"><i class="fas fa-file-excel"></i> Export CSV</a>
         </div>
         <div class="table-wrap">
             <table>
@@ -529,7 +671,6 @@ if ($is_logged_in) {
 
         <div class="section-header">
             <h2 style="color:var(--neon-gold);">Memory Wall</h2>
-            <a href="?export=memory&csrf_token=<?php echo $_SESSION['csrf_token']; ?>" class="btn btn-green"><i class="fas fa-file-excel"></i> Export CSV</a>
         </div>
         <div class="table-wrap">
             <table>
