@@ -311,9 +311,6 @@ function get_form_value($field, $default = '') {
     .container {
       width: 100%;
       max-width: 1200px;
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border-radius: 15px;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -445,7 +442,6 @@ function get_form_value($field, $default = '') {
 
     .form-container {
       padding: 30px;
-      background: rgba(42, 42, 21, 0.2);
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
     }
@@ -1640,6 +1636,7 @@ function get_form_value($field, $default = '') {
       });
       
       // Function to normalize phone number format
+// Function to normalize phone number format
       function normalizePhone(iti, input) {
         let val = input.value.replace(/\s+/g, ""); // remove all spaces temporarily
         
@@ -1658,7 +1655,11 @@ function get_form_value($field, $default = '') {
         let rest = val.replace("+" + dial, "");
         rest = rest.replace(/\D/g, ""); // only digits
         
-        input.value = `+${dial}` + (rest ? " " + rest : " ");
+        // --- CHANGE THIS LINE BELOW ---
+        // OLD LINE: input.value = `+${dial}` + (rest ? " " + rest : " ");
+        
+        // NEW LINE (No Spaces):
+        input.value = `+${dial}` + rest;
       }
       
       // When typing — auto fix spacing

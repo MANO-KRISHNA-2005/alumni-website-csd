@@ -731,6 +731,8 @@
         }
 
         .note:hover {
+              z-index: 100 !important; /* Bring hovered note to front */
+  
             box-shadow: 
                 0 12px 24px rgba(0, 0, 0, 0.2),
                 0 18px 36px rgba(0, 0, 0, 0.18),
@@ -1926,8 +1928,11 @@
     
     <!-- Updated header with integrated navigation -->
     <header>
-        <div class="header-title">Memory Wall - Create and Explore Your Sticky Notes</div>
-        <button class="game-btn" id="gameLink">
+<div class="header-title">Memory Wall -       Leave your digital footprin<br>
+    <span style="font-size: 0.8em; color: #ffeb3b; font-weight: 400; letter-spacing: 0.5px;">
+        ✨ Ready to relive the magic? Click the <b>GAME</b> button to unlock hidden campus memories! ✨
+    </span>
+</div>        <button class="game-btn" id="gameLink">
             <span class="game-btn-icon"></span>
             Game
         </button>
@@ -2126,821 +2131,898 @@
         </div>
     </div>
 
-    <script>
-        // Config & defaults
-        const BOARD_W = 3200, BOARD_H = 2400;
-        const THREADS = 4; // Changed to 4 rows as requested
-        const NOTES_PER_THREAD = 8; // Keep same number of notes per thread
-        const NOTES_LAYER = document.getElementById('notesLayer');
-        const SVG = document.getElementById('wires');
-        const BOARD = document.getElementById('board');
-        const WRAP = document.getElementById('wrap');
-        const NOTIFICATION = document.getElementById('notification');
-        const MINIMAP_BOARD = document.getElementById('minimapBoard');
-        const MINIMAP_VIEWPORT = document.getElementById('minimapViewport');
-        const MINIMAP_CONTAINER = document.getElementById('minimapContainer');
-        const MINIMAP_CLOSE = document.getElementById('minimapClose');
-        const GAME_CONTAINER = document.getElementById('gameContainer');
-        const GAME_LINK = document.getElementById('gameLink');
-        const BACK_BTN = document.getElementById('backBtn');
-        const HAMBURGER = document.getElementById('hamburger');
-        const NAV_MENU = document.querySelector('.nav-menu');
+<script>
+    // Config & defaults
+    const BOARD_W = 3200, BOARD_H = 2400;
+    const THREADS = 8; // Increased from 4 to 8 for more visual interest
+    const NOTES_PER_THREAD = 8; // Keep same number of notes per thread
+    const NOTES_LAYER = document.getElementById('notesLayer');
+    const SVG = document.getElementById('wires');
+    const BOARD = document.getElementById('board');
+    const WRAP = document.getElementById('wrap');
+    const NOTIFICATION = document.getElementById('notification');
+    const MINIMAP_BOARD = document.getElementById('minimapBoard');
+    const MINIMAP_VIEWPORT = document.getElementById('minimapViewport');
+    const MINIMAP_CONTAINER = document.getElementById('minimapContainer');
+    const MINIMAP_CLOSE = document.getElementById('minimapClose');
+    const GAME_CONTAINER = document.getElementById('gameContainer');
+    const GAME_LINK = document.getElementById('gameLink');
+    const BACK_BTN = document.getElementById('backBtn');
+    const HAMBURGER = document.getElementById('hamburger');
+    const NAV_MENU = document.querySelector('.nav-menu');
 
-        let notes = [];
-        let newNoteData = null;
-        let isAddingNote = false;
-        let zoomLevel = 1;
-        let isMinimapExpanded = false;
-        let answeredQuestions = new Set(); // Track answered questions
+    let notes = [];
+    let newNoteData = null;
+    let isAddingNote = false;
+    let zoomLevel = 1;
+    let isMinimapExpanded = false;
+    let answeredQuestions = new Set(); // Track answered questions
 
-        // Show/hide loading overlay
-        function showLoading() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
+    // Show/hide loading overlay
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    // FIX #1: Define the missing showNotification function
+    function showNotification(message) {
+        NOTIFICATION.textContent = message;
+        NOTIFICATION.classList.add('show');
         
-        function hideLoading() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
+        setTimeout(() => {
+            NOTIFICATION.classList.remove('show');
+        }, 3000);
+    }
 
-        // FIX #1: Define the missing showNotification function
-        function showNotification(message) {
-            NOTIFICATION.textContent = message;
-            NOTIFICATION.classList.add('show');
-            
-            setTimeout(() => {
-                NOTIFICATION.classList.remove('show');
-            }, 3000);
-        }
+    // FIX #2: Correct fetchNotes function to handle API response properly
+    function fetchNotes() {
+        showLoading();
+        
+        // Explicitly ask for 'get_notes' action
+        fetch('memories_api.php?action=get_notes')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Check for success and 'data' property in response
+            if (data.success && data.data) {
+                renderNotes(data.data);
+            } else {
+                console.error('API returned an error:', data.error);
+                showNotification('Failed to load notes: ' + (data.error || 'Unknown error'));
+            }
+            hideLoading();
+        })
+        .catch(error => {
+            console.error('Error fetching notes:', error);
+            showNotification('Failed to load notes. Check console for details.');
+            hideLoading();
+        });
+    }
 
-        // FIX #2: Correct fetchNotes function to handle the API response properly
-        function fetchNotes() {
-            showLoading();
-            
-            // Explicitly ask for the 'get_notes' action
-            fetch('memories_api.php?action=get_notes')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Check for success and the 'data' property in the response
-                if (data.success && data.data) {
-                    renderNotes(data.data);
-                } else {
-                    console.error('API returned an error:', data.error);
-                    showNotification('Failed to load notes: ' + (data.error || 'Unknown error'));
-                }
-                hideLoading();
-            })
-            .catch(error => {
-                console.error('Error fetching notes:', error);
-                showNotification('Failed to load notes. Check console for details.');
-                hideLoading();
+    // Add this function to reset z-indexes when needed
+    function resetNoteZIndexes() {
+        const allNotes = document.querySelectorAll('.note');
+        allNotes.forEach((note, index) => {
+            // Reset all notes to base z-index + their order
+            note.style.zIndex = 20 + index;
+        });
+    }
+
+    // FIX #3: Correct createNoteFromData to use the right property names from API
+    function createNoteFromData(data) {
+        const el = document.createElement('div');
+        el.className = 'note';
+        el.dataset.id = data.id;
+        
+        // Set a higher z-index for new notes to ensure they appear on top
+        const highestZIndex = Math.max(...Array.from(document.querySelectorAll('.note')).map(note => 
+            parseInt(window.getComputedStyle(note).zIndex) || 20
+        ), 20);
+        el.style.zIndex = highestZIndex + 1;
+
+        const randomRotation = (Math.random() * 8 - 4).toFixed(2);
+        el.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
+        // API returns 'x_position' and 'y_position', not 'position_x'
+        el.style.left = data.x_position + 'px';
+        el.style.top = data.y_position + 'px';
+
+        el.innerHTML = `
+            <div class="thread-connector"></div>
+            <div class="meta">${data.name}</div>
+            <div class="txt">${data.message}</div>
+        `;
+
+        NOTES_LAYER.appendChild(el);
+
+        const obj = { 
+            el, 
+            id: data.id,
+            name: data.name, 
+            text: data.message, 
+            thread: data.thread, // API returns 'thread'
+            manual: data.manual,
+            zIndex: highestZIndex + 1 // Track z-index
+        };
+
+        // Add hover event to bring note to front
+        el.addEventListener('mouseenter', function() {
+            // Find the highest z-index among all notes
+            const allNotes = document.querySelectorAll('.note');
+            let maxZ = 20;
+            allNotes.forEach(note => {
+                const z = parseInt(window.getComputedStyle(note).zIndex) || 20;
+                if (z > maxZ) maxZ = z;
             });
-        }
-
-        // Render notes on the board
-        function renderNotes(notesData) {
-            NOTES_LAYER.innerHTML = '';
-            notes = [];
             
-            notesData.forEach(noteData => {
-                const note = createNoteFromData(noteData);
-                notes.push(note);
+            // Set this note's z-index to be higher than all others
+            this.style.zIndex = maxZ + 1;
+        });
+
+        return obj;
+    }
+
+    // Render notes on the board
+    function renderNotes(notesData) {
+        NOTES_LAYER.innerHTML = '';
+        notes = [];
+        
+        notesData.forEach(noteData => {
+            const note = createNoteFromData(noteData);
+            notes.push(note);
+        });
+        
+        // Reset z-indexes to ensure proper layering
+        resetNoteZIndexes();
+        
+        // Update mini-map after rendering notes
+        createMinimapNotes();
+    }
+
+    function updateMinimapViewport() {
+        if (!MINIMAP_VIEWPORT) return;
+        
+        const scrollLeft = WRAP.scrollLeft;
+        const scrollTop = WRAP.scrollTop;
+        const viewportWidth = WRAP.clientWidth;
+        const viewportHeight = WRAP.clientHeight;
+        
+        const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--minimap-scale'));
+        
+        // Center the square viewport
+        MINIMAP_VIEWPORT.style.left = (scrollLeft * scale) + 'px';
+        MINIMAP_VIEWPORT.style.top = (scrollTop * scale) + 'px';
+        
+        // Keep the viewport square
+        const squareSize = Math.min(viewportWidth, viewportHeight) * scale;
+        MINIMAP_VIEWPORT.style.width = squareSize + 'px';
+        MINIMAP_VIEWPORT.style.height = squareSize + 'px';
+    }
+
+    function createMinimapNotes() {
+        // Don't create mini-map notes on mobile
+        if (window.innerWidth <= 768) return;
+        
+        MINIMAP_BOARD.innerHTML = '';
+        
+        // Add mini-map bulbs
+        document.querySelectorAll('.bulb').forEach(bulb => {
+            const miniBulb = document.createElement('div');
+            miniBulb.className = 'minimap-bulb';
+            miniBulb.style.left = bulb.style.left;
+            miniBulb.style.top = bulb.style.top;
+            MINIMAP_BOARD.appendChild(miniBulb);
+        });
+        
+        // Add mini-map notes
+        notes.forEach(note => {
+            const miniNote = document.createElement('div');
+            miniNote.className = 'minimap-note';
+            miniNote.style.left = note.el.style.left;
+            miniNote.style.top = note.el.style.top;
+            MINIMAP_BOARD.appendChild(miniNote);
+            
+            // Click on mini-map note to zoom to it
+            miniNote.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const x = parseInt(note.el.style.left) - (window.innerWidth / 2);
+                const y = parseInt(note.el.style.top) - (window.innerHeight / 2);
+                
+                WRAP.scrollTo({
+                    left: x,
+                    top: y,
+                    behavior: 'smooth'
+                });
+                
+                showNotification(`Zoomed to ${note.name}'s note`);
             });
-            
-            // Update mini-map after rendering notes
-            createMinimapNotes();
+        });
+    }
+
+    function zoomToArea(x, y) {
+        // Don't allow mini-map zoom on mobile
+        if (window.innerWidth <= 768) return;
+        
+        // Convert mini-map coordinates to main board coordinates
+        const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--minimap-scale'));
+        const boardX = x / scale;
+        const boardY = y / scale;
+        
+        // Center the view on this position
+        const targetX = boardX - (WRAP.clientWidth / 2);
+        const targetY = boardY - (WRAP.clientHeight / 2);
+        
+        WRAP.scrollTo({
+            left: targetX,
+            top: targetY,
+            behavior: 'smooth'
+        });
+        
+        showNotification('Zoomed to selected area');
+    }
+
+    function zoomIn() {
+        if (zoomLevel < 2) {
+            zoomLevel += 0.25;
+            updateZoom();
         }
+    }
 
-        // FIX #3: Correct createNoteFromData to use the right property names from the API
-        function createNoteFromData(data) {
-            const el = document.createElement('div');
-            el.className = 'note';
-            el.dataset.id = data.id;
+    function zoomOut() {
+        if (zoomLevel > 0.5) {
+            zoomLevel -= 0.25;
+            updateZoom();
+        }
+    }
 
-            const randomRotation = (Math.random() * 8 - 4).toFixed(2);
-            el.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
-            // API returns 'x_position' and 'y_position', not 'position_x'
-            el.style.left = data.x_position + 'px';
-            el.style.top = data.y_position + 'px';
+    function resetZoom() {
+        zoomLevel = 1;
+        updateZoom();
+    }
 
-            el.innerHTML = `
-                <div class="thread-connector"></div>
-                <div class="meta">${data.name}</div>
-                <div class="txt">${data.message}</div>
-            `;
+    function updateZoom() {
+        BOARD.style.transform = `scale(${zoomLevel})`;
+        WRAP.style.transform = 'scale(1)';
+        showNotification(`Zoom: ${Math.round(zoomLevel * 100)}%`);
+        updateMinimapViewport();
+    }
 
-            NOTES_LAYER.appendChild(el);
+    function makeThreads() {
+        SVG.innerHTML = '';
+        Array.from(document.querySelectorAll('.thread-anchor')).forEach(a => a.remove());
 
-            const obj = { 
-                el, 
-                id: data.id,
-                name: data.name, 
-                text: data.message, 
-                thread: data.thread, // API returns 'thread'
-                manual: data.manual 
+        const gap = BOARD_H / (THREADS + 1);
+        for (let t = 0; t < THREADS; t++) {
+            const y = gap * (t + 1);
+            const freq = 0.0008 + Math.random() * 0.0012;
+            const amp = 45 + Math.random() * 35;
+            const smooth = 240 + Math.random() * 140;
+
+            const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            p.setAttribute('id', 'thread-' + t);
+            p.setAttribute('stroke', 'rgba(204, 153, 0, 0.4)'); // Changed to yellow
+            p.setAttribute('stroke-width', '4.5');
+            p.setAttribute('fill', 'none');
+            p.setAttribute('stroke-linecap', 'round');
+            p.dataset.amp = amp;
+            p.dataset.freq = freq;
+            p.dataset.y = y;
+            p.dataset.smooth = smooth;
+            SVG.appendChild(p);
+
+            const leftAnchor = document.createElement('div');
+            leftAnchor.className = 'thread-anchor';
+            leftAnchor.style.left = '0px';
+            leftAnchor.style.top = y + 'px';
+            BOARD.appendChild(leftAnchor);
+
+            const rightAnchor = document.createElement('div');
+            rightAnchor.className = 'thread-anchor';
+            rightAnchor.style.left = BOARD_W + 'px';
+            rightAnchor.style.top = y + 'px';
+            BOARD.appendChild(rightAnchor);
+
+            // Increased bulb count for more visual interest
+            const bulbCount = 20 + Math.floor(Math.random() * 15); // Increased from 14+10 to 20+15
+            for (let b = 0; b < bulbCount; b++) {
+                const bulb = document.createElement('div');
+                bulb.className = 'bulb';
+                bulb.dataset.thread = t;
+                bulb.dataset.index = b;
+                BOARD.appendChild(bulb);
+            }
+        }
+    }
+
+    function updateThreadsAndBulbs() {
+        // Update thread paths
+        document.querySelectorAll('svg path').forEach(path => {
+            const amp = parseFloat(path.dataset.amp);
+            const freq = parseFloat(path.dataset.freq);
+            const y = parseFloat(path.dataset.y);
+            const smooth = parseFloat(path.dataset.smooth);
+            
+            let d = `M 0 ${y} `;
+            for (let x = smooth; x <= BOARD_W; x += smooth) {
+                const wave = Math.sin(x * freq) * amp;
+                d += `L ${x} ${y + wave} `;
+            }
+            path.setAttribute('d', d);
+        });
+
+        // Update bulb positions
+        document.querySelectorAll('.bulb').forEach(bulb => {
+            const thread = parseInt(bulb.dataset.thread);
+            const index = parseInt(bulb.dataset.index);
+            const path = document.getElementById(`thread-${thread}`);
+            
+            if (!path) return;
+            
+            const totalBulbs = document.querySelectorAll(`.bulb[data-thread="${thread}"]`).length;
+            const progress = (index + 1) / (totalBulbs + 1);
+            const x = BOARD_W * progress;
+            
+            // Calculate position along the curved path
+            const amp = parseFloat(path.dataset.amp);
+            const freq = parseFloat(path.dataset.freq);
+            const yBase = parseFloat(path.dataset.y);
+            const wave = Math.sin(x * freq) * amp;
+            const y = yBase + wave;
+            
+            bulb.style.left = x + 'px';
+            bulb.style.top = y + 'px';
+        });
+    }
+
+    function checkNoteCollision(newNote, existingNotes) {
+        const newRect = {
+            left: parseInt(newNote.el.style.left) - 100, // Note width is ~200px
+            top: parseInt(newNote.el.style.top) - 80,   // Note height is ~160px
+            right: parseInt(newNote.el.style.left) + 100,
+            bottom: parseInt(newNote.el.style.top) + 80
+        };
+
+        for (const existingNote of existingNotes) {
+            if (existingNote === newNote) continue;
+            
+            const existingRect = {
+                left: parseInt(existingNote.el.style.left) - 100,
+                top: parseInt(existingNote.el.style.top) - 80,
+                right: parseInt(existingNote.el.style.left) + 100,
+                bottom: parseInt(existingNote.el.style.top) + 80
             };
 
-            return obj;
+            // Check for collision
+            if (newRect.left < existingRect.right &&
+                newRect.right > existingRect.left &&
+                newRect.top < existingRect.bottom &&
+                newRect.bottom > existingRect.top) {
+                return true; // Collision detected
+            }
         }
+        return false; // No collision
+    }
 
-        function updateMinimapViewport() {
-            if (!MINIMAP_VIEWPORT) return;
-            
-            const scrollLeft = WRAP.scrollLeft;
-            const scrollTop = WRAP.scrollTop;
-            const viewportWidth = WRAP.clientWidth;
-            const viewportHeight = WRAP.clientHeight;
-            
-            const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--minimap-scale'));
-            
-            // Center the square viewport
-            MINIMAP_VIEWPORT.style.left = (scrollLeft * scale) + 'px';
-            MINIMAP_VIEWPORT.style.top = (scrollTop * scale) + 'px';
-            
-            // Keep the viewport square
-            const squareSize = Math.min(viewportWidth, viewportHeight) * scale;
-            MINIMAP_VIEWPORT.style.width = squareSize + 'px';
-            MINIMAP_VIEWPORT.style.height = squareSize + 'px';
+    function findAvailablePosition(thread, existingNotes) {
+        const gap = BOARD_H / (THREADS + 1);
+        const yBase = gap * (thread + 1);
+        const noteSpacing = 250; // Space between notes
+        
+        // Get all notes in this thread
+        const threadNotes = existingNotes.filter(note => note.thread === thread);
+        
+        if (threadNotes.length === 0) {
+            // No notes in this thread yet, place first note at a reasonable position
+            return { x: 400, y: yBase };
         }
-
-        function createMinimapNotes() {
-            // Don't create mini-map notes on mobile
-            if (window.innerWidth <= 768) return;
-            
-            MINIMAP_BOARD.innerHTML = '';
-            
-            // Add mini-map bulbs
-            document.querySelectorAll('.bulb').forEach(bulb => {
-                const miniBulb = document.createElement('div');
-                miniBulb.className = 'minimap-bulb';
-                miniBulb.style.left = bulb.style.left;
-                miniBulb.style.top = bulb.style.top;
-                MINIMAP_BOARD.appendChild(miniBulb);
-            });
-            
-            // Add mini-map notes
-            notes.forEach(note => {
-                const miniNote = document.createElement('div');
-                miniNote.className = 'minimap-note';
-                miniNote.style.left = note.el.style.left;
-                miniNote.style.top = note.el.style.top;
-                MINIMAP_BOARD.appendChild(miniNote);
+        
+        // Try to place note after the last note in thread
+        const lastNote = threadNotes[threadNotes.length - 1];
+        let lastX = parseInt(lastNote.el.style.left);
+        let lastY = parseInt(lastNote.el.style.top);
+        
+        // Try positions to the right, then below, then above
+        const positions = [
+            { x: lastX + noteSpacing, y: lastY }, // Right
+            { x: lastX, y: lastY + noteSpacing }, // Below
+            { x: lastX - noteSpacing, y: lastY }, // Left
+            { x: lastX, y: lastY - noteSpacing }, // Above
+            { x: lastX + noteSpacing, y: lastY + noteSpacing }, // Bottom-right
+            { x: lastX + noteSpacing, y: lastY - noteSpacing }, // Top-right
+            { x: lastX - noteSpacing, y: lastY + noteSpacing }, // Bottom-left
+            { x: lastX - noteSpacing, y: lastY - noteSpacing }  // Top-left
+        ];
+        
+        // Try each position
+        for (const position of positions) {
+            // Check boundaries
+            if (position.x >= 200 && position.x <= BOARD_W - 200 &&
+                position.y >= 100 && position.y <= BOARD_H - 100) {
                 
-                // Click on mini-map note to zoom to it
-                miniNote.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const x = parseInt(note.el.style.left) - (window.innerWidth / 2);
-                    const y = parseInt(note.el.style.top) - (window.innerHeight / 2);
+                // Create a temporary note to check collision
+                const tempNote = {
+                    el: { style: { left: position.x + 'px', top: position.y + 'px' } }
+                };
+                
+                if (!checkNoteCollision(tempNote, existingNotes)) {
+                    return position;
+                }
+            }
+        }
+        
+        // Fallback: place near the thread line
+        return { x: 400 + Math.random() * (BOARD_W - 800), y: yBase };
+    }
+
+    // Add some dummy notes to make the wall look more populated initially
+    function addInitialDummyNotes() {
+        // Only add dummy notes if there are fewer than 15 real notes
+        if (notes.length < 15) {
+            const dummyNotesCount = 15 - notes.length;
+            
+            for (let i = 0; i < dummyNotesCount; i++) {
+                const thread = Math.floor(Math.random() * THREADS);
+                const gap = BOARD_H / (THREADS + 1);
+                const yBase = gap * (thread + 1);
+                
+                // Random position along the thread
+                const x = 200 + Math.random() * (BOARD_W - 400);
+                const y = yBase + (Math.random() - 0.5) * 100;
+                
+                // Create a dummy note with generic content
+                const dummyNote = createNoteFromData({
+                    id: 'dummy-' + i,
+                    name: 'Alumni',
+                    message: 'A precious memory from PSG Tech...',
+                    thread: thread,
+                    x_position: x,
+                    y_position: y,
+                    manual: 0
+                });
+                
+                // Make dummy notes slightly transparent and non-interactive
+                dummyNote.el.style.opacity = '0.6';
+                dummyNote.el.style.pointerEvents = 'none';
+                
+                notes.push(dummyNote);
+            }
+            
+            // Update mini-map after adding dummy notes
+            createMinimapNotes();
+        }
+    }
+
+    // FIX #4: Correct addNewNote function to send the right data to the API
+    function addNewNote(name, message) {
+        if (!name.trim() || !message.trim()) {
+            showNotification('Please enter both name and message');
+            return;
+        }
+
+        // Find the thread with the fewest notes
+        let threadCounts = new Array(THREADS).fill(0);
+        notes.forEach(note => {
+            if (note.thread !== null) {
+                threadCounts[note.thread]++;
+            }
+        });
+        
+        // Find the thread with the minimum count
+        let minThread = 0;
+        let minCount = threadCounts[0];
+        for (let i = 1; i < threadCounts.length; i++) {
+            if (threadCounts[i] < minCount) {
+                minCount = threadCounts[i];
+                minThread = i;
+            }
+        }
+        
+        // Find an available position for the new note
+        const position = findAvailablePosition(minThread, notes);
+        
+        // Send data to server with the correct field names
+        showLoading();
+        
+        fetch('memories_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name.trim(),
+                message: message.trim(),
+                thread: minThread, // API expects 'thread'
+                ratio: 1.0, // API expects 'ratio'
+                x_position: position.x, // API expects 'x_position'
+                y_position: position.y, // API expects 'y_position'
+                manual: 1 // API expects 'manual'
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            hideLoading();
+            
+            if (data.success) {
+                // Clear input fields
+                document.getElementById('name').value = '';
+                document.getElementById('message').value = '';
+                
+                // Refresh notes
+                fetchNotes();
+                
+                showNotification('New memory added!');
+                
+                // Scroll to the new note
+                setTimeout(() => {
+                    const x = position.x - (window.innerWidth / 2);
+                    const y = position.y - (window.innerHeight / 2);
                     
                     WRAP.scrollTo({
                         left: x,
                         top: y,
                         behavior: 'smooth'
                     });
-                    
-                    showNotification(`Zoomed to ${note.name}'s note`);
-                });
-            });
-        }
-
-        function zoomToArea(x, y) {
-            // Don't allow mini-map zoom on mobile
-            if (window.innerWidth <= 768) return;
-            
-            // Convert mini-map coordinates to main board coordinates
-            const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--minimap-scale'));
-            const boardX = x / scale;
-            const boardY = y / scale;
-            
-            // Center the view on this position
-            const targetX = boardX - (WRAP.clientWidth / 2);
-            const targetY = boardY - (WRAP.clientHeight / 2);
-            
-            WRAP.scrollTo({
-                left: targetX,
-                top: targetY,
-                behavior: 'smooth'
-            });
-            
-            showNotification('Zoomed to selected area');
-        }
-
-        function zoomIn() {
-            if (zoomLevel < 2) {
-                zoomLevel += 0.25;
-                updateZoom();
+                }, 100);
+            } else {
+                showNotification(data.error || 'Failed to add memory');
             }
-        }
+        })
+        .catch(error => {
+            hideLoading();
+            console.error('Error adding note:', error);
+            showNotification('Failed to add memory. Check console for details.');
+        });
+    }
 
-        function zoomOut() {
-            if (zoomLevel > 0.5) {
-                zoomLevel -= 0.25;
-                updateZoom();
-            }
-        }
+    function centerView() {
+        WRAP.scrollTo({
+            left: (BOARD_W * zoomLevel - WRAP.clientWidth) / 2,
+            top: (BOARD_H * zoomLevel - WRAP.clientHeight) / 2,
+            behavior: 'smooth'
+        });
+    }
 
-        function resetZoom() {
-            zoomLevel = 1;
-            updateZoom();
-        }
-
-        function updateZoom() {
-            BOARD.style.transform = `scale(${zoomLevel})`;
-            WRAP.style.transform = 'scale(1)';
-            showNotification(`Zoom: ${Math.round(zoomLevel * 100)}%`);
-            updateMinimapViewport();
-        }
-
-        function makeThreads() {
-            SVG.innerHTML = '';
-            Array.from(document.querySelectorAll('.thread-anchor')).forEach(a => a.remove());
-
-            const gap = BOARD_H / (THREADS + 1);
-            for (let t = 0; t < THREADS; t++) {
-                const y = gap * (t + 1);
-                const freq = 0.0008 + Math.random() * 0.0012;
-                const amp = 45 + Math.random() * 35;
-                const smooth = 240 + Math.random() * 140;
-
-                const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                p.setAttribute('id', 'thread-' + t);
-                p.setAttribute('stroke', 'rgba(204, 153, 0, 0.4)'); // Changed to yellow
-                p.setAttribute('stroke-width', '4.5');
-                p.setAttribute('fill', 'none');
-                p.setAttribute('stroke-linecap', 'round');
-                p.dataset.amp = amp;
-                p.dataset.freq = freq;
-                p.dataset.y = y;
-                p.dataset.smooth = smooth;
-                SVG.appendChild(p);
-
-                const leftAnchor = document.createElement('div');
-                leftAnchor.className = 'thread-anchor';
-                leftAnchor.style.left = '0px';
-                leftAnchor.style.top = y + 'px';
-                BOARD.appendChild(leftAnchor);
-
-                const rightAnchor = document.createElement('div');
-                rightAnchor.className = 'thread-anchor';
-                rightAnchor.style.left = BOARD_W + 'px';
-                rightAnchor.style.top = y + 'px';
-                BOARD.appendChild(rightAnchor);
-
-                const bulbCount = 14 + Math.floor(Math.random() * 10);
-                for (let b = 0; b < bulbCount; b++) {
-                    const bulb = document.createElement('div');
-                    bulb.className = 'bulb';
-                    bulb.dataset.thread = t;
-                    bulb.dataset.index = b;
-                    BOARD.appendChild(bulb);
-                }
-            }
-        }
-
-        function updateThreadsAndBulbs() {
-            // Update thread paths
-            document.querySelectorAll('svg path').forEach(path => {
-                const amp = parseFloat(path.dataset.amp);
-                const freq = parseFloat(path.dataset.freq);
-                const y = parseFloat(path.dataset.y);
-                const smooth = parseFloat(path.dataset.smooth);
-                
-                let d = `M 0 ${y} `;
-                for (let x = smooth; x <= BOARD_W; x += smooth) {
-                    const wave = Math.sin(x * freq) * amp;
-                    d += `L ${x} ${y + wave} `;
-                }
-                path.setAttribute('d', d);
-            });
-
-            // Update bulb positions
-            document.querySelectorAll('.bulb').forEach(bulb => {
-                const thread = parseInt(bulb.dataset.thread);
-                const index = parseInt(bulb.dataset.index);
-                const path = document.getElementById(`thread-${thread}`);
-                
-                if (!path) return;
-                
-                const totalBulbs = document.querySelectorAll(`.bulb[data-thread="${thread}"]`).length;
-                const progress = (index + 1) / (totalBulbs + 1);
-                const x = BOARD_W * progress;
-                
-                // Calculate position along the curved path
-                const amp = parseFloat(path.dataset.amp);
-                const freq = parseFloat(path.dataset.freq);
-                const yBase = parseFloat(path.dataset.y);
-                const wave = Math.sin(x * freq) * amp;
-                const y = yBase + wave;
-                
-                bulb.style.left = x + 'px';
-                bulb.style.top = y + 'px';
-            });
-        }
-
-        function checkNoteCollision(newNote, existingNotes) {
-            const newRect = {
-                left: parseInt(newNote.el.style.left) - 100, // Note width is ~200px
-                top: parseInt(newNote.el.style.top) - 80,   // Note height is ~160px
-                right: parseInt(newNote.el.style.left) + 100,
-                bottom: parseInt(newNote.el.style.top) + 80
-            };
-
-            for (const existingNote of existingNotes) {
-                if (existingNote === newNote) continue;
-                
-                const existingRect = {
-                    left: parseInt(existingNote.el.style.left) - 100,
-                    top: parseInt(existingNote.el.style.top) - 80,
-                    right: parseInt(existingNote.el.style.left) + 100,
-                    bottom: parseInt(existingNote.el.style.top) + 80
-                };
-
-                // Check for collision
-                if (newRect.left < existingRect.right &&
-                    newRect.right > existingRect.left &&
-                    newRect.top < existingRect.bottom &&
-                    newRect.bottom > existingRect.top) {
-                    return true; // Collision detected
-                }
-            }
-            return false; // No collision
-        }
-
-        function findAvailablePosition(thread, existingNotes) {
-            const gap = BOARD_H / (THREADS + 1);
-            const yBase = gap * (thread + 1);
-            const noteSpacing = 250; // Space between notes
-            
-            // Get all notes in this thread
-            const threadNotes = existingNotes.filter(note => note.thread === thread);
-            
-            if (threadNotes.length === 0) {
-                // No notes in this thread yet, place first note at a reasonable position
-                return { x: 400, y: yBase };
-            }
-            
-            // Try to place note after the last note in thread
-            const lastNote = threadNotes[threadNotes.length - 1];
-            let lastX = parseInt(lastNote.el.style.left);
-            let lastY = parseInt(lastNote.el.style.top);
-            
-            // Try positions to the right, then below, then above
-            const positions = [
-                { x: lastX + noteSpacing, y: lastY }, // Right
-                { x: lastX, y: lastY + noteSpacing }, // Below
-                { x: lastX - noteSpacing, y: lastY }, // Left
-                { x: lastX, y: lastY - noteSpacing }, // Above
-                { x: lastX + noteSpacing, y: lastY + noteSpacing }, // Bottom-right
-                { x: lastX + noteSpacing, y: lastY - noteSpacing }, // Top-right
-                { x: lastX - noteSpacing, y: lastY + noteSpacing }, // Bottom-left
-                { x: lastX - noteSpacing, y: lastY - noteSpacing }  // Top-left
-            ];
-            
-            // Try each position
-            for (const position of positions) {
-                // Check boundaries
-                if (position.x >= 200 && position.x <= BOARD_W - 200 &&
-                    position.y >= 100 && position.y <= BOARD_H - 100) {
-                    
-                    // Create a temporary note to check collision
-                    const tempNote = {
-                        el: { style: { left: position.x + 'px', top: position.y + 'px' } }
-                    };
-                    
-                    if (!checkNoteCollision(tempNote, existingNotes)) {
-                        return position;
-                    }
-                }
-            }
-            
-            //            // Fallback: place near the thread line
-            return { x: 400 + Math.random() * (BOARD_W - 800), y: yBase };
-        }
-
-        // FIX #4: Correct the addNewNote function to send the right data to the API
-        function addNewNote(name, message) {
-            if (!name.trim() || !message.trim()) {
-                showNotification('Please enter both name and message');
-                return;
-            }
-
-            // Find the thread with the fewest notes
-            let threadCounts = new Array(THREADS).fill(0);
-            notes.forEach(note => {
-                if (note.thread !== null) {
-                    threadCounts[note.thread]++;
-                }
-            });
-            
-            // Find the thread with the minimum count
-            let minThread = 0;
-            let minCount = threadCounts[0];
-            for (let i = 1; i < threadCounts.length; i++) {
-                if (threadCounts[i] < minCount) {
-                    minCount = threadCounts[i];
-                    minThread = i;
-                }
-            }
-            
-            // Find available position for the new note
-            const position = findAvailablePosition(minThread, notes);
-            
-            // Send data to server with correct field names
-            showLoading();
-            
-            fetch('memories_api.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: name.trim(),
-                    message: message.trim(),
-                    thread: minThread, // API expects 'thread'
-                    ratio: 1.0, // API expects 'ratio'
-                    x_position: position.x, // API expects 'x_position'
-                    y_position: position.y, // API expects 'y_position'
-                    manual: 1 // API expects 'manual'
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                hideLoading();
-                
-                if (data.success) {
-                    // Clear input fields
-                    document.getElementById('name').value = '';
-                    document.getElementById('message').value = '';
-                    
-                    // Refresh notes
-                    fetchNotes();
-                    
-                    showNotification('New memory added!');
-                    
-                    // Scroll to the new note
-                    setTimeout(() => {
-                        const x = position.x - (window.innerWidth / 2);
-                        const y = position.y - (window.innerHeight / 2);
-                        
-                        WRAP.scrollTo({
-                            left: x,
-                            top: y,
-                            behavior: 'smooth'
-                        });
-                    }, 100);
-                } else {
-                    showNotification(data.error || 'Failed to add memory');
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                console.error('Error adding note:', error);
-                showNotification('Failed to add memory. Check console for details.');
-            });
-        }
-
-        function centerView() {
-            WRAP.scrollTo({
-                left: (BOARD_W * zoomLevel - WRAP.clientWidth) / 2,
-                top: (BOARD_H * zoomLevel - WRAP.clientHeight) / 2,
-                behavior: 'smooth'
-            });
-        }
-
-        function resetBoard() {
-            if (confirm('Reset all notes to their original positions?')) {
-                fetchNotes();
-                centerView();
-                showNotification('Board reset');
-            }
-        }
-
-        // Navigation functionality
-        function setupNavigation() {
-            // Hamburger menu toggle
-            HAMBURGER.addEventListener('click', () => {
-                NAV_MENU.classList.toggle('active');
-                HAMBURGER.classList.toggle('active');
-            });
-
-            // Close mobile menu when clicking on a link
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    NAV_MENU.classList.remove('active');
-                    HAMBURGER.classList.remove('active');
-                });
-            });
-
-            // Navbar scroll effect
-            window.addEventListener('scroll', () => {
-                const navbar = document.querySelector('.navbar');
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            });
-        }
-
-        // Game functionality
-        function showGame() {
-            GAME_CONTAINER.style.display = 'block';
-            initQuiz();
-        }
-
-        function hideGame() {
-            GAME_CONTAINER.style.display = 'none';
-        }
-
-        // Enhanced confetti effects
-        function triggerAnswerConfetti() {
-            // Quick confetti burst for answer
-            confetti({
-                particleCount: 50,
-                spread: 60,
-                origin: { y: 0.6 },
-                colors: ['#ffcc00', '#ffaa00', '#ff8800', '#ff6600'],
-                ticks: 30,
-                gravity: 0.8
-            });
-        }
-
-        function initQuiz() {
-            const options = document.querySelectorAll('.option');
-            const memoryPopup = document.getElementById('memoryPopup');
-            const memoryResponse = document.getElementById('memoryResponse');
-            const memoryTitle = document.getElementById('memoryTitle');
-            const continueMemories = document.getElementById('continueMemories');
-            const progressText = document.getElementById('progressText');
-            const progressElement = document.querySelector('.progress');
-            const completionScreen = document.getElementById('completionScreen');
-            const backToMemories = document.getElementById('backToMemories');
-            
-            let currentQuestion = 1;
-            const totalQuestions = 10;
-            
-            // Reset answered questions
-            answeredQuestions.clear();
-            
-            // Reset progress
-            progressText.textContent = `${currentQuestion}/${totalQuestions}`;
-            progressElement.style.setProperty('--progress', (currentQuestion / totalQuestions) * 10);
-            
-            // Show only the first question initially
-            document.querySelectorAll('.question').forEach((q, index) => {
-                q.classList.remove('active');
-                if (index === 0) {
-                    q.classList.add('active');
-                }
-                // Reset answered status for all options
-                const allOptions = q.querySelectorAll('.option');
-                allOptions.forEach(opt => {
-                    opt.classList.remove('answered');
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.background = 'rgba(139, 19, 19, 0.5)';
-                    opt.style.borderColor = 'rgba(255, 204, 0, 0.3)';
-                });
-            });
-            
-            // Remove existing event listeners
-            options.forEach(option => {
-                const newOption = option.cloneNode(true);
-                option.parentNode.replaceChild(newOption, option);
-            });
-            
-            // Add new event listeners
-            document.querySelectorAll('.option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const questionContainer = this.closest('.question');
-                    const questionId = questionContainer.id;
-                    
-                    // Check if this question is already answered
-                    if (answeredQuestions.has(questionId)) {
-                        return; // Skip if already answered
-                    }
-                    
-                    const response = this.getAttribute('data-response');
-                    const questionTitle = questionContainer.querySelector('.question-title').textContent;
-                    
-                    // Mark this option as answered
-                    this.classList.add('answered');
-                    
-                    // Mark question as answered
-                    answeredQuestions.add(questionId);
-                    
-                    // Set popup content
-                    memoryTitle.textContent = questionTitle;
-                    memoryResponse.textContent = response;
-                    
-                    // Show popup
-                    memoryPopup.style.display = 'flex';
-                    
-                    // Trigger confetti effect
-                    triggerAnswerConfetti();
-                    
-                    // Disable all options in this question
-                    const allOptions = questionContainer.querySelectorAll('.option');
-                    allOptions.forEach(opt => {
-                        opt.style.pointerEvents = 'none';
-                        opt.style.background = 'rgba(255, 204, 0, 0.3)'; // Changed to yellow
-                        opt.style.borderColor = '#ffcc00'; // Changed to yellow
-                        opt.classList.add('answered');
-                    });
-                });
-            });
-            
-            // Continue memories button
-            continueMemories.addEventListener('click', function() {
-                memoryPopup.style.display = 'none';
-                
-                // Hide current question
-                document.getElementById(`question${currentQuestion}`).classList.remove('active');
-                
-                // Move to next question
-                currentQuestion++;
-                
-                if (currentQuestion <= totalQuestions) {
-                    // Show next question
-                    const nextQuestion = document.getElementById(`question${currentQuestion}`);
-                    if (nextQuestion) {
-                        nextQuestion.classList.add('active');
-                        
-                        // Update progress
-                        progressText.textContent = `${currentQuestion}/${totalQuestions}`;
-                        progressElement.style.setProperty('--progress', (currentQuestion / totalQuestions) * 10);
-                        
-                        // Scroll to top of quiz
-                        document.querySelector('.quiz-container').scrollIntoView({ behavior: 'smooth' });
-                    }
-                } else {
-                    // Show completion screen
-                    completionScreen.style.display = 'flex';
-                    
-                    // Trigger celebration confetti
-                    triggerCelebrationConfetti();
-                }
-            });
-            
-            // Back to memories button
-            backToMemories.addEventListener('click', function() {
-                hideGame();
-            });
-            
-            // Close popup if clicked outside
-            window.addEventListener('click', function(event) {
-                if (event.target === memoryPopup) {
-                    memoryPopup.style.display = 'none';
-                }
-            });
-        }
-
-        // Enhanced confetti effects
-        function triggerCelebrationConfetti() {
-            // Multiple confetti bursts for celebration
-            const duration = 3000; // 3 seconds of celebration
-            const animationEnd = Date.now() + duration;
-            const colors = ['#ffcc00', '#ffaa00', '#ff8800', '#ff6600', '#ff4400'];
-            
-            function randomInRange(min, max) {
-                return Math.random() * (max - min) + min;
-            }
-            
-            // Create continuous confetti effect
-            const interval = setInterval(function() {
-                const timeLeft = animationEnd - Date.now();
-                
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
-                }
-                
-                const particleCount = 30 * (timeLeft / duration);
-                
-                // Create confetti from multiple origins
-                confetti({
-                    particleCount: Math.floor(particleCount / 3),
-                    spread: 60,
-                    ticks: 50,
-                    gravity: 0.8,
-                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() * 0.2 },
-                    colors: colors,
-                    scalar: 0.8
-                });
-                
-                confetti({
-                    particleCount: Math.floor(particleCount / 3),
-                    spread: 60,
-                    ticks: 50,
-                    gravity: 0.8,
-                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() * 0.2 },
-                    colors: colors,
-                    scalar: 0.8
-                });
-                
-                confetti({
-                    particleCount: Math.floor(particleCount / 3),
-                    spread: 90,
-                    ticks: 50,
-                    gravity: 0.8,
-                    origin: { x: 0.5, y: Math.random() * 0.2 - 0.1 },
-                    colors: colors,
-                    scalar: 1.2
-                });
-                
-            }, 200); // Every 200ms
-            
-            // Clear interval after duration
-            setTimeout(() => {
-                clearInterval(interval);
-            }, duration);
-        }
-
-        // Initialize everything
-        function init() {
-            // Fetch notes from database on page load
+    function resetBoard() {
+        if (confirm('Reset all notes to their original positions?')) {
             fetchNotes();
-            
-            // Create threads and bulbs
-            makeThreads();
-            
-            // Set up navigation
-            setupNavigation();
-            
-            // Event listeners
-            WRAP.addEventListener('scroll', updateMinimapViewport);
-            window.addEventListener('resize', updateMinimapViewport);
-            
-            document.getElementById('addBtn').addEventListener('click', () => {
-                const name = document.getElementById('name').value;
-                const message = document.getElementById('message').value;
-                addNewNote(name, message);
-            });
-            
-            document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
-            document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
-            document.getElementById('zoomResetBtn').addEventListener('click', resetZoom);
-            
-            // Mini-map close button
-            MINIMAP_CLOSE.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (isMinimapExpanded) {
-                    isMinimapExpanded = false;
-                    MINIMAP_CONTAINER.classList.remove('expanded');
-                }
-            });
-            
-            // Game link
-            GAME_LINK.addEventListener('click', (e) => {
-                e.preventDefault();
-                showGame();
-            });
-            
-            // Back button
-            BACK_BTN.addEventListener('click', () => {
-                hideGame();
-            });
-            
-            // Mini-map click to zoom
-            MINIMAP_CONTAINER.addEventListener('click', (e) => {
-                if (e.target === MINIMAP_CONTAINER || e.target.classList.contains('minimap')) {
-                    const rect = MINIMAP_CONTAINER.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    zoomToArea(x, y);
-                }
-            });
-            
-            // Allow Enter key to submit
-            document.getElementById('message').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    document.getElementById('addBtn').click();
-                }
-            });
-            
-            // Initial mini-map viewport
-            updateMinimapViewport();
-            
-            // Animation loop
-            function animate() {
-                updateThreadsAndBulbs();
-                requestAnimationFrame(animate);
-            }
-            animate();
+            centerView();
+            showNotification('Board reset');
         }
+    }
 
-        // Start the application
-        init();
-    </script>
+    // Navigation functionality
+    function setupNavigation() {
+        // Hamburger menu toggle
+        HAMBURGER.addEventListener('click', () => {
+            NAV_MENU.classList.toggle('active');
+            HAMBURGER.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                NAV_MENU.classList.remove('active');
+                HAMBURGER.classList.remove('active');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
+
+    // Game functionality
+    function showGame() {
+        GAME_CONTAINER.style.display = 'block';
+        initQuiz();
+    }
+
+    function hideGame() {
+        GAME_CONTAINER.style.display = 'none';
+    }
+
+    // Enhanced confetti effects
+    function triggerAnswerConfetti() {
+        // Quick confetti burst for answer
+        confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#ffcc00', '#ffaa00', '#ff8800', '#ff6600'],
+            ticks: 30,
+            gravity: 0.8
+        });
+    }
+
+    function initQuiz() {
+        const options = document.querySelectorAll('.option');
+        const memoryPopup = document.getElementById('memoryPopup');
+        const memoryResponse = document.getElementById('memoryResponse');
+        const memoryTitle = document.getElementById('memoryTitle');
+        const continueMemories = document.getElementById('continueMemories');
+        const progressText = document.getElementById('progressText');
+        const progressElement = document.querySelector('.progress');
+        const completionScreen = document.getElementById('completionScreen');
+        const backToMemories = document.getElementById('backToMemories');
+        
+        let currentQuestion = 1;
+        const totalQuestions = 10;
+        
+        // Reset answered questions
+        answeredQuestions.clear();
+        
+        // Reset progress
+        progressText.textContent = `${currentQuestion}/${totalQuestions}`;
+        progressElement.style.setProperty('--progress', (currentQuestion / totalQuestions) * 10);
+        
+        // Show only the first question initially
+        document.querySelectorAll('.question').forEach((q, index) => {
+            q.classList.remove('active');
+            if (index === 0) {
+                q.classList.add('active');
+            }
+            // Reset answered status for all options
+            const allOptions = q.querySelectorAll('.option');
+            allOptions.forEach(opt => {
+                opt.classList.remove('answered');
+                opt.style.pointerEvents = 'auto';
+                opt.style.background = 'rgba(139, 19, 19, 0.5)';
+                opt.style.borderColor = 'rgba(255, 204, 0, 0.3)';
+            });
+        });
+        
+        // Remove existing event listeners
+        options.forEach(option => {
+            const newOption = option.cloneNode(true);
+            option.parentNode.replaceChild(newOption, option);
+        });
+        
+        // Add new event listeners
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionContainer = this.closest('.question');
+                const questionId = questionContainer.id;
+                
+                // Check if this question is already answered
+                if (answeredQuestions.has(questionId)) {
+                    return; // Skip if already answered
+                }
+                
+                const response = this.getAttribute('data-response');
+                const questionTitle = questionContainer.querySelector('.question-title').textContent;
+                
+                // Mark this option as answered
+                this.classList.add('answered');
+                
+                // Mark question as answered
+                answeredQuestions.add(questionId);
+                
+                // Set popup content
+                memoryTitle.textContent = questionTitle;
+                memoryResponse.textContent = response;
+                
+                // Show popup
+                memoryPopup.style.display = 'flex';
+                
+                // Trigger confetti effect
+                triggerAnswerConfetti();
+                
+                // Disable all options in this question
+                const allOptions = questionContainer.querySelectorAll('.option');
+                allOptions.forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.background = 'rgba(255, 204, 0, 0.3)'; // Changed to yellow
+                    opt.style.borderColor = '#ffcc00'; // Changed to yellow
+                    opt.classList.add('answered');
+                });
+            });
+        });
+        
+        // Continue memories button
+        continueMemories.addEventListener('click', function() {
+            memoryPopup.style.display = 'none';
+            
+            // Hide current question
+            document.getElementById(`question${currentQuestion}`).classList.remove('active');
+            
+            // Move to the next question
+            currentQuestion++;
+            
+            if (currentQuestion <= totalQuestions) {
+                // Show the next question
+                const nextQuestion = document.getElementById(`question${currentQuestion}`);
+                if (nextQuestion) {
+                    nextQuestion.classList.add('active');
+                    
+                    // Update progress
+                    progressText.textContent = `${currentQuestion}/${totalQuestions}`;
+                    progressElement.style.setProperty('--progress', (currentQuestion / totalQuestions) * 10);
+                    
+                    // Scroll to top of quiz
+                    document.querySelector('.quiz-container').scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                // Show completion screen
+                completionScreen.style.display = 'flex';
+                
+                // Trigger celebration confetti
+                triggerCelebrationConfetti();
+            }
+        });
+        
+        // Back to memories button
+        backToMemories.addEventListener('click', function() {
+            hideGame();
+        });
+        
+        // Close popup if clicked outside
+        window.addEventListener('click', function(event) {
+            if (event.target === memoryPopup) {
+                memoryPopup.style.display = 'none';
+            }
+        });
+    }
+
+    // Enhanced confetti effects
+    function triggerCelebrationConfetti() {
+        // Multiple confetti bursts for celebration
+        const duration = 3000; // 3 seconds of celebration
+        const animationEnd = Date.now() + duration;
+        const colors = ['#ffcc00', '#ffaa00', '#ff8800', '#ff6600', '#ff4400'];
+        
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+        
+        // Create continuous confetti effect
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+            
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+            
+            const particleCount = 30 * (timeLeft / duration);
+            
+            // Create confetti from multiple origins
+            confetti({
+                particleCount: Math.floor(particleCount / 3),
+                spread: 60,
+                ticks: 50,
+                gravity: 0.8,
+                origin: { x: randomInRange(0.1, 0.3), y: Math.random() * 0.2 },
+                colors: colors,
+                scalar: 0.8
+            });
+            
+            confetti({
+                particleCount: Math.floor(particleCount / 3),
+                spread: 60,
+                ticks: 50,
+                gravity: 0.8,
+                origin: { x: randomInRange(0.7, 0.9), y: Math.random() * 0.2 },
+                colors: colors,
+                scalar: 0.8
+            });
+            
+            confetti({
+                particleCount: Math.floor(particleCount / 3),
+                spread: 90,
+                ticks: 50,
+                gravity: 0.8,
+                origin: { x: 0.5, y: Math.random() * 0.2 - 0.1 },
+                colors: colors,
+                scalar: 1.2
+            });
+            
+        }, 200); // Every 200ms
+        
+        // Clear interval after duration
+        setTimeout(() => {
+            clearInterval(interval);
+        }, duration);
+    }
+
+    // Initialize everything
+    function init() {
+        // Fetch notes from database on page load
+        fetchNotes();
+        
+        // Create threads and bulbs
+        makeThreads();
+        
+        // Set up navigation
+        setupNavigation();
+        
+        // Event listeners
+        WRAP.addEventListener('scroll', updateMinimapViewport);
+        window.addEventListener('resize', updateMinimapViewport);
+        
+        document.getElementById('addBtn').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
+            addNewNote(name, message);
+        });
+        
+        document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
+        document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
+        document.getElementById('zoomResetBtn').addEventListener('click', resetZoom);
+        
+        // Mini-map close button
+        MINIMAP_CLOSE.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isMinimapExpanded) {
+                isMinimapExpanded = false;
+                MINIMAP_CONTAINER.classList.remove('expanded');
+            }
+        });
+        
+        // Game link
+        GAME_LINK.addEventListener('click', (e) => {
+            e.preventDefault();
+            showGame();
+        });
+        
+        // Back button
+        BACK_BTN.addEventListener('click', () => {
+            hideGame();
+        });
+        
+        // Mini-map click to zoom
+        MINIMAP_CONTAINER.addEventListener('click', (e) => {
+            if (e.target === MINIMAP_CONTAINER || e.target.classList.contains('minimap')) {
+                const rect = MINIMAP_CONTAINER.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                zoomToArea(x, y);
+            }
+        });
+        
+        // Allow Enter key to submit
+        document.getElementById('message').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('addBtn').click();
+            }
+        });
+        
+        // Initial mini-map viewport
+        updateMinimapViewport();
+        
+        // Animation loop
+        function animate() {
+            updateThreadsAndBulbs();
+            requestAnimationFrame(animate);
+        }
+        animate();
+        
+        // Add initial dummy notes after a short delay to ensure real notes are loaded first
+        setTimeout(() => {
+            addInitialDummyNotes();
+        }, 1000);
+    }
+
+    // Start the application
+    init();
+</script>
     <script>
 // Universal function to navigate to any section in index.html without preloader
 function goToIndexSection(sectionId) {
@@ -2950,6 +3032,31 @@ function goToIndexSection(sectionId) {
     
     // Navigate to index.html
     window.location.href = 'index.html';
+}
+// Add this function to your JavaScript
+function resetNoteZIndexes() {
+    const allNotes = document.querySelectorAll('.note');
+    allNotes.forEach((note, index) => {
+        // Reset all notes to base z-index + their order
+        note.style.zIndex = 20 + index;
+    });
+}
+
+// Call this function after rendering all notes
+function renderNotes(notesData) {
+    NOTES_LAYER.innerHTML = '';
+    notes = [];
+    
+    notesData.forEach(noteData => {
+        const note = createNoteFromData(noteData);
+        notes.push(note);
+    });
+    
+    // Reset z-indexes to ensure proper layering
+    resetNoteZIndexes();
+    
+    // Update mini-map after rendering notes
+    createMinimapNotes();
 }
 </script>
 </body>
