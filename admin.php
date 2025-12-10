@@ -5,40 +5,28 @@
 // ==========================================
 
 // --- Session Configuration ---
-// Set secure session parameters BEFORE starting the session
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
-// Uncomment the line below ONLY after you enable HTTPS on your server
-// ini_set('session.cookie_secure', 1);
+// ini_set('session.cookie_secure', 1); // Uncomment for HTTPS
 
-// Start the session
 session_start();
 
 // --- Database Connection ---
-// Include the database connection file
 require_once 'db_connect.php';
-
-// Get the database connection using the function from db_connect.php
 $conn = db_connect();
 
-// Check if the database connection was successful
 if (!$conn) {
-    die("Error: Could not connect to the database. Please check your db_connect.php file.");
+    die("Error: Could not connect to the database.");
 }
 
 // --- Admin Credentials ---
-// ⚠️ SECURITY WARNING: Using a plain-text password is highly discouraged.
-// This is for temporary development only. Do not use in a production environment.
 $admin_user = "admin";
 $admin_pass = "brmh@reboot";
 
-// --- Login Attempt & Lockout Configuration ---
-// Maximum number of allowed failed login attempts
+// --- Login Attempt Configuration ---
 $max_login_attempts = 3;
-// Duration of the lockout in seconds (e.g., 10 minutes)
 $login_lockout_duration = 10 * 60; // 10 minutes
 
-// Check if the user is currently locked out
 $is_locked_out = false;
 if (isset($_SESSION['login_locked_until']) && time() < $_SESSION['login_locked_until']) {
     $remaining_time = ceil(($_SESSION['login_locked_until'] - time()) / 60);
@@ -52,7 +40,6 @@ if (isset($_SESSION['login_locked_until']) && time() < $_SESSION['login_locked_u
 
 // --- Logout Logic ---
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    // Destroy the session completely
     $_SESSION = array();
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
@@ -68,37 +55,29 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
 // --- Login Logic ---
 if (isset($_POST['login_btn']) && !$is_locked_out) {
-    // CSRF protection: Validate the token
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         die("CSRF token validation failed");
     }
     
-    // Sanitize and validate inputs
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
     $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
     
-    // ⚠️ SECURITY WARNING: This is a plain-text password comparison.
-    // It is highly insecure and should not be used in a production environment.
     if ($username === $admin_user && $password === $admin_pass) {
-        // Regenerate the session ID to prevent session fixation attacks
         session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
-        $_SESSION['last_activity'] = time(); // Set the last activity time
+        $_SESSION['last_activity'] = time();
         
-        // Reset login attempts on successful login
         unset($_SESSION['login_attempts']);
         unset($_SESSION['login_locked_until']);
         
         header("Location: admin.php");
         exit();
     } else {
-        // Increment login attempts
         if (!isset($_SESSION['login_attempts'])) {
             $_SESSION['login_attempts'] = 0;
         }
         $_SESSION['login_attempts']++;
         
-        // Check if max attempts reached
         if ($_SESSION['login_attempts'] >= $max_login_attempts) {
             $_SESSION['login_locked_until'] = time() + $login_lockout_duration;
             $remaining_time = ceil($login_lockout_duration / 60);
@@ -107,65 +86,59 @@ if (isset($_POST['login_btn']) && !$is_locked_out) {
             $remaining_attempts = $max_login_attempts - $_SESSION['login_attempts'];
             $error_msg = "Invalid username or password. $remaining_attempts attempts remaining.";
         }
-        
-        // Log the failed login attempt for security monitoring
         error_log("Failed admin login attempt from IP: " . $_SERVER['REMOTE_ADDR']);
     }
 }
 
-// Check if the user is logged in
 $is_logged_in = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
 
-// --- Session Timeout Check ---
-// Set the session timeout duration in seconds (e.g., 30 minutes)
-$session_timeout_duration = 30 * 60; // 30 minutes
-
+// --- Session Timeout ---
+$session_timeout_duration = 30 * 60;
 if ($is_logged_in) {
-    // Check if the session has expired due to inactivity
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $session_timeout_duration)) {
         session_unset();
         session_destroy();
         header("Location: admin.php?session_expired=1");
         exit();
     }
-    // Update the last activity time on each page load for a logged-in user
     $_SESSION['last_activity'] = time();
 }
 
-// --- CSRF Token Generation ---
-// Generate a new CSRF token if one doesn't exist
+// --- CSRF Token ---
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 // ==========================================
-// 3. LOGGED-IN ACTIONS (DELETE, UPDATE, EXPORT)
+// 3. LOGGED-IN ACTIONS
 // ==========================================
 
 if ($is_logged_in) {
     
     // --- ACTION: DELETE Record ---
     if (isset($_GET['delete']) && isset($_GET['type']) && isset($_GET['id'])) {
-        // Validate CSRF token
         if (!isset($_GET['csrf_token']) || $_GET['csrf_token'] !== $_SESSION['csrf_token']) {
             die("CSRF token validation failed");
         }
         
-        // Sanitize and validate inputs
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
         
-        // Validate the 'type' parameter to prevent SQL injection
-        if ($type !== 'alumni' && $type !== 'memory_notes') {
+        // LOGIC FIX: Map 'memory' (from HTML link) to 'memory_notes' (database table)
+        $table = '';
+        if ($type === 'alumni') {
+            $table = 'alumni';
+        } elseif ($type === 'memory' || $type === 'memory_notes') {
+            $table = 'memory_notes';
+        } else {
             die("Invalid type parameter");
         }
         
-        $table = ($type == 'alumni') ? 'alumni' : 'memory_notes';
-        
-        // Use prepared statements to prevent SQL injection
-        $stmt = $conn->prepare("DELETE FROM $table WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
+        if ($table) {
+            $stmt = $conn->prepare("DELETE FROM $table WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+        }
         
         header("Location: admin.php");
         exit();
@@ -173,12 +146,10 @@ if ($is_logged_in) {
 
     // --- ACTION: UPDATE Alumni Record ---
     if (isset($_POST['update_alumni'])) {
-        // Validate CSRF token
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
             die("CSRF token validation failed");
         }
         
-        // Sanitize and validate all inputs
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
@@ -189,12 +160,10 @@ if ($is_logged_in) {
         $family = filter_input(INPUT_POST, 'participating_with_family', FILTER_SANITIZE_STRING);
         $count = filter_input(INPUT_POST, 'family_count', FILTER_VALIDATE_INT);
         
-        // Validate the family participation option
         if ($family !== 'Yes' && $family !== 'No') {
             die("Invalid family participation option");
         }
         
-        // Use prepared statements to prevent SQL injection
         $stmt = $conn->prepare("UPDATE alumni SET name=?, email=?, phone=?, graduation_year=?, current_company=?, current_position=?, participating_with_family=?, family_count=? WHERE id=?");
         $stmt->bind_param("sssisssii", $name, $email, $phone, $grad_year, $company, $position, $family, $count, $id);
         $stmt->execute();
@@ -203,25 +172,17 @@ if ($is_logged_in) {
         exit();
     }
 
-    // --- ACTION: EXPORT Data to CSV ---
+    // --- ACTION: EXPORT Data ---
     if (isset($_GET['export'])) {
-        // Validate CSRF token
         if (!isset($_GET['csrf_token']) || $_GET['csrf_token'] !== $_SESSION['csrf_token']) {
             die("CSRF token validation failed");
         }
         
         $export = filter_input(INPUT_GET, 'export', FILTER_SANITIZE_STRING);
         
-        // Validate the export parameter
-        if ($export !== 'alumni' && $export !== 'memory_notes' && $export !== 'yearwise_stats') {
-            die("Invalid export parameter");
-        }
-        
         if ($export === 'yearwise_stats') {
-            // Export year-wise statistics
             $filename = "yearwise_alumni_stats_" . date('Y-m-d') . ".csv";
             
-            // Set headers for CSV download
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -229,22 +190,18 @@ if ($is_logged_in) {
             
             $output = fopen('php://output', 'w');
             
-            // Get year-wise statistics
             $stmt = $conn->prepare("SELECT graduation_year, COUNT(*) as alumni_count FROM alumni GROUP BY graduation_year ORDER BY graduation_year ASC");
             $stmt->execute();
             $result = $stmt->get_result();
             
-            // Write headers
             fputcsv($output, ['Graduation Year', 'Alumni Count', 'Percentage']);
             
-            // Get total alumni count for percentage calculation
             $total_stmt = $conn->prepare("SELECT COUNT(*) as total FROM alumni");
             $total_stmt->execute();
             $total_result = $total_stmt->get_result();
             $total_row = $total_result->fetch_assoc();
             $total_alumni = $total_row['total'];
             
-            // Write data
             while ($row = $result->fetch_assoc()) {
                 $percentage = $total_alumni > 0 ? round(($row['alumni_count'] / $total_alumni) * 100, 2) : 0;
                 fputcsv($output, [
@@ -257,10 +214,17 @@ if ($is_logged_in) {
             fclose($output);
             exit();
         } else {
-            $table = ($export == 'alumni') ? 'alumni' : 'memory_notes';
+            $table = '';
+            if ($export === 'alumni') {
+                $table = 'alumni';
+            } elseif ($export === 'memory_notes') {
+                $table = 'memory_notes';
+            } else {
+                die("Invalid export parameter");
+            }
+
             $filename = $table . "_export_" . date('Y-m-d') . ".csv";
             
-            // Set headers for CSV download
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -268,13 +232,11 @@ if ($is_logged_in) {
             
             $output = fopen('php://output', 'w');
             
-            // Use prepared statements
             $stmt = $conn->prepare("SELECT * FROM $table");
             $stmt->execute();
             $result = $stmt->get_result();
             
             if ($result->num_rows > 0) {
-                // Get column names for headers
                 $field_info = $result->fetch_fields();
                 $headers = array();
                 foreach ($field_info as $field) {
@@ -282,7 +244,6 @@ if ($is_logged_in) {
                 }
                 fputcsv($output, $headers);
                 
-                // Reset result pointer and output data
                 $result->data_seek(0);
                 while ($row = $result->fetch_assoc()) {
                     fputcsv($output, $row);
@@ -294,7 +255,7 @@ if ($is_logged_in) {
     }
 
     // ==========================================
-    // 4. STATISTICAL DATA FETCHING
+    // 4. STATISTICAL DATA FETCHING FOR GRAPHS
     // ==========================================
     
     // A. Overview Counts
@@ -312,44 +273,30 @@ if ($is_logged_in) {
     $result = $stmt->get_result();
     $mem_count = $result->fetch_assoc()['count'];
 
-    // B. Graduation Year Distribution (For Graph)
-    $year_labels = [];
-    $year_data = [];
-    $year_stats = []; // For year-wise boxes
+    // B. GRAPH DATA 1: Alumni by Graduation Year (Bar Chart)
+    // We strictly separate the X values (Years) and Y values (Counts)
+    $chart_years_x = [];
+    $chart_counts_y = [];
+    
     $stmt = $conn->prepare("SELECT graduation_year, COUNT(*) as count FROM alumni GROUP BY graduation_year ORDER BY graduation_year ASC");
     $stmt->execute();
     $result = $stmt->get_result();
     while($row = $result->fetch_assoc()) {
-        $year_labels[] = $row['graduation_year'];
-        $year_data[] = $row['count'];
-        $year_stats[$row['graduation_year']] = $row['count'];
+        $chart_years_x[] = (string)$row['graduation_year']; // X-Axis Labels
+        $chart_counts_y[] = (int)$row['count'];             // Y-Axis Data
     }
 
-    // C. Get all years with counts (for detailed view)
-    $all_years = [];
-    $stmt = $conn->prepare("SELECT graduation_year, COUNT(*) as count FROM alumni GROUP BY graduation_year ORDER BY graduation_year DESC");
+    // C. GRAPH DATA 2: Registration Timeline (Line Chart)
+    // We strictly separate Dates and Counts
+    $chart_dates_x = [];
+    $chart_regs_y = [];
+    
+    $stmt = $conn->prepare("SELECT DATE(registration_date) as reg_date, COUNT(*) as count FROM alumni GROUP BY DATE(registration_date) ORDER BY reg_date ASC LIMIT 30");
     $stmt->execute();
     $result = $stmt->get_result();
     while($row = $result->fetch_assoc()) {
-        $all_years[] = [
-            'year' => $row['graduation_year'],
-            'count' => $row['count']
-        ];
-    }
-
-    // D. Registration Timeline (Day wise) - Requires created_at column
-    $date_labels = [];
-    $date_data = [];
-    // Check if created_at column exists, otherwise fallback
-    $check_col = $conn->query("SHOW COLUMNS FROM alumni LIKE 'created_at'");
-    if($check_col->num_rows > 0) {
-        $stmt = $conn->prepare("SELECT DATE(created_at) as reg_date, COUNT(*) as count FROM alumni GROUP BY DATE(created_at) ORDER BY reg_date ASC LIMIT 30");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while($row = $result->fetch_assoc()) {
-            $date_labels[] = date('M d', strtotime($row['reg_date']));
-            $date_data[] = $row['count'];
-        }
+        $chart_dates_x[] = date('M d', strtotime($row['reg_date'])); // X-Axis Labels
+        $chart_regs_y[] = (int)$row['count'];                        // Y-Axis Data
     }
 }
 ?>
@@ -583,14 +530,18 @@ if ($is_logged_in) {
         
         <div class="yearwise-grid">
             <?php
-            if (!empty($all_years)) {
+            // Reuse the chart data we fetched in PHP logic above to create boxes
+            if (!empty($chart_years_x)) {
                 $total_alumni = $stats['total_alumni'];
-                foreach ($all_years as $year_data) {
-                    $percentage = $total_alumni > 0 ? round(($year_data['count'] / $total_alumni) * 100, 1) : 0;
+                // Loop through chart data
+                for($i = 0; $i < count($chart_years_x); $i++) {
+                    $y_year = $chart_years_x[$i];
+                    $y_count = $chart_counts_y[$i];
+                    $percentage = $total_alumni > 0 ? round(($y_count / $total_alumni) * 100, 1) : 0;
                     echo '
                     <div class="year-box">
-                        <div class="year-label">' . htmlspecialchars($year_data['year']) . '</div>
-                        <div class="year-count">' . htmlspecialchars($year_data['count']) . '</div>
+                        <div class="year-label">' . htmlspecialchars($y_year) . '</div>
+                        <div class="year-count">' . htmlspecialchars($y_count) . '</div>
                         <div class="year-text">Alumni</div>
                         <div class="year-percentage">' . $percentage . '% of total</div>
                     </div>';
@@ -650,6 +601,7 @@ if ($is_logged_in) {
                     $stmt->execute();
                     $result = $stmt->get_result();
                     while($row = $result->fetch_assoc()) {
+                        // Secure JSON encoding for JS usage
                         $json = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
                         echo "<tr>
                             <td>" . htmlspecialchars($row['id']) . "</td>
@@ -762,14 +714,20 @@ if ($is_logged_in) {
     </div>
 
     <script>
-        const yearLabels = <?php echo json_encode($year_labels); ?>;
-        const yearData = <?php echo json_encode($year_data); ?>;
-        const dateLabels = <?php echo json_encode($date_labels); ?>;
-        const dateData = <?php echo json_encode($date_data); ?>;
+        // --- 1. Pass PHP Data to JavaScript ---
+        // We use the separated arrays we built in PHP
+        const yearLabels = <?php echo json_encode($chart_years_x); ?>; // X-Axis (Years)
+        const yearData = <?php echo json_encode($chart_counts_y); ?>;  // Y-Axis (Counts)
+        
+        const dateLabels = <?php echo json_encode($chart_dates_x); ?>; // X-Axis (Dates)
+        const dateData = <?php echo json_encode($chart_regs_y); ?>;    // Y-Axis (Counts)
 
         Chart.defaults.color = '#888';
         Chart.defaults.borderColor = '#333';
 
+        // --- 2. Chart Configurations ---
+
+        // YEAR Chart (Bar)
         new Chart(document.getElementById('yearChart'), {
             type: 'bar',
             data: {
@@ -784,30 +742,42 @@ if ($is_logged_in) {
             },
             options: {
                 responsive: true,
-                scales: { y: { beginAtZero: true } }
+                scales: { 
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 } // Ensure integer ticks
+                    } 
+                }
             }
         });
 
+        // DATE Chart (Line) - Forced Line Graph
         new Chart(document.getElementById('dateChart'), {
-            type: 'line',
+            type: 'line', // Forced line type
             data: {
                 labels: dateLabels,
                 datasets: [{
                     label: 'Registrations per Day',
                     data: dateData,
                     borderColor: '#00d2ff',
-                    backgroundColor: 'rgba(0, 210, 255, 0.1)',
+                    backgroundColor: 'rgba(0, 210, 255, 0.2)', // Fill under the line
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.4
+                    tension: 0.4 // Smooth curve
                 }]
             },
             options: {
                 responsive: true,
-                scales: { y: { beginAtZero: true } }
+                scales: { 
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 } // Ensure integer ticks
+                    } 
+                }
             }
         });
 
+        // Modal Logic
         function openEdit(data) {
             document.getElementById('e_id').value = data.id;
             document.getElementById('e_name').value = data.name;
