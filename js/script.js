@@ -1456,3 +1456,132 @@ function initAlumniNamesTypingEffect() {
         }, index * 300); // Each name starts 300ms after the previous one
     });
 }
+// Multi-alumni card functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const alumniMembers = document.querySelectorAll('.alumni-member');
+    const dots = document.querySelectorAll('.alumni-dots .dot');
+    
+    if (alumniMembers.length > 0) {
+        alumniMembers.forEach(member => {
+            member.addEventListener('click', function() {
+                const alumniId = this.getAttribute('data-alumni');
+                
+                // Remove active class from all members
+                alumniMembers.forEach(m => m.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                // Add active class to clicked member
+                this.classList.add('active');
+                document.querySelector(`.dot[data-alumni="${alumniId}"]`).classList.add('active');
+                
+                // Smooth scroll to member on mobile
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        this.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'nearest',
+                            inline: 'nearest'
+                        });
+                    }, 300);
+                }
+            });
+        });
+        
+        // Add click functionality to dots
+        dots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                const alumniId = this.getAttribute('data-alumni');
+                
+                // Remove active class from all members
+                alumniMembers.forEach(m => m.classList.remove('active'));
+                dots.forEach(d => d.classList.remove('active'));
+                
+                // Add active class to clicked dot and corresponding member
+                this.classList.add('active');
+                document.querySelector(`.alumni-member[data-alumni="${alumniId}"]`).classList.add('active');
+                
+                // Smooth scroll to member on mobile
+                if (window.innerWidth <= 768) {
+                    const member = document.querySelector(`.alumni-member[data-alumni="${alumniId}"]`);
+                    if (member) {
+                        setTimeout(() => {
+                            member.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'nearest',
+                                inline: 'nearest'
+                            });
+                        }, 300);
+                    }
+                }
+            });
+        });
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                const activeDot = document.querySelector('.dot.active');
+                if (activeDot) {
+                    const prevDot = activeDot.previousElementSibling;
+                    if (prevDot) {
+                        prevDot.click();
+                    } else {
+                        // Wrap to last dot
+                        document.querySelector('.alumni-dots .dot:last-child').click();
+                    }
+                }
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                const activeDot = document.querySelector('.dot.active');
+                if (activeDot) {
+                    const nextDot = activeDot.nextElementSibling;
+                    if (nextDot) {
+                        nextDot.click();
+                    } else {
+                        // Wrap to first dot
+                        document.querySelector('.alumni-dots .dot:first-child').click();
+                    }
+                }
+            }
+        });
+        
+        // Add touch swipe support for mobile
+        let touchStartX = 0;
+        const alumniContainer = document.querySelector('.alumni-members');
+        
+        if (alumniContainer) {
+            alumniContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].clientX;
+            }, { passive: true });
+            
+            alumniContainer.addEventListener('touchend', function(e) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                const swipeThreshold = 50;
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    const activeDot = document.querySelector('.dot.active');
+                    if (activeDot) {
+                        if (diff > 0) {
+                            // Swipe left - previous
+                            const prevDot = activeDot.previousElementSibling;
+                            if (prevDot) {
+                                prevDot.click();
+                            } else {
+                                // Wrap to last dot
+                                document.querySelector('.alumni-dots .dot:last-child').click();
+                            }
+                        } else {
+                            // Swipe right - next
+                            const nextDot = activeDot.nextElementSibling;
+                            if (nextDot) {
+                                nextDot.click();
+                            } else {
+                                // Wrap to first dot
+                                document.querySelector('.alumni-dots .dot:first-child').click();
+                            }
+                        }
+                    }
+                }
+            }, { passive: true });
+        }
+    }
+});
