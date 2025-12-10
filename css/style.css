@@ -3684,3 +3684,376 @@ section {
         font-size: 0.9rem;
     }
 }
+/* ===== SHARED LAYOUT: NO SCROLL & LARGE IMAGES ===== */
+
+/* Main Card */
+.shared-layout-card {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+}
+
+/* --- LEFT PANEL: PEOPLE (45%) --- */
+.left-people-panel {
+    flex: 0 0 45%; 
+    background: rgba(0, 0, 0, 0.4);
+    border-right: 1px solid rgba(255, 215, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 20px;
+}
+
+/* Person Row (Desktop: Image Left | Text Right) */
+.person-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    width: 100%;
+    padding-left: 10px;
+}
+
+/* --- IMAGE SIZING (DESKTOP: 200px) --- */
+.medium-frame {
+    width: 180px !important;
+    height: 180px !important; 
+    border-width: 3px !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.medium-frame img {
+    width: 200px !important;
+    height: 200px !important;
+}
+
+.person-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+}
+
+.person-name {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon-yellow);
+    font-size: 1rem;
+    line-height: 1.2;
+    margin-bottom: 5px;
+}
+
+.person-role {
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--ivory-white);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Divider (Desktop: Horizontal line) */
+.people-divider {
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--neon-yellow), transparent);
+    opacity: 0.3;
+}
+
+/* --- RIGHT PANEL: DETAILS (55%) --- */
+.right-details-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px;
+}
+
+/* SINGLE LINE HEADER */
+.compact-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 2px solid var(--neon-yellow);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.comp-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2rem;
+    color: var(--neon-yellow);
+    margin: 0;
+}
+
+.comp-sep {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.5rem;
+}
+
+.comp-loc {
+    font-family: 'Rajdhani', sans-serif;
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+.comp-batch {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--neon-yellow);
+    padding: 4px 12px;
+    border-radius: 15px;
+    color: #fff;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.9rem;
+    margin-left: auto;
+}
+
+.comp-batch .highlight {
+    color: var(--neon-yellow);
+    font-weight: 800;
+}
+
+/* INLINE CONTENT ROWS */
+.compact-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inline-row {
+    font-family: 'Rajdhani', sans-serif;
+    line-height: 1.5;
+    font-size: 1.1rem;
+}
+
+.row-label {
+    color: var(--gold-yellow);
+    font-family: 'Oxanium', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+.row-content {
+    color: #e0e0e0;
+}
+
+/* ===== MOBILE RESPONSIVE FIX ===== */
+@media (max-width: 900px) {
+    /* Stack panels vertically */
+    .shared-layout-card {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    /* 1. PEOPLE PANEL: SIDE BY SIDE IN ONE ROW */
+    .left-people-panel {
+        flex: 0 0 auto;
+        flex-direction: row; /* Horizontal row */
+        justify-content: space-evenly; /* Spread them out */
+        padding: 15px 5px;
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid var(--neon-yellow);
+        background: rgba(0, 0, 0, 0.6);
+        gap: 0;
+    }
+
+    /* Person Block: Stack Image Top / Name Bottom to save width */
+    .person-block {
+        flex-direction: column;
+        width: 48%; /* Almost half width each */
+        padding-left: 0;
+        gap: 5px;
+        text-align: center;
+    }
+
+    .person-info {
+        align-items: center; /* Center text */
+        text-align: center;
+    }
+
+    /* MOBILE IMAGE SIZE (125px is max for side-by-side on small phones) */
+    .medium-frame {
+        width: 125px !important;
+        height: 125px !important;
+        margin: 0 auto;
+    }
+
+    .medium-frame img {
+        width: 115px !important;
+        height: 115px !important;
+    }
+
+    /* Hide divider on mobile (using space instead) */
+    .people-divider {
+        display: none;
+    }
+
+    .person-name {
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .person-role {
+        font-size: 0.75rem;
+    }
+
+    /* 2. RIGHT PANEL */
+    .right-details-panel {
+        padding: 15px;
+    }
+
+    /* Ensure header fits */
+    .compact-header {
+        gap: 5px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+
+    .comp-name {
+        font-size: 1.6rem;
+    }
+
+    .comp-sep {
+        display: none; /* Hide separators on small mobile to save space */
+    }
+
+    .comp-loc {
+        display: block;
+        width: 100%;
+        font-size: 0.9rem;
+        margin-top: -5px; /* Pull closer to title */
+    }
+
+    .comp-batch {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+
+    /* Content text size */
+    .inline-row {
+        font-size: 0.9rem;
+    }
+    
+    .compact-body {
+        gap: 12px;
+    }
+}
+/* ===== QUAD LAYOUT (4 PEOPLE) STYLES ===== */
+
+/* 1. LEFT PANEL (Reduced Width: 35%) */
+.quad-panel {
+    padding: 15px 10px;
+    gap: 15px;
+}
+
+/* 2x2 Grid Container */
+.quad-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    width: 100%;
+    justify-items: center;
+}
+
+/* Individual Person Block */
+.quad-person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Smaller Frames for the 2x2 Grid */
+.small-quad-frame {
+    width: 90px !important;
+    height: 90px !important;
+    border-width: 2px !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    margin-bottom: 8px;
+}
+
+.small-quad-frame img {
+    width: 110px !important;
+    height: 110px !important;
+}
+
+/* Name Styling */
+.quad-name {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon-yellow);
+    font-size: 0.75rem; /* Smaller font to fit names */
+    line-height: 1.2;
+    word-wrap: break-word;
+    max-width: 100px;
+}
+
+/* Shared Role Label (at bottom of left panel) */
+.quad-shared-role {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 215, 0, 0.3);
+    width: 100%;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--ivory-white);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ===== MOBILE RESPONSIVE FOR QUAD ===== */
+@media (max-width: 900px) {
+    
+    /* Left Panel on Mobile */
+    .quad-panel {
+        flex: 0 0 auto;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        border-bottom: 2px solid var(--neon-yellow);
+        padding: 15px 5px;
+    }
+
+    /* Keep 2x2 Grid on Mobile (Perfect fit) */
+    .quad-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        row-gap: 20px;
+    }
+
+    .small-quad-frame {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .small-quad-frame img {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .quad-name {
+        font-size: 0.7rem;
+    }
+
+    .quad-shared-role {
+        font-size: 0.9rem;
+        margin-top: 15px;
+    }
+    
+    /* Adjust Header for long company name */
+    .comp-name {
+        font-size: 1.5rem !important;
+        line-height: 1.2;
+    }
+}
